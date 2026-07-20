@@ -11,9 +11,9 @@ export function setSpriteLoadCallback(cb) {
 
 /**
  * Render a LaTeX string into an HTMLImageElement using SVG foreignObject
- * Injecting full KaTeX CSS into SVG guarantees exact subscript/superscript typesetting
+ * Enhanced fontSize (17px) & SVG canvas dimensions for prominent standard LaTeX typesetting
  */
-export function getKatexSprite(latexStr, color = '#0f172a', fontSize = 13) {
+export function getKatexSprite(latexStr, color = '#0f172a', fontSize = 17) {
   const cacheKey = `${latexStr}_${color}_${fontSize}`;
   if (spriteCache.has(cacheKey)) {
     return spriteCache.get(cacheKey);
@@ -26,12 +26,15 @@ export function getKatexSprite(latexStr, color = '#0f172a', fontSize = 13) {
     });
 
     const svgString = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="180" height="40">
+      <svg xmlns="http://www.w3.org/2000/svg" width="220" height="50">
         <foreignObject width="100%" height="100%">
-          <div xmlns="http://www.w3.org/1999/xhtml" style="font-size: ${fontSize}px; color: ${color}; font-family: KaTeX_Main, 'STIX Two Text', 'Times New Roman', serif; white-space: nowrap; line-height: 1;">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="font-size: ${fontSize}px; color: ${color}; font-family: KaTeX_Main, STIXGeneral, 'Times New Roman', serif; white-space: nowrap; line-height: 1.2; padding: 2px;">
             <style>
               ${katexCss}
-              .katex { font-size: ${fontSize}px !important; color: ${color} !important; }
+              .katex { font-size: ${fontSize}px !important; color: ${color} !important; font-weight: normal; }
+              .katex .msupsub .vlist-t { vertical-align: baseline; }
+              .katex .size1 { font-size: 0.85em !important; }
+              .katex .size2 { font-size: 1.0em !important; }
             </style>
             ${htmlStr}
           </div>

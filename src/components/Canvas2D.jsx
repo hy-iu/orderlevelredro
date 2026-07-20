@@ -22,7 +22,7 @@ export default function Canvas2D({
 
   // Matplotlib-style Box Zoom Mode State
   const [isBoxZoomMode, setIsBoxZoomMode] = useState(false);
-  const [boxSelection, setBoxSelection] = useState(null); // { startX, startY, endX, endY }
+  const [boxSelection, setBoxSelection] = useState(null);
 
   // Refs for tracking drag and gestures
   const isDraggingRef = useRef(false);
@@ -226,9 +226,9 @@ export default function Canvas2D({
         ctx.fillRect(sStart.x - 2, sStart.y - 4, 4, 8);
         ctx.fillRect(sEnd.x - 2, sEnd.y - 4, 4, 8);
 
-        const forceSprite = getKatexSprite(force.name.split(' ')[0], force.color, 11);
+        const forceSprite = getKatexSprite(force.name.split(' ')[0], force.color, 13);
         if (forceSprite && forceSprite.complete) {
-          ctx.drawImage(forceSprite, sStart.x + 6, sStart.y - 14);
+          ctx.drawImage(forceSprite, sStart.x + 6, sStart.y - 16);
         }
       });
 
@@ -356,7 +356,7 @@ export default function Canvas2D({
         });
       }
 
-      // --- Physical Objects with PDG Error Bars & KaTeX Labels ---
+      // --- Physical Objects with PDG Error Bars & Prominent Standard KaTeX Labels ---
       if (layerVisibility.objects) {
         ACADEMIC_OBJECTS.forEach(obj => {
           if (!isWithinScale(obj.coords.x, obj.coords.y)) return;
@@ -415,14 +415,15 @@ export default function Canvas2D({
           ctx.stroke();
 
           // Offset crowded particles
-          let labelOffsetX = radius + 4;
-          let labelOffsetY = -10;
-          if (obj.id === 'obj-z-boson') { labelOffsetX = -65; labelOffsetY = -18; }
-          if (obj.id === 'obj-w-boson') { labelOffsetX = -65; labelOffsetY = 8; }
-          if (obj.id === 'obj-higgs') { labelOffsetX = 10; labelOffsetY = -18; }
-          if (obj.id === 'obj-top-quark') { labelOffsetX = 10; labelOffsetY = 10; }
+          let labelOffsetX = radius + 6;
+          let labelOffsetY = -14;
+          if (obj.id === 'obj-z-boson') { labelOffsetX = -70; labelOffsetY = -22; }
+          if (obj.id === 'obj-w-boson') { labelOffsetX = -70; labelOffsetY = 10; }
+          if (obj.id === 'obj-higgs') { labelOffsetX = 12; labelOffsetY = -22; }
+          if (obj.id === 'obj-top-quark') { labelOffsetX = 12; labelOffsetY = 12; }
 
-          const katexSprite = getKatexSprite(obj.symbol, isObjSelected ? '#dc2626' : isObjHovered ? '#2563eb' : '#0f172a', 13);
+          // Prominent Standard LaTeX rendering (17px fontSize)
+          const katexSprite = getKatexSprite(obj.symbol, isObjSelected ? '#dc2626' : isObjHovered ? '#2563eb' : '#0f172a', 17);
           if (katexSprite && katexSprite.complete) {
             ctx.drawImage(katexSprite, sObj.x + labelOffsetX, sObj.y + labelOffsetY);
           }
@@ -577,7 +578,7 @@ export default function Canvas2D({
       }
 
       setBoxSelection(null);
-      setIsBoxZoomMode(false); // Auto exit box zoom after selection
+      setIsBoxZoomMode(false);
     }
 
     isDraggingRef.current = false;
@@ -745,7 +746,7 @@ export default function Canvas2D({
           </span>
         </button>
 
-        {/* 4. Reset Full Viewport (Updated title and tooltip to '全视角') */}
+        {/* 4. Reset Full Viewport */}
         <button
           onClick={resetFullScale}
           title="全视角 (Reset Full Viewport)"
@@ -799,10 +800,10 @@ export default function Canvas2D({
       {/* Academic Figure Caption Footer */}
       <div className="absolute bottom-4 left-6 right-6 pointer-events-none flex items-center justify-between border-t border-slate-300 pt-2 text-[11px] text-slate-600 font-serif">
         <div>
-          <span className="font-bold">Figure 1.</span> PDG Reference Map with Box-Zoom & Viewport Control Suite.
+          <span className="font-bold">Figure 1.</span> PDG Reference Map with Standard LaTeX Rendered Labels.
         </div>
         <div className="font-mono text-[10px] text-slate-500">
-          Scale: {transform.scale.toFixed(2)}x | {isBoxZoomMode ? 'Box Zoom Mode Active' : 'Standard Viewport'}
+          Scale: {transform.scale.toFixed(2)}x | Standard LaTeX Typesetting
         </div>
       </div>
     </div>
