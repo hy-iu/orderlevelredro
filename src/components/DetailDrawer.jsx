@@ -1,0 +1,118 @@
+import React from 'react';
+import { X, Scale, ExternalLink, ShieldCheck } from 'lucide-react';
+import { BlockMath, AutoMathText } from './MathFormula';
+
+export default function DetailDrawer({ item, itemType, onClose, onSelectSubItem }) {
+  if (!item) return null;
+
+  const formulaStr = item.specs?.lagrangian || item.formula || item.equation;
+
+  return (
+    <div className="absolute top-16 right-6 bottom-6 z-20 w-96 bg-white/95 backdrop-blur border border-slate-300 rounded-lg shadow-xl p-5 flex flex-col justify-between overflow-y-auto font-serif text-slate-900">
+      <div>
+        {/* Academic Drawer Header */}
+        <div className="flex items-start justify-between border-b border-slate-300 pb-3 mb-4">
+          <div>
+            <div className="flex items-center gap-1.5 mb-0.5">
+              <span className="text-[10px] uppercase font-mono tracking-wider text-slate-500 font-bold">
+                {itemType === 'object' ? 'Sec. Element Specification' : itemType === 'node' ? 'Sec. Multi-Leg Problem' : 'Sec. Scale Flow Topology'}
+              </span>
+              {item.pdgCode && (
+                <span className="px-1.5 py-0.2 bg-sky-100 text-sky-800 border border-sky-300 rounded text-[9px] font-mono font-bold flex items-center gap-1">
+                  <ShieldCheck className="w-2.5 h-2.5" />
+                  {item.pdgCode}
+                </span>
+              )}
+            </div>
+            <h2 className="text-base font-bold font-serif text-slate-900 leading-tight">
+              {item.label || item.title || item.name}
+            </h2>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-1 rounded text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-all"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Formula Display Box with KaTeX BlockMath */}
+        {formulaStr && (
+          <div className="mb-4 p-3 rounded bg-slate-50 border border-slate-300 text-slate-900">
+            <div className="text-[10px] font-mono text-slate-500 mb-1 flex items-center justify-between border-b border-slate-200 pb-1">
+              <span>Mathematical Operator / Lagrangian Density</span>
+              <span>LaTeX Form</span>
+            </div>
+            <BlockMath math={formulaStr} className="py-2 text-sm" />
+          </div>
+        )}
+
+        {/* Abstract & Annotation */}
+        <div className="text-xs text-slate-700 leading-relaxed mb-4 p-3 bg-slate-100/70 rounded border border-slate-200">
+          <div className="font-bold text-slate-900 mb-1 text-[11px] font-mono uppercase">PDG Reference & Annotation:</div>
+          {item.annotation || item.abstract || item.description}
+        </div>
+
+        {/* Quantified Scale Parameters */}
+        {item.specs && (
+          <div className="space-y-2 mb-4">
+            <h3 className="text-xs font-bold text-slate-900 uppercase font-mono tracking-wide border-b border-slate-200 pb-1">
+              Quantified Scale & Decay Parameters
+            </h3>
+            <div className="space-y-1.5 text-xs">
+              {item.specs.length && (
+                <div className="flex items-center justify-between p-1.5 rounded bg-slate-50 border border-slate-200">
+                  <span className="text-slate-600 font-mono text-[11px]">Spatial Scale / Radius (L):</span>
+                  <AutoMathText text={item.specs.length} className="font-mono text-slate-900 font-bold" />
+                </div>
+              )}
+              {item.specs.energy && (
+                <div className="flex items-center justify-between p-1.5 rounded bg-slate-50 border border-slate-200">
+                  <span className="text-slate-600 font-mono text-[11px]">Rest Mass / Cutoff (E):</span>
+                  <AutoMathText text={item.specs.energy} className="font-mono text-slate-900 font-bold" />
+                </div>
+              )}
+              {item.specs.decayWidth && (
+                <div className="flex items-center justify-between p-1.5 rounded bg-red-50/70 border border-red-200">
+                  <span className="text-red-700 font-mono text-[11px]">Decay Width (Γ):</span>
+                  <AutoMathText text={item.specs.decayWidth} className="font-mono text-red-900 font-bold" />
+                </div>
+              )}
+              {item.specs.time && (
+                <div className="flex items-center justify-between p-1.5 rounded bg-slate-50 border border-slate-200">
+                  <span className="text-slate-600 font-mono text-[11px]">Lifetime / Relaxation (τ):</span>
+                  <AutoMathText text={item.specs.time} className="font-mono text-slate-900 font-bold" />
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Multi-leg Bound Items */}
+        {itemType === 'node' && item.legs && (
+          <div className="space-y-2 mb-4">
+            <h3 className="text-xs font-bold text-slate-900 uppercase font-mono tracking-wide border-b border-slate-200 pb-1">
+              n-Leg Bound Physical States
+            </h3>
+            <div className="space-y-1">
+              {item.legs.map(legId => (
+                <button
+                  key={legId}
+                  onClick={() => onSelectSubItem && onSelectSubItem(legId)}
+                  className="w-full text-left p-1.5 rounded bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-mono text-slate-800 flex items-center justify-between transition-all"
+                >
+                  <span>Linked State: {legId}</span>
+                  <ExternalLink className="w-3 h-3 text-slate-400" />
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="border-t border-slate-200 pt-3 text-[10px] text-slate-400 font-mono text-center">
+        PDG Particle Physics Data Reference • APS Style
+      </div>
+    </div>
+  );
+}
