@@ -12,9 +12,9 @@ export function setSpriteLoadCallback(cb) {
 
 /**
  * Render a LaTeX string into an HTMLImageElement using SVG foreignObject
- * Embedded Base64 KaTeX WOFF2 fonts for authentic Computer Modern LaTeX rendering
+ * Compact SVG container dimensions & zero padding to bring labels close to particle dots
  */
-export function getKatexSprite(latexStr, color = '#0f172a', fontSize = 17) {
+export function getKatexSprite(latexStr, color = '#0f172a', fontSize = 15) {
   const cacheKey = `${latexStr}_${color}_${fontSize}`;
   if (spriteCache.has(cacheKey)) {
     return spriteCache.get(cacheKey);
@@ -27,13 +27,14 @@ export function getKatexSprite(latexStr, color = '#0f172a', fontSize = 17) {
     });
 
     const svgString = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="220" height="50">
+      <svg xmlns="http://www.w3.org/2000/svg" width="120" height="30">
         <foreignObject width="100%" height="100%">
-          <div xmlns="http://www.w3.org/1999/xhtml" style="font-size: ${fontSize}px; color: ${color}; white-space: nowrap; line-height: 1.2; padding: 2px;">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="font-size: ${fontSize}px; color: ${color}; white-space: nowrap; line-height: 1; padding: 0; margin: 0; display: inline-block;">
             <style>
               ${katexFontFaceCss}
               ${katexCss}
-              .katex { font-size: ${fontSize}px !important; color: ${color} !important; }
+              .katex { font-size: ${fontSize}px !important; color: ${color} !important; line-height: 1 !important; }
+              .katex-html { padding: 0 !important; margin: 0 !important; }
             </style>
             ${htmlStr}
           </div>
