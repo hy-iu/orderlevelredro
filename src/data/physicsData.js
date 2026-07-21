@@ -1869,17 +1869,198 @@ export const ACADEMIC_FRONTIER_NODES_HIGH_POTENTIAL = [
   }
 ];
 
+// --- Quantum Computing Hardware & Physical Architecture Routes (量子计算物理硬件与架构路线) ---
+export const QUANTUM_HARDWARE_ROUTES_OBJECTS = [
+  {
+    id: 'obj-transmon-qubit',
+    label: '超导 Transmon 量子电路 (Superconducting Transmon Circuit)',
+    pdgCode: 'PDG-QCOMP-TRANSMON',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -7.2, y: -2.8 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\text{Transmon}',
+    type: 'quantum-material',
+    specs: {
+      length: '0.1 - 1 \\text{ mm}',
+      energy: 'E_J/E_C \\gg 50, \\quad \\hbar \\omega_{01} \\sim 4 - 6 \\text{ GHz } (20 \\text{ \\mu eV})',
+      time: 'T_1, T_2^* \\sim 100 - 300 \\text{ \\mu s}',
+      lagrangian: 'H = 4 E_C (n - n_g)^2 - E_J \\cos \\phi'
+    },
+    annotation: '约瑟夫森结非线性电容并联结构，电荷噪声强鲁棒性超导量子处理器基石（IBM / Google Sycamore）。'
+  },
+  {
+    id: 'obj-trapped-ion-crystal',
+    label: '囚禁离子电离晶体 (Trapped-Ion Yb+/Ca+ Crystal)',
+    pdgCode: 'PDG-QCOMP-ION',
+    domainId: 'domain-amo-atomic',
+    coords: { x: -6.8, y: 1.2 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\ce{^{171}Yb^+} / \\ce{^{40}Ca^+}',
+    type: 'bound-state',
+    specs: {
+      length: 'd_{\\text{ion}} \\approx 5 \\text{ \\mu m (Coulomb Crystal)}',
+      energy: '\\Delta E_{\\text{hf}} \\approx 12.6 \\text{ GHz } (52 \\text{ \\mu eV})',
+      time: 'T_1 > 1 \\text{ 小时}, \\quad T_2 \\sim 10 - 100 \\text{ s}',
+      lagrangian: 'H_{MS} = \\frac{\\Omega}{2} \\sum_{i} \\left( \\sigma_+^i e^{i(\\eta (a+a^\\dagger) - \\delta t)} + \\text{h.c.} \\right)'
+    },
+    annotation: '射频 Paul 阱悬浮离域库仑晶体，全连通二比特 Mølmer-Sørensen 门保真度超 99.9%（Honeywell / IonQ）。'
+  },
+  {
+    id: 'obj-silicon-spin-qubit',
+    label: '同位素纯化硅自旋量子点 (Silicon-28 Quantum Dot Spin)',
+    pdgCode: 'PDG-QCOMP-SILICON',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -9.4, y: -1.5 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\ce{^{28}Si/SiGe}',
+    type: 'quantum-material',
+    specs: {
+      length: '30 - 50 \\text{ nm}',
+      energy: 'E_Z = g \\mu_B B \\sim 100 \\text{ \\mu eV}',
+      time: 'T_2^* \\sim 20 \\text{ \\mu s}, \\quad T_2^{\\text{CPMG}} \\sim 28 \\text{ ms}',
+      lagrangian: 'H = g \\mu_B \\mathbf{B} \\cdot \\mathbf{S} + J(t) \\mathbf{S}_1 \\cdot \\mathbf{S}_2'
+    },
+    annotation: '利用同位素净化去除 29Si 核磁噪声，兼容 CMOS 工业微电子制程的半导体单自旋比特。'
+  },
+  {
+    id: 'obj-bosonic-cat-qubit',
+    label: '超导连续变量猫态玻色比特 (Bosonic Cat Qubit)',
+    pdgCode: 'PDG-QCOMP-CAT',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -7.5, y: -3.2 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '|\\mathcal{C}_\\alpha^\\pm\\rangle',
+    type: 'quantum-material',
+    specs: {
+      length: '1 - 10 \\text{ mm (3D Cavity)}',
+      energy: '\\hbar \\omega_{\\text{cavity}} \\sim 5 \\text{ GHz}',
+      time: 'T_{\\text{bit-flip}} > 10 \\text{ s (Exponential Suppression)}',
+      lagrangian: 'H = -K (a^\\dagger)^2 a^2 + \\epsilon_2 (a^\\dagger)^2 + \\epsilon_2^* a^2'
+    },
+    annotation: '利用双光子驱动非线性克尔（Kerr）阻尼在无限维 Hilbert 空间中受拓扑保护的自动纠错猫态。'
+  },
+  {
+    id: 'obj-photonic-boson-sampling',
+    label: '集成光量子芯片与玻色取样 (Integrated Photonic Qubit)',
+    pdgCode: 'PDG-QCOMP-PHOTONIC',
+    domainId: 'domain-amo-atomic',
+    coords: { x: -8.8, y: 1.8 },
+    errorBar: { dx: 0.15, dy: 0.1 },
+    symbol: '\\text{Jiuzhang}',
+    type: 'probe',
+    specs: {
+      length: '10 - 100 \\text{ \\mu m (Silicon Waveguide)}',
+      energy: 'E_\\gamma \\sim 1.55 \\text{ \\mu m } (0.8 \\text{ eV})',
+      time: 't_{\\text{prop}} \\sim 1 \\text{ ns}',
+      lagrangian: 'U \\in SU(N), \\quad P(n_1, \\dots, n_N) = \\frac{|\\text{Perm}(U_{s,t})|^2}{n_1! \\dots n_N!}'
+    },
+    annotation: '通过 100+ 模式超低损耗集成光路干涉仪与高效率单光子探测器阵列实现高维高斯玻色取样（九章/Xanadu）。'
+  },
+  {
+    id: 'obj-solid-color-center',
+    label: '固态色心与自旋-光子介面 (Diamond NV/SiV Center Nodes)',
+    pdgCode: 'PDG-QCOMP-NV-SIV',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -8.6, y: -0.9 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\text{NV}^- / \\text{SiV}^-',
+    type: 'quantum-material',
+    specs: {
+      length: '< 1 \\text{ nm}',
+      energy: 'D_{\\text{gs}} = 2.87 \\text{ GHz}',
+      time: 'T_2 > 1 \\text{ s (with 13C Register)}',
+      lagrangian: 'H = D S_z^2 + g \\mu_B \\mathbf{B} \\cdot \\mathbf{S} + A \\mathbf{S} \\cdot \\mathbf{I}'
+    },
+    annotation: '结合自旋三态 ODMR 与近邻 13C 核自旋长寿命寄存器的分布式量子互联网硬件节点（QuTech/Harvard）。'
+  }
+];
+
+export const QUANTUM_HARDWARE_ROUTES_NODES = [
+  {
+    id: 'node-route-superconducting',
+    title: '超导量子计算路线 (Superconducting Circuit Quantum Processors)',
+    domainId: 'domain-condensed-matter',
+    type: 'theory',
+    coords: { x: -6.8, y: -2.5 },
+    legs: ['obj-transmon-qubit', 'obj-bosonic-cat-qubit', 'obj-tb-graphene'],
+    formula: 'H = \\sum_i \\omega_i b_i^\\dagger b_i + \\sum_{i<j} g_{ij} (b_i^\\dagger b_j + b_i b_j^\\dagger)',
+    abstract: '突破 100+ 比特高度可控约瑟夫森结网络、可变电感耦合器与三维微腔波色编码，推动相干时间与可扩展性协同增长。'
+  },
+  {
+    id: 'node-route-trapped-ion',
+    title: '囚禁离子与 QCCD 搬运路线 (Trapped-Ion & QCCD Architecture)',
+    domainId: 'domain-amo-atomic',
+    type: 'method',
+    coords: { x: -6.5, y: 1.5 },
+    legs: ['obj-trapped-ion-crystal', 'obj-precision-atomic-clock'],
+    formula: 'U_{MS}(\\theta) = \\exp\\left( -i \\frac{\\theta}{4} \\sum_{i<j} \\sigma_x^i \\sigma_x^j \\right)',
+    abstract: '利用长程库仑力和激光声子相干耦合实现全连通二比特逻辑门，配合表面电极微芯片实现离子全方位物理搬运。'
+  },
+  {
+    id: 'node-route-neutral-atom',
+    title: '中性原子光镊阵列路线 (Neutral-Atom Rydberg Tweezer Arrays)',
+    domainId: 'domain-amo-atomic',
+    type: 'method',
+    coords: { x: -7.4, y: 4.8 },
+    legs: ['obj-rydberg-atom-array', 'obj-polar-molecule', 'obj-hydrogen'],
+    formula: 'V_{C6} = \\frac{C_6}{R^6} \\quad (C_6 \\propto n^{11})',
+    abstract: '基于微米光镊捕捉 2D/3D 数百无缺陷中性原子，通过里德伯偶极封锁（Blockade）与核自旋超长相干实现高并行门。'
+  },
+  {
+    id: 'node-route-silicon-spin',
+    title: '半导体硅基自旋量子点路线 (Semiconductor Silicon Spin Qubits)',
+    domainId: 'domain-condensed-matter',
+    type: 'theory',
+    coords: { x: -9.2, y: -1.3 },
+    legs: ['obj-silicon-spin-qubit', 'obj-electron-lattice'],
+    formula: 'H_{\\text{Heisenberg}} = J(t) \\mathbf{S}_1 \\cdot \\mathbf{S}_2 + g \\mu_B B_z (S_{1z} + S_{2z})',
+    abstract: '利用成熟的 CMOS 纳米制程在同位素纯化 28Si 异质结中微控单电子自旋，具备超高比特密度与芯片集成潜力。'
+  },
+  {
+    id: 'node-route-photonic',
+    title: '光量子与连续变量路线 (Photonic & Continuous-Variable Quantum Route)',
+    domainId: 'domain-amo-atomic',
+    type: 'method',
+    coords: { x: -8.5, y: 2.2 },
+    legs: ['obj-photonic-boson-sampling', 'obj-entangled-photons'],
+    formula: 'GKP: |0_L\\rangle = \\sum_{s} |q = 2s \\sqrt{\\pi}\\rangle',
+    abstract: '基于单光子干涉与高阶压缩光场连续变量 (CV) GKP 编码，在常温下无需极低温制冷机实现百模式量子优势。'
+  },
+  {
+    id: 'node-route-topological',
+    title: '马约拉纳拓扑量子计算路线 (Topological Quantum Computing Route)',
+    domainId: 'domain-condensed-matter',
+    type: 'theory',
+    coords: { x: -8.0, y: -2.9 },
+    legs: ['obj-majorana-wire', 'obj-anyon-statistics', 'obj-fci-zero-field'],
+    formula: 'B_{ij} B_{jk} B_{ij} = B_{jk} B_{ij} B_{jk} \\quad (\\text{Braid Relation})',
+    abstract: '利用一维超导纳米线或非阿贝尔任意子的无能隙马约拉纳零能模进行时空编织，从硬件层面免疫退相干噪声。'
+  },
+  {
+    id: 'node-route-surface-code',
+    title: '容错量子纠错与逻辑比特 (Fault-Tolerant Surface Codes & Logical Qubits)',
+    domainId: 'domain-stat-complex',
+    type: 'theory',
+    coords: { x: -5.2, y: 4.5 },
+    legs: ['obj-transmon-qubit', 'obj-trapped-ion-crystal', 'obj-rydberg-atom-array'],
+    formula: 'P_L \\sim \\left( \\frac{p}{p_{th}} \\right)^{(d+1)/2} \\quad (p_{th} \\approx 1\\%)',
+    abstract: '利用二维晶格二维表面码（Surface Code）与稳定子算符测量（Stabilizer Measurements），实现物理错误率低于 1% 时的无限纠错。'
+  }
+];
+
 export const ACADEMIC_OBJECTS = [
   ...BASE_OBJECTS,
   ...ACADEMIC_OBJECTS_GPT_EXTENDED,
   ...ACADEMIC_OBJECTS_NEW,
-  ...ACADEMIC_OBJECTS_FAMOUS_LABS
+  ...ACADEMIC_OBJECTS_FAMOUS_LABS,
+  ...QUANTUM_HARDWARE_ROUTES_OBJECTS
 ];
 export const ACADEMIC_RESEARCH_NODES = [
   ...ACADEMIC_RESEARCH_NODES_GPT_EXTENDED,
   ...ACADEMIC_THEORIES_NEW,
   ...ACADEMIC_METHODS_NEW,
-  ...ACADEMIC_FRONTIER_NODES_HIGH_POTENTIAL
+  ...ACADEMIC_FRONTIER_NODES_HIGH_POTENTIAL,
+  ...QUANTUM_HARDWARE_ROUTES_NODES
 ];
 
 export const ACADEMIC_RELATIONS = [
