@@ -1,11 +1,12 @@
 import React from 'react';
-import { BookOpen, FileText, Compass, Network, Sparkles } from 'lucide-react';
+import { BookOpen, FileText, Compass, Network, Database } from 'lucide-react';
 import { ACADEMIC_DOMAINS } from '../data/physicsData';
 
 export default function Header({
   activeDomain,
   setActiveDomain,
-  onOpenEquivalenceModal
+  onOpenEquivalenceModal,
+  onOpenParticleManager
 }) {
   return (
     <header className="absolute top-0 left-0 right-0 z-20 px-6 py-3 bg-white/90 backdrop-blur-md border-b border-slate-200 flex items-center justify-between shadow-sm">
@@ -51,14 +52,22 @@ export default function Header({
         ))}
       </div>
 
-      {/* Equivalence Modal & Journal Action */}
+      {/* Equivalence Modal & Backend Manager Action */}
       <div className="flex items-center gap-2">
+        <button
+          onClick={onOpenParticleManager}
+          className="px-3 py-1.5 rounded border border-sky-300 bg-sky-50 hover:bg-sky-100 text-sky-900 text-xs font-serif font-medium flex items-center gap-1.5 shadow-sm transition-all"
+        >
+          <Database className="w-3.5 h-3.5 text-sky-700" />
+          <span>PDG 物理对象后台管理</span>
+        </button>
+
         <button
           onClick={onOpenEquivalenceModal}
           className="px-3 py-1.5 rounded border border-slate-300 bg-white hover:bg-slate-50 text-slate-800 text-xs font-serif font-medium flex items-center gap-1.5 shadow-sm transition-all"
         >
           <Network className="w-3.5 h-3.5 text-purple-700" />
-          <span>附录: 算符同构与跨标度形变</span>
+          <span>附录: 算符同构</span>
         </button>
       </div>
     </header>

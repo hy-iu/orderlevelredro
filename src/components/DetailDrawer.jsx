@@ -15,8 +15,24 @@ export default function DetailDrawer({ item, itemType, onClose, onSelectSubItem 
           <div>
             <div className="flex items-center gap-1.5 mb-0.5">
               <span className="text-[10px] uppercase font-mono tracking-wider text-slate-500 font-bold">
-                {itemType === 'object' ? 'Sec. Element Specification' : itemType === 'node' ? 'Sec. Multi-Leg Problem' : 'Sec. Scale Flow Topology'}
+                {item.type === 'theory'
+                  ? 'Sec. Theoretical Formulation'
+                  : item.type === 'method'
+                  ? 'Sec. Experimental & Computational Method'
+                  : itemType === 'object'
+                  ? 'Sec. Physical Element Specification'
+                  : 'Sec. Research Problem Node'}
               </span>
+              {item.type === 'theory' && (
+                <span className="px-1.5 py-0.2 bg-purple-100 text-purple-900 border border-purple-300 rounded text-[9px] font-mono font-bold">
+                  具体理论
+                </span>
+              )}
+              {item.type === 'method' && (
+                <span className="px-1.5 py-0.2 bg-emerald-100 text-emerald-900 border border-emerald-300 rounded text-[9px] font-mono font-bold">
+                  具体方法
+                </span>
+              )}
               {item.pdgCode && (
                 <span className="px-1.5 py-0.2 bg-sky-100 text-sky-800 border border-sky-300 rounded text-[9px] font-mono font-bold flex items-center gap-1">
                   <ShieldCheck className="w-2.5 h-2.5" />

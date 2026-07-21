@@ -4,6 +4,7 @@ import Canvas2D from './components/Canvas2D';
 import ControlPanel from './components/ControlPanel';
 import DetailDrawer from './components/DetailDrawer';
 import EquivalenceModal from './components/EquivalenceModal';
+import ParticleManagerModal from './components/ParticleManagerModal';
 import { ACADEMIC_OBJECTS, ACADEMIC_RESEARCH_NODES } from './data/physicsData';
 
 export default function App() {
@@ -11,6 +12,8 @@ export default function App() {
 
   const [layerVisibility, setLayerVisibility] = useState({
     clouds: true,
+    heatmaps: true,
+    forces: true,
     objects: true,
     nodes: true,
     relations: true
@@ -23,6 +26,7 @@ export default function App() {
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedType, setSelectedType] = useState(null); // 'object' | 'node' | 'relation'
   const [isEquivalenceOpen, setIsEquivalenceOpen] = useState(false);
+  const [isParticleManagerOpen, setIsParticleManagerOpen] = useState(false);
 
   const handleSelectItem = (itemData, type) => {
     setSelectedItem(itemData);
@@ -59,6 +63,7 @@ export default function App() {
         activeDomain={activeDomain}
         setActiveDomain={setActiveDomain}
         onOpenEquivalenceModal={() => setIsEquivalenceOpen(true)}
+        onOpenParticleManager={() => setIsParticleManagerOpen(true)}
       />
 
       {/* Control Panel with Unified Button Styles */}
@@ -101,6 +106,15 @@ export default function App() {
       <EquivalenceModal
         isOpen={isEquivalenceOpen}
         onClose={() => setIsEquivalenceOpen(false)}
+      />
+
+      {/* PDG Particle Manager Backend Modal */}
+      <ParticleManagerModal
+        isOpen={isParticleManagerOpen}
+        onClose={() => setIsParticleManagerOpen(false)}
+        onRefreshData={() => {
+          // Trigger optional re-fetch if dynamic backend loading is active
+        }}
       />
     </div>
   );

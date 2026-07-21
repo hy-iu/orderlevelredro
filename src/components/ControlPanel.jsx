@@ -94,6 +94,28 @@ export default function ControlPanel({
         </div>
 
         <div 
+          onClick={() => toggleLayer('heatmaps')}
+          className="flex items-center justify-between p-1.5 rounded hover:bg-slate-100 cursor-pointer transition-all border border-transparent hover:border-slate-200"
+        >
+          <span className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600"></span>
+            相互作用 2D 场热力图 (Heatmaps)
+          </span>
+          {layerVisibility.heatmaps !== false ? <Eye className="w-3.5 h-3.5 text-slate-700" /> : <EyeOff className="w-3.5 h-3.5 text-slate-300" />}
+        </div>
+
+        <div 
+          onClick={() => toggleLayer('forces')}
+          className="flex items-center justify-between p-1.5 rounded hover:bg-slate-100 cursor-pointer transition-all border border-transparent hover:border-slate-200"
+        >
+          <span className="flex items-center gap-2">
+            <span className="w-3 h-0.5 bg-cyan-600"></span>
+            相互作用特征程界线 (Forces)
+          </span>
+          {layerVisibility.forces !== false ? <Eye className="w-3.5 h-3.5 text-slate-700" /> : <EyeOff className="w-3.5 h-3.5 text-slate-300" />}
+        </div>
+
+        <div 
           onClick={() => toggleLayer('relations')}
           className="flex items-center justify-between p-1.5 rounded hover:bg-slate-100 cursor-pointer transition-all border border-transparent hover:border-slate-200"
         >

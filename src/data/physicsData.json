@@ -1,0 +1,709 @@
+[
+  {
+    "id": "obj-planck",
+    "label": "Planck Mass (M_P)",
+    "pdgCode": "PDG-QG-01",
+    "domainId": "domain-qg-gut",
+    "coords": {
+      "x": -35,
+      "y": 28.08
+    },
+    "errorBar": null,
+    "symbol": "M_P",
+    "type": "fundamental",
+    "specs": {
+      "length": "1.6163 \\times 10^{-35} \\text{ m}",
+      "energy": "(1.2209 \\pm 0.0001) \\times 10^{19} \\text{ GeV}",
+      "time": "5.3912 \\times 10^{-44} \\text{ s}",
+      "lagrangian": "S = \\int d^4x \\sqrt{-g} \\left[ \\frac{M_P^2}{2} R + \\mathcal{L}_m \\right]"
+    },
+    "annotation": "PDG 推荐常量：时空连续性上限截断；量子引力理论的特征能标。"
+  },
+  {
+    "id": "obj-gut-boson",
+    "label": "GUT X/Y Gauge Bosons",
+    "pdgCode": "PDG-GUT-02",
+    "domainId": "domain-qg-gut",
+    "coords": {
+      "x": -31,
+      "y": 25
+    },
+    "errorBar": {
+      "dx": 0.2,
+      "dy": 0.2
+    },
+    "symbol": "X, Y",
+    "type": "fundamental",
+    "specs": {
+      "length": "10^{-31} \\text{ m}",
+      "energy": "10^{16} \\text{ GeV}",
+      "time": "10^{-40} \\text{ s}",
+      "lagrangian": "\\mathcal{L}_{GUT} \\supset -\\frac{1}{4} \\text{Tr}(F_{\\mu\\nu} F^{\\mu\\nu})"
+    },
+    "annotation": "大统一 SU(5)/SO(10) 假设规范介子，介导重子数不守恒与质子衰变。"
+  },
+  {
+    "id": "obj-higgs",
+    "label": "Higgs Boson (h⁰)",
+    "pdgCode": "PDG-SM-H0",
+    "domainId": "domain-ew",
+    "coords": {
+      "x": -17.8,
+      "y": 11.098
+    },
+    "errorBar": {
+      "dx": 0.015,
+      "dy": 0.015
+    },
+    "symbol": "h⁰",
+    "type": "fundamental",
+    "specs": {
+      "length": "1.57 \\times 10^{-18} \\text{ m}",
+      "energy": "125.25 \\pm 0.17 \\text{ GeV}",
+      "decayWidth": "\\Gamma_h = 3.2_{-2.2}^{+2.8} \\text{ MeV}",
+      "time": "1.56 \\times 10^{-22} \\text{ s}",
+      "lagrangian": "\\mathcal{L} = |D_\\mu H|^2 - \\mu^2 |H|^2 - \\lambda |H|^4"
+    },
+    "annotation": "PDG 2024 精确推荐：标量希格斯玻色子，电弱自发对称性破缺 (SSB) 质量生成机制核心算符。"
+  },
+  {
+    "id": "obj-z-boson",
+    "label": "Z⁰ Gauge Boson",
+    "pdgCode": "PDG-SM-Z0",
+    "domainId": "domain-ew",
+    "coords": {
+      "x": -17.67,
+      "y": 10.96
+    },
+    "errorBar": {
+      "dx": 0.025,
+      "dy": 0.025
+    },
+    "symbol": "Z⁰",
+    "type": "fundamental",
+    "specs": {
+      "length": "2.16 \\times 10^{-18} \\text{ m}",
+      "energy": "91.1876 \\pm 0.0021 \\text{ GeV}",
+      "decayWidth": "\\Gamma_Z = 2.4952 \\pm 0.0023 \\text{ GeV}",
+      "time": "2.64 \\times 10^{-25} \\text{ s}",
+      "lagrangian": "\\mathcal{L}_{NC} = -\\frac{g}{2\\cos\\theta_W} \\bar{\\psi}\\gamma^\\mu (g_V - g_A\\gamma^5)\\psi Z_\\mu"
+    },
+    "annotation": "PDG 核心推荐：中性弱相互作用规范传播子，严格测定轻中微子代数为 3。"
+  },
+  {
+    "id": "obj-w-boson",
+    "label": "W± Gauge Boson",
+    "pdgCode": "PDG-SM-W",
+    "domainId": "domain-ew",
+    "coords": {
+      "x": -17.61,
+      "y": 10.905
+    },
+    "errorBar": {
+      "dx": 0.025,
+      "dy": 0.025
+    },
+    "symbol": "W^\\pm",
+    "type": "fundamental",
+    "specs": {
+      "length": "2.45 \\times 10^{-18} \\text{ m}",
+      "energy": "80.377 \\pm 0.012 \\text{ GeV}",
+      "decayWidth": "\\Gamma_W = 2.085 \\pm 0.042 \\text{ GeV}",
+      "time": "3.16 \\times 10^{-25} \\text{ s}",
+      "lagrangian": "\\mathcal{L}_{CC} = -\\frac{g}{\\sqrt{2}} \\bar{\\psi}_L \\gamma^\\mu W_\\mu^- \\psi_L + \\text{h.c.}"
+    },
+    "annotation": "PDG 核心推荐：带电弱流规范传播子，介导夸克 CKM 混合与轻子衰变。"
+  },
+  {
+    "id": "obj-photon",
+    "label": "Photon (γ)",
+    "pdgCode": "PDG-SM-gamma",
+    "domainId": "domain-ew",
+    "coords": {
+      "x": -9.71,
+      "y": 3
+    },
+    "errorBar": null,
+    "symbol": "\\gamma",
+    "type": "fundamental",
+    "specs": {
+      "length": "\\infty \\text{ (Infinite Range)}",
+      "energy": "m_\\gamma < 10^{-18} \\text{ eV}",
+      "time": "\\infty \\text{ (Stable)}",
+      "lagrangian": "\\mathcal{L}_{QED} = -\\frac{1}{4} F_{\\mu\\nu} F^{\\mu\\nu}"
+    },
+    "annotation": "PDG 推荐：无静止质量 QED 电磁规范玻色子，介导长程电磁相互作用。"
+  },
+  {
+    "id": "obj-gluon",
+    "label": "Gluon (g)",
+    "pdgCode": "PDG-SM-g",
+    "domainId": "domain-ew",
+    "coords": {
+      "x": -15.01,
+      "y": 8.3
+    },
+    "errorBar": null,
+    "symbol": "g",
+    "type": "fundamental",
+    "specs": {
+      "length": "1.4 \\times 10^{-15} \\text{ m (Confinement Scale)}",
+      "energy": "m_g = 0 \\text{ (Theoretical)}",
+      "time": "\\text{Color Confined}",
+      "lagrangian": "\\mathcal{L}_{QCD} = -\\frac{1}{4} G_{\\mu\\nu}^a G^{a\\mu\\nu}"
+    },
+    "annotation": "PDG 推荐：SU(3)_c 强相互作用规范介子，具色荷度且在渐进自由下渐变禁闭。"
+  },
+  {
+    "id": "obj-top-quark",
+    "label": "Top Quark (t)",
+    "pdgCode": "PDG-SM-t",
+    "domainId": "domain-ew",
+    "coords": {
+      "x": -17.94,
+      "y": 11.237
+    },
+    "errorBar": {
+      "dx": 0.02,
+      "dy": 0.02
+    },
+    "symbol": "t",
+    "type": "fundamental",
+    "specs": {
+      "length": "1.14 \\times 10^{-18} \\text{ m}",
+      "energy": "172.69 \\pm 0.30 \\text{ GeV}",
+      "decayWidth": "\\Gamma_t = 1.42 \\pm 0.19 \\text{ GeV}",
+      "time": "5.0 \\times 10^{-25} \\text{ s}",
+      "lagrangian": "y_t \\bar{Q}_L \\tilde{H} t_R + \\text{h.c.}"
+    },
+    "annotation": "PDG 2024 精确推荐：最重基本轻/夸克，y_t ≈ 0.99，衰变快于强子化时间。"
+  },
+  {
+    "id": "obj-bottom-quark",
+    "label": "Bottom Quark (b)",
+    "pdgCode": "PDG-SM-b",
+    "domainId": "domain-ew",
+    "coords": {
+      "x": -16.33,
+      "y": 9.621
+    },
+    "errorBar": null,
+    "symbol": "b",
+    "type": "fundamental",
+    "specs": {
+      "length": "4.72 \\times 10^{-17} \\text{ m}",
+      "energy": "4.18 \\pm 0.03 \\text{ GeV}",
+      "time": "1.3 \\times 10^{-12} \\text{ s}",
+      "lagrangian": "y_b \\bar{Q}_L H b_R"
+    },
+    "annotation": "PDG 推荐：第三代下型夸克，驱动 B 介子振荡与 CP 破坏精密测量。"
+  },
+  {
+    "id": "obj-charm-quark",
+    "label": "Charm Quark (c)",
+    "pdgCode": "PDG-SM-c",
+    "domainId": "domain-ew",
+    "coords": {
+      "x": -15.81,
+      "y": 9.104
+    },
+    "errorBar": null,
+    "symbol": "c",
+    "type": "fundamental",
+    "specs": {
+      "length": "1.55 \\times 10^{-16} \\text{ m}",
+      "energy": "1.27 \\pm 0.02 \\text{ GeV}",
+      "time": "1.0 \\times 10^{-12} \\text{ s}",
+      "lagrangian": "y_c \\bar{Q}_L \\tilde{H} c_R"
+    },
+    "annotation": "PDG 推荐：第二代上型夸克，GIM 机制关键证实粒子。"
+  },
+  {
+    "id": "obj-strange-quark",
+    "label": "Strange Quark (s)",
+    "pdgCode": "PDG-SM-s",
+    "domainId": "domain-ew",
+    "coords": {
+      "x": -14.68,
+      "y": 7.97
+    },
+    "errorBar": null,
+    "symbol": "s",
+    "type": "fundamental",
+    "specs": {
+      "length": "2.11 \\times 10^{-15} \\text{ m}",
+      "energy": "93.4 \\pm 8.6 \\text{ MeV}",
+      "time": "1.2 \\times 10^{-8} \\text{ s (K meson)}",
+      "lagrangian": "y_s \\bar{Q}_L H s_R"
+    },
+    "annotation": "PDG 推荐：第二代下型夸克，具有奇异数量子数。"
+  },
+  {
+    "id": "obj-up-quark",
+    "label": "Up Quark (u)",
+    "pdgCode": "PDG-SM-u",
+    "domainId": "domain-ew",
+    "coords": {
+      "x": -13.04,
+      "y": 6.334
+    },
+    "errorBar": null,
+    "symbol": "u",
+    "type": "fundamental",
+    "specs": {
+      "length": "9.13 \\times 10^{-14} \\text{ m}",
+      "energy": "2.16 \\pm 0.49 \\text{ MeV}",
+      "time": "\\text{Stable in Hadron}",
+      "lagrangian": "y_u \\bar{Q}_L \\tilde{H} u_R"
+    },
+    "annotation": "PDG 推荐：第一代最轻上型夸克 (Q=+2/3e)，构成核子最主干分量。"
+  },
+  {
+    "id": "obj-down-quark",
+    "label": "Down Quark (d)",
+    "pdgCode": "PDG-SM-d",
+    "domainId": "domain-ew",
+    "coords": {
+      "x": -13.37,
+      "y": 6.669
+    },
+    "errorBar": null,
+    "symbol": "d",
+    "type": "fundamental",
+    "specs": {
+      "length": "4.22 \\times 10^{-14} \\text{ m}",
+      "energy": "4.67 \\pm 0.48 \\text{ MeV}",
+      "time": "\\text{Stable in Hadron}",
+      "lagrangian": "y_d \\bar{Q}_L H d_R"
+    },
+    "annotation": "PDG 推荐：第一代下型夸克 (Q=-1/3e)，与 u 夸克构成 SU(2) 同位旋基础。"
+  },
+  {
+    "id": "obj-tau-lepton",
+    "label": "Tau Lepton (τ⁻)",
+    "pdgCode": "PDG-SM-tau",
+    "domainId": "domain-ew",
+    "coords": {
+      "x": -15.96,
+      "y": 9.25
+    },
+    "errorBar": null,
+    "symbol": "\\tau^-",
+    "type": "fundamental",
+    "specs": {
+      "length": "1.11 \\times 10^{-16} \\text{ m}",
+      "energy": "1776.86 \\pm 0.12 \\text{ MeV}",
+      "time": "(290.3 \\pm 0.5) \\times 10^{-15} \\text{ s}",
+      "lagrangian": "m_\\tau \\bar{\\tau} \\tau"
+    },
+    "annotation": "PDG 推荐：第三代带电轻子，质量最大的轻子，可衰变为强子介子。"
+  },
+  {
+    "id": "obj-muon",
+    "label": "Muon (μ⁻)",
+    "pdgCode": "PDG-SM-mu",
+    "domainId": "domain-ew",
+    "coords": {
+      "x": -14.73,
+      "y": 8.024
+    },
+    "errorBar": null,
+    "symbol": "\\mu^-",
+    "type": "fundamental",
+    "specs": {
+      "length": "1.87 \\times 10^{-15} \\text{ m}",
+      "energy": "105.658375 \\pm 0.000006 \\text{ MeV}",
+      "time": "(2.196981 \\pm 0.000005) \\times 10^{-6} \\text{ s}",
+      "lagrangian": "m_\\mu \\bar{\\mu} \\mu"
+    },
+    "annotation": "PDG 推荐：第二代带电轻子，“二重电子”，精密检验 (g-2)_μ 反常磁矩。"
+  },
+  {
+    "id": "obj-electron",
+    "label": "Electron (e⁻)",
+    "pdgCode": "PDG-SM-e",
+    "domainId": "domain-ew",
+    "coords": {
+      "x": -12.41,
+      "y": 5.708
+    },
+    "errorBar": null,
+    "symbol": "e^-",
+    "type": "fundamental",
+    "specs": {
+      "length": "3.86 \\times 10^{-13} \\text{ m}",
+      "energy": "0.510998950 \\text{ MeV}",
+      "time": "> 6.6 \\times 10^{28} \\text{ 年}",
+      "lagrangian": "m_e \\bar{e} e"
+    },
+    "annotation": "PDG 推荐：稳定第一代带电轻子，物质原子化学与宏观凝聚态基本构建基元。"
+  },
+  {
+    "id": "obj-tau-neutrino",
+    "label": "Tau Neutrino (ν_τ)",
+    "pdgCode": "PDG-SM-nutau",
+    "domainId": "domain-ew",
+    "coords": {
+      "x": -10.01,
+      "y": 3.3
+    },
+    "errorBar": null,
+    "symbol": "\\nu_\\tau",
+    "type": "fundamental",
+    "specs": {
+      "length": "1.0 \\times 10^{-10} \\text{ m}",
+      "energy": "< 18.2 \\text{ MeV}",
+      "time": "\\text{Stable}",
+      "lagrangian": "\\bar{\\nu}_{\\tau L} i\\gamma^\\mu \\partial_\\mu \\nu_{\\tau L}"
+    },
+    "annotation": "PDG 推荐：第三代中性弱作用轻子，DONUT 实验测定发现。"
+  },
+  {
+    "id": "obj-muon-neutrino",
+    "label": "Muon Neutrino (ν_μ)",
+    "pdgCode": "PDG-SM-numu",
+    "domainId": "domain-ew",
+    "coords": {
+      "x": -8.01,
+      "y": 1.3
+    },
+    "errorBar": null,
+    "symbol": "\\nu_\\mu",
+    "type": "fundamental",
+    "specs": {
+      "length": "1.0 \\times 10^{-8} \\text{ m}",
+      "energy": "< 0.17 \\text{ MeV}",
+      "time": "\\text{Stable}",
+      "lagrangian": "\\bar{\\nu}_{\\mu L} i\\gamma^\\mu \\partial_\\mu \\nu_{\\mu L}"
+    },
+    "annotation": "PDG 推荐：第二代中性弱作用轻子，长基线中微子震荡探测主体。"
+  },
+  {
+    "id": "obj-electron-neutrino",
+    "label": "Electron Neutrino (ν_e)",
+    "pdgCode": "PDG-SM-nue",
+    "domainId": "domain-ew",
+    "coords": {
+      "x": -6.41,
+      "y": -0.3
+    },
+    "errorBar": null,
+    "symbol": "\\nu_e",
+    "type": "fundamental",
+    "specs": {
+      "length": "5.0 \\times 10^{-7} \\text{ m}",
+      "energy": "< 0.8 \\text{ eV (KATRIN 2024 Bound)}",
+      "time": "\\text{Stable}",
+      "lagrangian": "\\bar{\\nu}_{eL} i\\gamma^\\mu \\partial_\\mu \\nu_{eL}"
+    },
+    "annotation": "PDG 2024 精确上限：第一代中性轻子，KATRIN β 衰变测量限制质量小出 0.8 eV。"
+  },
+  {
+    "id": "obj-proton",
+    "label": "Proton (p⁺)",
+    "pdgCode": "PDG-HAD-p",
+    "domainId": "domain-hadron-nuclear",
+    "coords": {
+      "x": -15.1,
+      "y": 8.972
+    },
+    "errorBar": null,
+    "symbol": "p",
+    "type": "composite",
+    "specs": {
+      "length": "0.8414 \\pm 0.0019 \\text{ fm (Charge Radius)}",
+      "energy": "938.272088 \\pm 0.000003 \\text{ MeV}",
+      "time": "> 10^{34} \\text{ 年 (PDG Limit)}",
+      "lagrangian": "\\mathcal{L}_{QCD} = \\bar{q}(i\\gamma^\\mu D_\\mu - m)q - \\frac{1}{4}G_{\\mu\\nu}^a G^{a\\mu\\nu}"
+    },
+    "annotation": "PDG 2024：稳态 (uud) 强子系统，电荷半径精准测定为 0.8414 fm。"
+  },
+  {
+    "id": "obj-neutron",
+    "label": "Neutron (n⁰)",
+    "pdgCode": "PDG-HAD-n",
+    "domainId": "domain-hadron-nuclear",
+    "coords": {
+      "x": -15.08,
+      "y": 8.973
+    },
+    "errorBar": null,
+    "symbol": "n",
+    "type": "composite",
+    "specs": {
+      "length": "0.84 \\text{ fm}",
+      "energy": "939.565420 \\pm 0.000005 \\text{ MeV}",
+      "time": "878.4 \\pm 0.5 \\text{ s (Mean Lifetime)}",
+      "lagrangian": "n \\to p + e^- + \\bar{\\nu}_e"
+    },
+    "annotation": "PDG 推荐：(udd) 中性强子，自由衰变平均寿命 878.4 秒。"
+  },
+  {
+    "id": "obj-jpsi",
+    "label": "J/ψ Meson (c c̄)",
+    "pdgCode": "PDG-MES-Jpsi",
+    "domainId": "domain-hadron-nuclear",
+    "coords": {
+      "x": -15.6,
+      "y": 9.49
+    },
+    "errorBar": null,
+    "symbol": "J/\\psi",
+    "type": "composite",
+    "specs": {
+      "length": "0.4 \\text{ fm}",
+      "energy": "3096.900 \\pm 0.006 \\text{ MeV}",
+      "decayWidth": "\\Gamma = 92.6 \\pm 1.7 \\text{ keV}",
+      "time": "7.1 \\times 10^{-21} \\text{ s}",
+      "lagrangian": "c \\bar{c} \\text{ Bound State}"
+    },
+    "annotation": "发现“魅夸克 (Charm)”的窄衰变宽度重夸克偶素键。"
+  },
+  {
+    "id": "obj-pion",
+    "label": "Pion (π⁺)",
+    "pdgCode": "PDG-MES-pi",
+    "domainId": "domain-hadron-nuclear",
+    "coords": {
+      "x": -15.3,
+      "y": 8.14
+    },
+    "errorBar": null,
+    "symbol": "\\pi^\\pm",
+    "type": "composite",
+    "specs": {
+      "length": "0.66 \\text{ fm}",
+      "energy": "139.57039 \\pm 0.00018 \\text{ MeV}",
+      "time": "(2.6033 \\pm 0.0005) \\times 10^{-8} \\text{ s}",
+      "lagrangian": "\\mathcal{L}_{ChPT} = \\frac{f_\\pi^2}{4} \\text{Tr}(\\partial_\\mu U \\partial^\\mu U^\\dagger)"
+    },
+    "annotation": "手征对称性破缺所衍生的伪 Goldstone 玻色子，介导长程核子间引力。"
+  },
+  {
+    "id": "obj-qgp",
+    "label": "Quark-Gluon Plasma (QGP)",
+    "pdgCode": "PDG-PHASE-QGP",
+    "domainId": "domain-hadron-nuclear",
+    "coords": {
+      "x": -14.5,
+      "y": 8.3
+    },
+    "errorBar": {
+      "dx": 0.5,
+      "dy": 0.15
+    },
+    "symbol": "QGP",
+    "type": "phase",
+    "specs": {
+      "length": "1 - 10 \\text{ fm}",
+      "energy": "T_c \\approx 155 \\pm 5 \\text{ MeV}",
+      "time": "10^{-23} \\text{ s}",
+      "lagrangian": "S_{EFT} \\implies \\frac{\\eta}{s} = \\frac{\\hbar}{4\\pi k_B}"
+    },
+    "annotation": "强相互作用受热解除禁闭的近理想流体相（RHIC/LHC 观测）。"
+  },
+  {
+    "id": "obj-hydrogen",
+    "label": "Hydrogen Atom (1s)",
+    "pdgCode": "PDG-AMO-H",
+    "domainId": "domain-amo-atomic",
+    "coords": {
+      "x": -10.28,
+      "y": 1.13
+    },
+    "errorBar": null,
+    "symbol": "H",
+    "type": "bound-state",
+    "specs": {
+      "length": "a_0 = 0.5291772 \\text{ \\AA}",
+      "energy": "13.605693 \\text{ eV}",
+      "time": "1.52 \\times 10^{-16} \\text{ s}",
+      "lagrangian": "H = \\frac{\\mathbf{p}^2}{2m} - \\frac{e^2}{4\\pi \\epsilon_0 r}"
+    },
+    "annotation": "束缚态电磁有效量子力学的基准体系。"
+  },
+  {
+    "id": "obj-rydberg",
+    "label": "Rydberg State (n=50)",
+    "pdgCode": "PDG-AMO-Ryd",
+    "domainId": "domain-amo-atomic",
+    "coords": {
+      "x": -7,
+      "y": -2.3
+    },
+    "errorBar": {
+      "dx": 0.2,
+      "dy": 0.1
+    },
+    "symbol": "|n\\rangle",
+    "type": "bound-state",
+    "specs": {
+      "length": "r_n \\approx n^2 a_0 \\sim 130 \\text{ nm}",
+      "energy": "E_n \\sim -5.4 \\text{ meV}",
+      "time": "\\tau \\propto n^3 \\sim 30 \\text{ \\mu s}",
+      "lagrangian": "V_{ij} = \\frac{C_6}{|r_i - r_j|^6} \\quad (C_6 \\propto n^{11})"
+    },
+    "annotation": "巨偶极矩与强范德华偶极封锁（Blockade）在量子中性原子阵列中的应用。"
+  },
+  {
+    "id": "obj-attosecond",
+    "label": "Attosecond XUV Pulse",
+    "pdgCode": "PDG-AMO-Atto",
+    "domainId": "domain-amo-atomic",
+    "coords": {
+      "x": -8.5,
+      "y": 1.6
+    },
+    "errorBar": {
+      "dx": 0.35,
+      "dy": 0.35
+    },
+    "symbol": "\\tau_{\\text{atto}}",
+    "type": "probe",
+    "specs": {
+      "length": "10 - 50 \\text{ nm}",
+      "energy": "20 - 100 \\text{ eV}",
+      "time": "43 \\text{ 阿秒 } (4.3 \\times 10^{-17} \\text{ s})",
+      "lagrangian": "H_{int} = -\\mathbf{d} \\cdot \\mathbf{E}(t)"
+    },
+    "annotation": "时间超高分辨相干探针，用于观察实空间电子电离与光学隧道效应。"
+  },
+  {
+    "id": "obj-tb-graphene",
+    "label": "Magic-Angle TBG (θ=1.08°)",
+    "pdgCode": "PDG-CM-TBG",
+    "domainId": "domain-condensed-matter",
+    "coords": {
+      "x": -8.1,
+      "y": -2.3
+    },
+    "errorBar": {
+      "dx": 0.1,
+      "dy": 0.1
+    },
+    "symbol": "MA-TBG",
+    "type": "quantum-material",
+    "specs": {
+      "length": "L_M = 13.4 \\text{ nm (Moire Period)}",
+      "energy": "W_{\\text{band}} \\sim 10 \\text{ meV}, \\quad T_c \\sim 1.7 \\text{ K}",
+      "time": "10^{-12} \\text{ s (relaxation)}",
+      "lagrangian": "H_{\\text{BM}} = \\begin{pmatrix} v_F \\boldsymbol{\\sigma}\\cdot\\mathbf{p} & U(r) \\\\ U^\\dagger(r) & v_F \\boldsymbol{\\sigma}_\\theta\\cdot\\mathbf{p} \\end{pmatrix}"
+    },
+    "annotation": "莫尔超晶格动能压制导致的强关联平带、关联绝缘相与超导相切换。"
+  },
+  {
+    "id": "obj-ybco",
+    "label": "Cuprate HTSC (YBCO)",
+    "pdgCode": "PDG-CM-YBCO",
+    "domainId": "domain-condensed-matter",
+    "coords": {
+      "x": -9.3,
+      "y": -1.7
+    },
+    "errorBar": {
+      "dx": 0.15,
+      "dy": 0.1
+    },
+    "symbol": "YBCO",
+    "type": "quantum-material",
+    "specs": {
+      "length": "\\xi_{ab} \\approx 1.5 \\text{ nm}",
+      "energy": "T_c = 93 \\text{ K}, \\quad \\Delta_0 \\approx 35 \\text{ meV}",
+      "time": "10^{-13} \\text{ s}",
+      "lagrangian": "H_{t-J} = -P_S \\sum_{ij, \\sigma} t_{ij} c_{i\\sigma}^\\dagger c_{j\\sigma} P_S + J \\sum_{\\langle ij \\rangle} \\mathbf{S}_i \\cdot \\mathbf{S}_j"
+    },
+    "annotation": "反铁磁 Mott 绝缘体经掺杂重构产生的 d 波非弱耦合配对超导体系。"
+  },
+  {
+    "id": "obj-qsl",
+    "label": "Quantum Spin Liquid (QSL)",
+    "pdgCode": "PDG-CM-QSL",
+    "domainId": "domain-condensed-matter",
+    "coords": {
+      "x": -9.6,
+      "y": -2.6
+    },
+    "errorBar": {
+      "dx": 0.2,
+      "dy": 0.15
+    },
+    "symbol": "QSL",
+    "type": "phase",
+    "specs": {
+      "length": "a_0 \\approx 0.3 \\text{ nm}",
+      "energy": "J \\sim 10-100 \\text{ meV}",
+      "time": "T \\to 0 \\text{ K (No LRO)}",
+      "lagrangian": "H = \\sum_{ij} K_{ij}^{\\gamma} S_i^\\gamma S_j^\\gamma \\quad (\\text{Kitaev Model})"
+    },
+    "annotation": "阻挫几何下磁矩在零度不发生长程破缺，激发出带有马约拉纳数与分数自旋的连续态。"
+  },
+  {
+    "id": "obj-active-particle",
+    "label": "Active Self-Propelled Matter",
+    "pdgCode": "PDG-STAT-ABP",
+    "domainId": "domain-stat-complex",
+    "coords": {
+      "x": -5,
+      "y": -3
+    },
+    "errorBar": {
+      "dx": 0.3,
+      "dy": 0.2
+    },
+    "symbol": "ABP",
+    "type": "out-of-equilibrium",
+    "specs": {
+      "length": "1 \\text{ \\mu m} - 1 \\text{ mm}",
+      "energy": "k_B T \\approx 2.57 \\times 10^{-2} \\text{ eV}",
+      "time": "0.1 - 10 \\text{ s}",
+      "lagrangian": "m \\dot{\\mathbf{v}} = -\\gamma \\mathbf{v} + v_0 \\hat{\\mathbf{e}} + \\sqrt{2D_T} \\boldsymbol{\\xi}(t)"
+    },
+    "annotation": "打破细致平衡（Detailed Balance）的非平衡相变与相分离 (MIPS)。"
+  },
+  {
+    "id": "obj-blackhole-m87",
+    "label": "Supermassive BH (M87*)",
+    "pdgCode": "PDG-ASTRO-BH",
+    "domainId": "domain-cosmology",
+    "coords": {
+      "x": 13.3,
+      "y": -3.8
+    },
+    "errorBar": {
+      "dx": 0.023,
+      "dy": 0.047
+    },
+    "symbol": "M87*",
+    "type": "astro-object",
+    "specs": {
+      "length": "R_s = (1.9 \\pm 0.1) \\times 10^{13} \\text{ m}",
+      "energy": "M = (6.5 \\pm 0.7) \\times 10^9 M_{\\odot}",
+      "time": "t_{\\text{horizon}} \\sim 6.3 \\times 10^4 \\text{ s}",
+      "lagrangian": "ds^2 = -\\left(1 - \\frac{2GM}{r c^2}\\right) c^2 dt^2 + \\left(1 - \\frac{2GM}{r c^2}\\right)^{-1} dr^2 + r^2 d\\Omega^2"
+    },
+    "annotation": "EHT 直接实测黑洞影像；视界事件全息热力学（$S_{BH} = \\frac{k_B A}{4 \\ell_P^2}$）。"
+  },
+  {
+    "id": "obj-cmb",
+    "label": "CMB Decoupling Epoch",
+    "pdgCode": "PDG-ASTRO-CMB",
+    "domainId": "domain-cosmology",
+    "coords": {
+      "x": 26,
+      "y": -3.58
+    },
+    "errorBar": {
+      "dx": 0.2,
+      "dy": 0.1
+    },
+    "symbol": "CMB",
+    "type": "cosmological",
+    "specs": {
+      "length": "4.65 \\times 10^{26} \\text{ m (Particle Horizon)}",
+      "energy": "T_{\\text{CMB}} = 2.72548 \\pm 0.00057 \\text{ K } (2.35 \\times 10^{-4} \\text{ eV})",
+      "time": "t_0 = 13.787 \\pm 0.020 \\text{ Gyr}",
+      "lagrangian": "\\frac{\\Delta T}{T}(\\hat{n}) = \\sum_{lm} a_{lm} Y_{lm}(\\hat{n})"
+    },
+    "annotation": "Planck 2018 精密解算：大爆炸后 38 万年光子退耦各向异性谱，原初暴胀量子涨落遗迹。"
+  }
+]
