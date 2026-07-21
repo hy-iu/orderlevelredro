@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, Code, Image as ImageIcon, Cpu, FileText } from 'lucide-react';
-import { BlockMath } from './MathFormula';
+import { BlockMath, InlineMath } from './MathFormula';
 
 const EQUIVALENCE_CASES = [
   {
@@ -168,10 +168,10 @@ export default function EquivalenceModal({ isOpen, onClose }) {
                   1. 引力宏观无屏蔽累积相加律 (Gravity Accumulation)
                 </h4>
                 <p className="leading-relaxed text-slate-700">
-                  微观单粒子引力极弱，但由于<strong>不存在负质量</strong>，质量只能无上限相加。在宏观/天体标度（$L &gt; 1\text{ mm} \implies x &gt; -3$），引力摆脱微观压制，在宇宙学尺度展现绝对主导能场。
+                  微观单粒子引力极弱，但由于<strong>不存在负质量</strong>，质量只能无上限相加。在宏观/天体标度（<InlineMath math="L > 1\text{ mm} \implies x > -3" />），引力摆脱微观压制，在宇宙学尺度展现绝对主导能场。
                 </p>
                 <div className="p-2 bg-white rounded border border-amber-200">
-                  <BlockMath math="I_{\text{grav}}(x, y) = \max\left( \alpha_G e^{-0.15|x+y+6.7|}, \, 0.85 \cdot \frac{x+3}{20} e^{-0.02(y-2)^2} \right)" />
+                  <BlockMath math={"I_{\\text{grav}}(x, y) = \\max\\left( \\alpha_G e^{-0.15|x+y+6.7|}, \, 0.85 \\cdot \\frac{x+3}{20} e^{-0.02(y-2)^2} \\right)"} />
                 </div>
               </div>
 
@@ -180,10 +180,10 @@ export default function EquivalenceModal({ isOpen, onClose }) {
                   2. 电磁作用介观主导与正负电荷中性屏蔽 (EM Screening)
                 </h4>
                 <p className="leading-relaxed text-slate-700">
-                  在介观与原子/化学键标度（$x \in [-11, -3]$），偶极极化与电磁力强剧；在宏观米级标度（$x &gt; 0$），由于物质普遍呈现<strong>电中性（Debye Screening）</strong>，库仑长程力被有效遮蔽。
+                  在介观与原子/化学键标度（<InlineMath math="x \in [-11, -3]" />），偶极极化与电磁力强剧；在宏观米级标度（<InlineMath math="x > 0" />），由于物质普遍呈现<strong>电中性（Debye Screening）</strong>，库仑长程力被有效遮蔽。
                 </p>
                 <div className="p-2 bg-white rounded border border-sky-200">
-                  <BlockMath math="I_{\text{EM}}(x, y) = \alpha_{\text{EM}}(y) e^{-0.04(x+7)^2 - 0.05(y-1)^2} \cdot e^{-0.3 \max(0, x)}" />
+                  <BlockMath math={"I_{\\text{EM}}(x, y) = \\alpha_{\\text{EM}}(y) e^{-0.04(x+7)^2 - 0.05(y-1)^2} \\cdot e^{-0.3 \\max(0, x)}"} />
                 </div>
               </div>
             </div>
