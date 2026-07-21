@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import katex from '../utils/initKatex';
 import 'katex/dist/katex.min.css';
-import 'katex/dist/contrib/mhchem.js';
+
 
 export function InlineMath({ math, className = '' }) {
   const containerRef = useRef(null);

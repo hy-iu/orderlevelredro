@@ -1,5 +1,5 @@
 import katex from './initKatex';
-import 'katex/dist/contrib/mhchem.js';
+
 import katexCss from 'katex/dist/katex.min.css?raw';
 import { katexFontFaceCss } from './katexFontsBase64';
 
