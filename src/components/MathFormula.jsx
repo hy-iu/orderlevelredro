@@ -11,7 +11,9 @@ export function InlineMath({ math, className = '' }) {
       try {
         katex.render(math, containerRef.current, {
           displayMode: false,
-          throwOnError: false
+          throwOnError: false,
+          strict: false,
+          trust: true
         });
       } catch (err) {
         if (containerRef.current) {
@@ -32,7 +34,9 @@ export function BlockMath({ math, className = '' }) {
       try {
         katex.render(math, containerRef.current, {
           displayMode: true,
-          throwOnError: false
+          throwOnError: false,
+          strict: false,
+          trust: true
         });
       } catch (err) {
         if (containerRef.current) {

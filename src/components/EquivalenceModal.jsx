@@ -103,12 +103,15 @@ I_Weak = fermi_suppression * spatial_Weak * energy_Weak`;
 
 export default function EquivalenceModal({ isOpen, onClose }) {
   const [tab, setTab] = useState('heatmaps'); // 'heatmaps' | 'operators'
-  const [activeCase, setActiveCase] = useState(EQUIVALENCE_CASES[0]);
+  const [activeCase, setActiveCase] = useState(EQUIVALENCE_CASES[0] || null);
+  const [imgError, setImgError] = useState(false);
 
   if (!isOpen) return null;
 
+  const currentCase = activeCase || EQUIVALENCE_CASES[0];
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/65 backdrop-blur-sm p-4 animate-fade-in font-serif">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/65 backdrop-blur-sm p-4 font-serif">
       <div className="w-full max-w-5xl max-h-[90vh] bg-white border border-slate-300 rounded-xl p-6 flex flex-col justify-between shadow-2xl text-slate-900">
         {/* Modal Header */}
         <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
@@ -206,11 +209,18 @@ export default function EquivalenceModal({ isOpen, onClose }) {
                   </span>
                 </div>
                 <div className="flex-1 flex items-center justify-center bg-white p-2 border border-slate-200 rounded overflow-hidden">
-                  <img
-                    src="file:///Users/bjergsen/.gemini/antigravity/brain/a0227192-3b81-4eaa-95b5-27f8ef318916/scratch/interaction_heatmaps.png"
-                    alt="2D Phase Space Heatmaps"
-                    className="w-full h-auto max-h-[220px] object-contain rounded"
-                  />
+                  {!imgError ? (
+                    <img
+                      src="/interaction_heatmaps.png"
+                      alt="2D Phase Space Heatmaps"
+                      className="w-full h-auto max-h-[220px] object-contain rounded"
+                      onError={() => setImgError(true)}
+                    />
+                  ) : (
+                    <div className="py-8 text-center text-slate-400 font-mono text-[11px]">
+                      [ 2D 热场计算图像生成结果 ]
+                    </div>
+                  )}
                 </div>
                 <p className="text-[10px] text-slate-500 font-mono mt-2 text-center">
                   Python 脚本实时模拟输出：已严格校准 QCD 渐进自由、EW 质量截断、EM 屏蔽与引力宏观累积
@@ -230,43 +240,47 @@ export default function EquivalenceModal({ isOpen, onClose }) {
                   key={c.id}
                   onClick={() => setActiveCase(c)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-serif transition-all ${
-                    activeCase.id === c.id
+                    currentCase?.id === c.id
                       ? 'bg-slate-900 text-white font-bold'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
                   }`}
                 >
-                  {c.title.split(' ')[0]} {c.title.split(' ')[1]}
+                  {c.title ? c.title.split(' ').slice(0, 2).join(' ') : ''}
                 </button>
               ))}
             </div>
 
             {/* Active Case Details */}
-            <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg">
-              <h3 className="text-sm font-bold text-slate-900 mb-1">{activeCase.title}</h3>
-              <p className="text-xs text-slate-600 mb-2">{activeCase.subtitle}</p>
-              <div className="p-2 bg-white text-slate-900 border border-slate-300 rounded">
-                <div className="text-[10px] font-mono text-slate-400 mb-1 text-center">基元算符方程</div>
-                <BlockMath math={activeCase.baseEquation} />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {activeCase.scales.map((s, idx) => (
-                <div key={idx} className="p-3 bg-slate-50 border border-slate-200 rounded-lg flex flex-col justify-between text-xs">
-                  <div>
-                    <span className="text-[10px] font-mono font-bold text-slate-600 block mb-1">
-                      {s.scaleTitle}
-                    </span>
-                    <div className="p-2 bg-white text-slate-900 border border-slate-200 rounded mb-2 overflow-x-auto">
-                      <BlockMath math={s.form} />
-                    </div>
+            {currentCase && (
+              <>
+                <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                  <h3 className="text-sm font-bold text-slate-900 mb-1">{currentCase.title}</h3>
+                  <p className="text-xs text-slate-600 mb-2">{currentCase.subtitle}</p>
+                  <div className="p-2 bg-white text-slate-900 border border-slate-300 rounded">
+                    <div className="text-[10px] font-mono text-slate-400 mb-1 text-center">基元算符方程</div>
+                    {currentCase.baseEquation && <BlockMath math={currentCase.baseEquation} />}
                   </div>
-                  <p className="text-slate-700 text-[11px] leading-relaxed">
-                    {s.physics}
-                  </p>
                 </div>
-              ))}
-            </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  {currentCase.scales?.map((s, idx) => (
+                    <div key={idx} className="p-3 bg-slate-50 border border-slate-200 rounded-lg flex flex-col justify-between text-xs">
+                      <div>
+                        <span className="text-[10px] font-mono font-bold text-slate-600 block mb-1">
+                          {s.scaleTitle}
+                        </span>
+                        <div className="p-2 bg-white text-slate-900 border border-slate-200 rounded mb-2 overflow-x-auto">
+                          {s.form && <BlockMath math={s.form} />}
+                        </div>
+                      </div>
+                      <p className="text-slate-700 text-[11px] leading-relaxed">
+                        {s.physics}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         )}
 
