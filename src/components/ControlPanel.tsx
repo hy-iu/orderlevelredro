@@ -2,18 +2,40 @@ import React, { useState } from 'react';
 import { Eye, EyeOff, Sliders, Maximize2, Zap, Target, PanelLeftClose, PanelLeft, RotateCcw } from 'lucide-react';
 import DualRangeSlider from './DualRangeSlider';
 
-export default function ControlPanel({
+export interface LayerVisibility {
+  clouds: boolean;
+  objects: boolean;
+  nodes: boolean;
+  heatmaps?: boolean;
+  forces?: boolean;
+  relations: boolean;
+  [key: string]: boolean | undefined;
+}
+
+interface ControlPanelProps {
+  layerVisibility: LayerVisibility;
+  setLayerVisibility: React.Dispatch<React.SetStateAction<LayerVisibility>>;
+  spatialRange: [number, number];
+  setSpatialRange: (range: [number, number]) => void;
+  energyRange: [number, number];
+  setEnergyRange: (range: [number, number]) => void;
+  onFitViewToSelection: () => void;
+  onResetScales?: () => void;
+}
+
+export const ControlPanel: React.FC<ControlPanelProps> = ({
   layerVisibility,
   setLayerVisibility,
   spatialRange,
   setSpatialRange,
   energyRange,
   setEnergyRange,
-  onFitViewToSelection
-}) {
+  onFitViewToSelection,
+  onResetScales
+}) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const toggleLayer = (layerKey) => {
+  const toggleLayer = (layerKey: keyof LayerVisibility) => {
     setLayerVisibility(prev => ({ ...prev, [layerKey]: !prev[layerKey] }));
   };
 
@@ -193,4 +215,6 @@ export default function ControlPanel({
       </div>
     </div>
   );
-}
+};
+
+export default ControlPanel;

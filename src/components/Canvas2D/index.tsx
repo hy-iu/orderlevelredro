@@ -1,9 +1,51 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { ACADEMIC_DOMAINS, ACADEMIC_OBJECTS, ACADEMIC_RESEARCH_NODES, ACADEMIC_RELATIONS, FUNDAMENTAL_FORCES } from '../data/physicsData';
-import { getKatexSprite, setSpriteLoadCallback } from '../utils/katexSprite';
-import { ZoomIn, ZoomOut, RefreshCw, Layers, Sliders, Target, Crop } from 'lucide-react';
+import {
+  ACADEMIC_DOMAINS,
+  ACADEMIC_OBJECTS,
+  ACADEMIC_RESEARCH_NODES,
+  ACADEMIC_RELATIONS,
+  FUNDAMENTAL_FORCES
+} from '../../data/physicsData';
+import { getKatexSprite, setSpriteLoadCallback } from '../../utils/katexSprite';
+import { ZoomIn, ZoomOut, RefreshCw, Target, Crop } from 'lucide-react';
+import { LayerVisibility } from '../ControlPanel';
+import { PhysicsNode, ResearchRoute, EquivalenceRelation } from '../../types/physics';
 
-export default function Canvas2D({
+interface Canvas2DProps {
+  activeDomain: string;
+  layerVisibility: LayerVisibility;
+  selectedItem: any;
+  onSelectItem: (item: any, type: string) => void;
+  spatialRange: [number, number];
+  energyRange: [number, number];
+  fitTrigger: number;
+}
+
+interface BoxSelection {
+  startX: number;
+  startY: number;
+  endX: number;
+  endY: number;
+}
+
+interface TouchState {
+  prevDist: number;
+  prevCenter: { x: number; y: number };
+}
+
+// Helper to split "中文标题 (English Subtitle)" into two lines
+const parseBilingualTitle = (title: string) => {
+  if (!title) return { zh: '', en: '' };
+  const idx = title.indexOf('(');
+  if (idx !== -1 && title.endsWith(')')) {
+    const zh = title.slice(0, idx).trim();
+    const en = title.slice(idx + 1, -1).trim();
+    return { zh, en };
+  }
+  return { zh: title, en: '' };
+};
+
+export const Canvas2D: React.FC<Canvas2DProps> = ({
   activeDomain,
   layerVisibility,
   selectedItem,
@@ -11,29 +53,29 @@ export default function Canvas2D({
   spatialRange,
   energyRange,
   fitTrigger
-}) {
-  const containerRef = useRef(null);
-  const canvasRef = useRef(null);
+}) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Viewport State
   const [transform, setTransform] = useState({ scale: 1.0, offsetX: 70, offsetY: 30 });
-  const [hoveredItem, setHoveredItem] = useState(null);
+  const [hoveredItem, setHoveredItem] = useState<any>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
 
   // Matplotlib-style Box Zoom Mode State
   const [isBoxZoomMode, setIsBoxZoomMode] = useState(false);
-  const [boxSelection, setBoxSelection] = useState(null);
+  const [boxSelection, setBoxSelection] = useState<BoxSelection | null>(null);
 
-  // Refs for tracking drag and gestures
+  // Interaction Refs
   const isDraggingRef = useRef(false);
   const startDragRef = useRef({ x: 0, y: 0 });
-  const touchStateRef = useRef({
+  const touchStateRef = useRef<TouchState>({
     prevDist: 0,
     prevCenter: { x: 0, y: 0 }
   });
 
   // Map Physical Log Coordinates [-36..27], [-5..29] to Raw World Canvas Coordinates (unscaled)
-  const getWorldCoords = useCallback((logL, logE, width, height) => {
+  const getWorldCoords = useCallback((logL: number, logE: number, width: number, height: number) => {
     const margin = 70;
     const plotW = width - margin * 2;
     const plotH = height - margin * 2;
@@ -48,7 +90,7 @@ export default function Canvas2D({
   }, []);
 
   // Map World Coords to Screen Pixel Coords
-  const toScreenCoords = useCallback((worldX, worldY) => {
+  const toScreenCoords = useCallback((worldX: number, worldY: number) => {
     return {
       x: worldX * transform.scale + transform.offsetX,
       y: worldY * transform.scale + transform.offsetY
@@ -56,7 +98,7 @@ export default function Canvas2D({
   }, [transform]);
 
   // Map Screen Pixel Coords back to World Coordinates
-  const toWorldCoords = useCallback((screenX, screenY) => {
+  const toWorldCoords = useCallback((screenX: number, screenY: number) => {
     return {
       x: (screenX - transform.offsetX) / transform.scale,
       y: (screenY - transform.offsetY) / transform.scale
@@ -104,7 +146,7 @@ export default function Canvas2D({
   }, [fitTrigger, fitViewToSelection]);
 
   // Check if an object falls within scale sliders
-  const isWithinScale = (logL, logE) => {
+  const isWithinScale = (logL: number, logE: number) => {
     return (
       logL >= spatialRange[0] && logL <= spatialRange[1] &&
       logE >= energyRange[0] && logE <= energyRange[1]
@@ -116,6 +158,7 @@ export default function Canvas2D({
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
     const render = () => {
       if (!containerRef.current || !canvasRef.current) return;
@@ -210,215 +253,205 @@ export default function Canvas2D({
       if (layerVisibility.heatmaps !== false) {
         ctx.save();
 
-        // Offscreen grid resolution
         const gridW = 200;
         const gridH = 120;
         const offscreenCanvas = document.createElement('canvas');
         offscreenCanvas.width = gridW;
         offscreenCanvas.height = gridH;
         const offCtx = offscreenCanvas.getContext('2d');
-        const imgData = offCtx.createImageData(gridW, gridH);
-        const buf = imgData.data;
+        if (offCtx) {
+          const imgData = offCtx.createImageData(gridW, gridH);
+          const buf = imgData.data;
 
-        // Physical bounds
-        const xMin = -36, xMax = 27;
-        const yMin = -5, yMax = 29;
+          const xMin = -36, xMax = 27;
+          const yMin = -5, yMax = 29;
 
-        for (let j = 0; j < gridH; j++) {
-          const logE = yMax - (j / (gridH - 1)) * (yMax - yMin);
-          for (let i = 0; i < gridW; i++) {
-            const logL = xMin + (i / (gridW - 1)) * (xMax - xMin);
+          for (let j = 0; j < gridH; j++) {
+            const logE = yMax - (j / (gridH - 1)) * (yMax - yMin);
+            for (let i = 0; i < gridW; i++) {
+              const logL = xMin + (i / (gridW - 1)) * (xMax - xMin);
 
-            // 1. Quantum Gravity I_grav (Planck scale y >= 28 + Macroscopic Mass Accumulation for x > -3)
-            const alpha_G = Math.min(1.0, Math.pow(10.0, 2.0 * (logE - 28.0)));
-            const dist_quantum = Math.abs(logL + logE + 6.705);
-            const I_quantum_grav = alpha_G * Math.exp(-0.15 * dist_quantum);
+              // 1. Quantum Gravity I_grav
+              const alpha_G = Math.min(1.0, Math.pow(10.0, 2.0 * (logE - 28.0)));
+              const dist_quantum = Math.abs(logL + logE + 6.705);
+              const I_quantum_grav = alpha_G * Math.exp(-0.15 * dist_quantum);
 
-            const macro_grav_spatial = logL > -3.0 ? Math.min(1.0, (logL + 3.0) / 20.0) : 0.0;
-            const macro_grav_energy = Math.exp(-0.02 * Math.pow(logE - 2.0, 2));
-            const I_macro_grav = 0.85 * macro_grav_spatial * macro_grav_energy;
-            const I_grav = Math.max(I_quantum_grav, I_macro_grav);
+              const macro_grav_spatial = logL > -3.0 ? Math.min(1.0, (logL + 3.0) / 20.0) : 0.0;
+              const macro_grav_energy = Math.exp(-0.02 * Math.pow(logE - 2.0, 2));
+              const I_macro_grav = 0.85 * macro_grav_spatial * macro_grav_energy;
+              const I_grav = Math.max(I_quantum_grav, I_macro_grav);
 
-            // 2. QED Electromagnetic I_EM (Mesoscopic/Atomic Peak x in [-11, -3], Screened at x > 0 due to Charge Neutrality)
-            const alpha_EM = 1.0 / (137.0 - (1.0 / (3.0 * Math.PI)) * Math.max(0, logE - 5.7));
-            const spatial_EM = Math.exp(-0.04 * Math.pow(logL - (-7.0), 2)); // Centered at nanometer scale
-            const energy_EM = Math.exp(-0.05 * Math.pow(logE - 1.0, 2));   // eV scale (chemical/atomic binding)
-            const screening_EM = logL > 0 ? Math.exp(-0.3 * (logL - 0)) : 1.0;
-            const I_EM = (alpha_EM * 137.0) * spatial_EM * energy_EM * screening_EM;
+              // 2. QED Electromagnetic I_EM
+              const alpha_EM = 1.0 / (137.0 - (1.0 / (3.0 * Math.PI)) * Math.max(0, logE - 5.7));
+              const spatial_EM = Math.exp(-0.04 * Math.pow(logL - (-7.0), 2));
+              const energy_EM = Math.exp(-0.05 * Math.pow(logE - 1.0, 2));
+              const screening_EM = logL > 0 ? Math.exp(-0.3 * (logL - 0)) : 1.0;
+              const I_EM = (alpha_EM * 137.0) * spatial_EM * energy_EM * screening_EM;
 
-            // 3. Strong QCD I_QCD (Confinement peak at x = -14.8, y = 8.3 & Asymptotic Freedom)
-            const alpha_s = logE > 8.3 ? 1.0 / (1.0 + 0.8 * (logE - 8.3)) : 1.0;
-            const spatial_QCD = logL <= -14.8 ? Math.exp(-0.3 * Math.pow(logL - (-14.8), 2)) : Math.exp(-2.5 * (logL - (-14.8)));
-            const energy_QCD = Math.exp(-0.2 * Math.pow(logE - 8.3, 2));
-            const I_QCD = alpha_s * spatial_QCD * energy_QCD;
+              // 3. Strong QCD I_QCD
+              const alpha_s = logE > 8.3 ? 1.0 / (1.0 + 0.8 * (logE - 8.3)) : 1.0;
+              const spatial_QCD = logL <= -14.8 ? Math.exp(-0.3 * Math.pow(logL - (-14.8), 2)) : Math.exp(-2.5 * (logL - (-14.8)));
+              const energy_QCD = Math.exp(-0.2 * Math.pow(logE - 8.3, 2));
+              const I_QCD = alpha_s * spatial_QCD * energy_QCD;
 
-            // 4. Weak EW I_Weak (EW Unification peak at x = -17.6, y = 11.4 & W/Z cutoff)
-            const fermi_suppression = logE < 10.9 ? Math.pow(10.0, 1.5 * (logE - 10.9)) : 1.0;
-            const spatial_Weak = logL <= -17.6 ? Math.exp(-0.4 * Math.pow(logL - (-17.6), 2)) : Math.exp(-4.0 * (logL - (-17.6)));
-            const energy_Weak = Math.exp(-0.15 * Math.pow(logE - 11.4, 2));
-            const I_Weak = fermi_suppression * spatial_Weak * energy_Weak;
+              // 4. Weak EW I_Weak
+              const fermi_suppression = logE < 10.9 ? Math.pow(10.0, 1.5 * (logE - 10.9)) : 1.0;
+              const spatial_Weak = logL <= -17.6 ? Math.exp(-0.4 * Math.pow(logL - (-17.6), 2)) : Math.exp(-4.0 * (logL - (-17.6)));
+              const energy_Weak = Math.exp(-0.15 * Math.pow(logE - 11.4, 2));
+              const I_Weak = fermi_suppression * spatial_Weak * energy_Weak;
 
-            // RGBA Field Mixing (Matching Python Colormaps: QG=Amber, QED=Cyan, QCD=Red, Weak=Purple)
-            const r = Math.min(255, Math.round(I_QCD * 220 + I_grav * 217 + I_Weak * 147));
-            const g = Math.min(255, Math.round(I_EM * 132 + I_grav * 119 + I_Weak * 51));
-            const b = Math.min(255, Math.round(I_Weak * 234 + I_EM * 199));
-            const alpha = Math.min(0.38, I_grav * 0.35 + I_EM * 0.22 + I_QCD * 0.38 + I_Weak * 0.40);
+              const r = Math.min(255, Math.round(I_QCD * 220 + I_grav * 217 + I_Weak * 147));
+              const g = Math.min(255, Math.round(I_EM * 132 + I_grav * 119 + I_Weak * 51));
+              const b = Math.min(255, Math.round(I_Weak * 234 + I_EM * 199));
+              const alpha = Math.min(0.38, I_grav * 0.35 + I_EM * 0.22 + I_QCD * 0.38 + I_Weak * 0.40);
 
-            const idx = (j * gridW + i) * 4;
-            buf[idx + 0] = r;
-            buf[idx + 1] = g;
-            buf[idx + 2] = b;
-            buf[idx + 3] = Math.round(alpha * 255);
+              const idx = (j * gridW + i) * 4;
+              buf[idx + 0] = r;
+              buf[idx + 1] = g;
+              buf[idx + 2] = b;
+              buf[idx + 3] = Math.round(alpha * 255);
+            }
           }
+
+          offCtx.putImageData(imgData, 0, 0);
+
+          const wMinWorld = getWorldCoords(xMin, yMax, w, h);
+          const wMaxWorld = getWorldCoords(xMax, yMin, w, h);
+
+          const sMin = toScreenCoords(wMinWorld.x, wMinWorld.y);
+          const sMax = toScreenCoords(wMaxWorld.x, wMaxWorld.y);
+
+          const screenPlotW = Math.abs(sMax.x - sMin.x);
+          const screenPlotH = Math.abs(sMax.y - sMin.y);
+
+          ctx.drawImage(offscreenCanvas, sMin.x, sMin.y, screenPlotW, screenPlotH);
         }
-
-        offCtx.putImageData(imgData, 0, 0);
-
-        // Map offscreen physics field canvas to current screen viewport
-        const wMinWorld = getWorldCoords(xMin, yMax, w, h);
-        const wMaxWorld = getWorldCoords(xMax, yMin, w, h);
-
-        const sMin = toScreenCoords(wMinWorld.x, wMinWorld.y);
-        const sMax = toScreenCoords(wMaxWorld.x, wMaxWorld.y);
-
-        const screenPlotW = Math.abs(sMax.x - sMin.x);
-        const screenPlotH = Math.abs(sMax.y - sMin.y);
-
-        ctx.drawImage(offscreenCanvas, sMin.x, sMin.y, screenPlotW, screenPlotH);
         ctx.restore();
       }
 
-      // --- Fundamental Forces Range Spans (Dedicated Physics Visualizations) ---
+      // --- Fundamental Forces Range Spans ---
       if (layerVisibility.forces !== false) {
         FUNDAMENTAL_FORCES.forEach(force => {
-        const wStart = getWorldCoords(force.rangeCoords.xStart, force.rangeCoords.y, w, h);
-        const wEnd = getWorldCoords(force.rangeCoords.xEnd, force.rangeCoords.y, w, h);
-        const sStart = toScreenCoords(wStart.x, wStart.y);
-        const sEnd = toScreenCoords(wEnd.x, wEnd.y);
-        const bandWidth = Math.abs(sEnd.x - sStart.x);
+          const wStart = getWorldCoords(force.rangeCoords.xStart, force.rangeCoords.y, w, h);
+          const wEnd = getWorldCoords(force.rangeCoords.xEnd, force.rangeCoords.y, w, h);
+          const sStart = toScreenCoords(wStart.x, wStart.y);
+          const sEnd = toScreenCoords(wEnd.x, wEnd.y);
+          const bandWidth = Math.abs(sEnd.x - sStart.x);
 
-        if (force.id === 'force-gravity') {
-          // 1. Gravitational Field (GR Long-range Monochromatic Amber/Bronze Band)
-          const grad = ctx.createLinearGradient(0, sStart.y - 8, 0, sStart.y + 8);
-          grad.addColorStop(0, '#d9770600');
-          grad.addColorStop(0.5, '#d9770635');
-          grad.addColorStop(1, '#d9770600');
+          if (force.id === 'force-gravity') {
+            const grad = ctx.createLinearGradient(0, sStart.y - 8, 0, sStart.y + 8);
+            grad.addColorStop(0, '#d9770600');
+            grad.addColorStop(0.5, '#d9770635');
+            grad.addColorStop(1, '#d9770600');
 
-          ctx.fillStyle = grad;
-          ctx.fillRect(sStart.x, sStart.y - 8, bandWidth, 16);
+            ctx.fillStyle = grad;
+            ctx.fillRect(sStart.x, sStart.y - 8, bandWidth, 16);
 
-          ctx.strokeStyle = '#b45309';
-          ctx.lineWidth = 1.2;
-          ctx.beginPath();
-          ctx.moveTo(sStart.x, sStart.y);
-          ctx.lineTo(sEnd.x, sEnd.y);
-          ctx.stroke();
+            ctx.strokeStyle = '#b45309';
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.moveTo(sStart.x, sStart.y);
+            ctx.lineTo(sEnd.x, sEnd.y);
+            ctx.stroke();
 
-          ctx.fillStyle = '#b45309';
-          ctx.font = '600 11px "Inter", system-ui, -apple-system, sans-serif';
-          ctx.textAlign = 'left';
-          ctx.fillText('引力 (Gravity / GR)', sStart.x + 8, sStart.y - 6);
-        } else if (force.id === 'force-em') {
-          // 2. QED Electromagnetic Field (Monochromatic Electric Cyan Band)
-          const grad = ctx.createLinearGradient(0, sStart.y - 7, 0, sStart.y + 7);
-          grad.addColorStop(0, '#0284c700');
-          grad.addColorStop(0.5, '#0284c740');
-          grad.addColorStop(1, '#0284c700');
+            ctx.fillStyle = '#b45309';
+            ctx.font = '600 11px "Inter", system-ui, sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText('引力 (Gravity / GR)', sStart.x + 8, sStart.y - 6);
+          } else if (force.id === 'force-em') {
+            const grad = ctx.createLinearGradient(0, sStart.y - 7, 0, sStart.y + 7);
+            grad.addColorStop(0, '#0284c700');
+            grad.addColorStop(0.5, '#0284c740');
+            grad.addColorStop(1, '#0284c700');
 
-          ctx.fillStyle = grad;
-          ctx.fillRect(sStart.x, sStart.y - 7, bandWidth, 14);
+            ctx.fillStyle = grad;
+            ctx.fillRect(sStart.x, sStart.y - 7, bandWidth, 14);
 
-          ctx.strokeStyle = '#0284c7';
-          ctx.lineWidth = 1.5;
-          ctx.beginPath();
-          ctx.moveTo(sStart.x, sStart.y);
-          ctx.lineTo(sEnd.x, sEnd.y);
-          ctx.stroke();
-
-          ctx.fillStyle = '#0369a1';
-          ctx.font = '600 11px "Inter", system-ui, -apple-system, sans-serif';
-          ctx.textAlign = 'left';
-          ctx.fillText('电磁 (EM / QED)', sStart.x + 8, sStart.y - 6);
-        } else if (force.id === 'force-strong') {
-          // 3. QCD Strong Interaction: SU(3) RGB Color Flux Tubes + Confinement Cutoff Barrier
-          const rgbColors = ['#ef4444', '#10b981', '#3b82f6']; // Red, Green, Blue SU(3) color charges
-          const offsets = [-3.5, 0, 3.5];
-
-          // Draw RGB Color Charge Flux Strands
-          rgbColors.forEach((color, idx) => {
-            const yOffset = offsets[idx];
-            ctx.strokeStyle = color + 'dd';
+            ctx.strokeStyle = '#0284c7';
             ctx.lineWidth = 1.5;
             ctx.beginPath();
+            ctx.moveTo(sStart.x, sStart.y);
+            ctx.lineTo(sEnd.x, sEnd.y);
+            ctx.stroke();
 
-            const steps = 40;
+            ctx.fillStyle = '#0369a1';
+            ctx.font = '600 11px "Inter", system-ui, sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText('电磁 (EM / QED)', sStart.x + 8, sStart.y - 6);
+          } else if (force.id === 'force-strong') {
+            const rgbColors = ['#ef4444', '#10b981', '#3b82f6'];
+            const offsets = [-3.5, 0, 3.5];
+
+            rgbColors.forEach((color, idx) => {
+              const yOffset = offsets[idx];
+              ctx.strokeStyle = color + 'dd';
+              ctx.lineWidth = 1.5;
+              ctx.beginPath();
+
+              const steps = 40;
+              for (let i = 0; i <= steps; i++) {
+                const t = i / steps;
+                const currX = sStart.x + t * bandWidth;
+                const spread = 0.5 + t * 1.2;
+                const currY = sStart.y + yOffset * spread + Math.sin(t * Math.PI * 4 + idx) * 1.2;
+                if (i === 0) ctx.moveTo(currX, currY);
+                else ctx.lineTo(currX, currY);
+              }
+              ctx.stroke();
+            });
+
+            ctx.strokeStyle = '#dc2626';
+            ctx.lineWidth = 1.8;
+            ctx.setLineDash([3, 2]);
+            ctx.beginPath();
+            ctx.moveTo(sEnd.x, sEnd.y - 12);
+            ctx.lineTo(sEnd.x, sEnd.y + 12);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.strokeStyle = '#c2410c99';
+            ctx.lineWidth = 1.2;
+            ctx.setLineDash([2, 2]);
+            ctx.beginPath();
+            ctx.moveTo(sEnd.x, sEnd.y);
+            ctx.lineTo(sEnd.x + 40, sEnd.y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.fillStyle = '#dc2626';
+            ctx.font = '600 11px "Inter", system-ui, sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText('强相互作用 (Strong / QCD)', sStart.x + 4, sStart.y - 10);
+          } else if (force.id === 'force-weak') {
+            ctx.strokeStyle = '#9333ea';
+            ctx.lineWidth = 1.6;
+            ctx.beginPath();
+
+            const steps = 50;
             for (let i = 0; i <= steps; i++) {
               const t = i / steps;
               const currX = sStart.x + t * bandWidth;
-              const spread = 0.5 + t * 1.2;
-              const currY = sStart.y + yOffset * spread + Math.sin(t * Math.PI * 4 + idx) * 1.2;
+              const amp = 5.5 * Math.exp(-t * 2.8);
+              const currY = sStart.y + Math.sin(t * Math.PI * 8) * amp;
+
               if (i === 0) ctx.moveTo(currX, currY);
               else ctx.lineTo(currX, currY);
             }
             ctx.stroke();
-          });
 
-          // Draw QCD Confinement Barrier
-          ctx.strokeStyle = '#dc2626';
-          ctx.lineWidth = 1.8;
-          ctx.setLineDash([3, 2]);
-          ctx.beginPath();
-          ctx.moveTo(sEnd.x, sEnd.y - 12);
-          ctx.lineTo(sEnd.x, sEnd.y + 12);
-          ctx.stroke();
-          ctx.setLineDash([]);
+            ctx.strokeStyle = '#9333ea';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(sEnd.x, sEnd.y - 8);
+            ctx.lineTo(sEnd.x, sEnd.y + 8);
+            ctx.stroke();
 
-          // Yukawa Pion Nuclear Force Tail extending past confinement wall
-          ctx.strokeStyle = '#c2410c99';
-          ctx.lineWidth = 1.2;
-          ctx.setLineDash([2, 2]);
-          ctx.beginPath();
-          ctx.moveTo(sEnd.x, sEnd.y);
-          ctx.lineTo(sEnd.x + 40, sEnd.y);
-          ctx.stroke();
-          ctx.setLineDash([]);
-
-          ctx.fillStyle = '#dc2626';
-          ctx.font = '600 11px "Inter", system-ui, -apple-system, sans-serif';
-          ctx.textAlign = 'left';
-          ctx.fillText('强相互作用 (Strong / QCD)', sStart.x + 4, sStart.y - 10);
-        } else if (force.id === 'force-weak') {
-          // 4. Electroweak Weak Interaction: Sinusoidal Wave Packet & Exponential Decay
-          ctx.strokeStyle = '#9333ea';
-          ctx.lineWidth = 1.6;
-          ctx.beginPath();
-
-          const steps = 50;
-          for (let i = 0; i <= steps; i++) {
-            const t = i / steps;
-            const currX = sStart.x + t * bandWidth;
-            const amp = 5.5 * Math.exp(-t * 2.8);
-            const currY = sStart.y + Math.sin(t * Math.PI * 8) * amp;
-
-            if (i === 0) ctx.moveTo(currX, currY);
-            else ctx.lineTo(currX, currY);
+            ctx.fillStyle = '#7e22ce';
+            ctx.font = '600 11px "Inter", system-ui, sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText('弱相互作用 (Weak / EW)', sStart.x + 4, sStart.y - 10);
           }
-          ctx.stroke();
-
-          // Short-range W/Z Cutoff Cap
-          ctx.strokeStyle = '#9333ea';
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          ctx.moveTo(sEnd.x, sEnd.y - 8);
-          ctx.lineTo(sEnd.x, sEnd.y + 8);
-          ctx.stroke();
-
-          ctx.fillStyle = '#7e22ce';
-          ctx.font = '600 11px "Inter", system-ui, -apple-system, sans-serif';
-          ctx.textAlign = 'left';
-          ctx.fillText('弱相互作用 (Weak / EW)', sStart.x + 4, sStart.y - 10);
-        }
-      });
+        });
       }
 
       // --- Domain Background Shading (Section Clouds) ---
@@ -451,7 +484,7 @@ export default function Canvas2D({
 
       // --- Relations (RG Flow & Holographic Duality) ---
       if (layerVisibility.relations) {
-        ACADEMIC_RELATIONS.forEach(rel => {
+        ACADEMIC_RELATIONS.forEach((rel: EquivalenceRelation) => {
           const srcObj = ACADEMIC_OBJECTS.find(o => o.id === rel.source);
           const tgtObj = ACADEMIC_OBJECTS.find(o => o.id === rel.target);
 
@@ -487,38 +520,30 @@ export default function Canvas2D({
             ctx.closePath();
             ctx.fill();
 
-            ctx.fillStyle = strokeColor;
-            ctx.font = isRelHovered ? 'bold 11px "STIX Two Text", serif' : '10px "STIX Two Text", serif';
-            ctx.textAlign = 'center';
-            ctx.fillText(rel.type.toUpperCase(), midX, midY - 6);
+            if (rel.type) {
+              ctx.fillStyle = strokeColor;
+              ctx.font = isRelHovered ? 'bold 11px "STIX Two Text", serif' : '10px "STIX Two Text", serif';
+              ctx.textAlign = 'center';
+              ctx.fillText(rel.type.toUpperCase(), midX, midY - 6);
+            }
           }
         });
       }
 
-// Helper to split "中文标题 (English Subtitle)" into two lines
-const parseBilingualTitle = (title) => {
-  if (!title) return { zh: '', en: '' };
-  const idx = title.indexOf('(');
-  if (idx !== -1 && title.endsWith(')')) {
-    const zh = title.slice(0, idx).trim();
-    const en = title.slice(idx + 1, -1).trim();
-    return { zh, en };
-  }
-  return { zh: title, en: '' };
-};
-
-// --- Pure Text Multi-Leg Theoretical & Method Nodes (Bilingual Line-Split, No Card Background) ---
+      // --- Pure Text Multi-Leg Theoretical & Method Nodes ---
       if (layerVisibility.nodes) {
-        ACADEMIC_RESEARCH_NODES.forEach(node => {
-          if (!isWithinScale(node.coords.x, node.coords.y)) return;
+        ACADEMIC_RESEARCH_NODES.forEach((node: ResearchRoute) => {
+          const nodeX = node.coords ? node.coords.x : (node.points && node.points[0] ? node.points[0].x : 0);
+          const nodeY = node.coords ? node.coords.y : (node.points && node.points[0] ? node.points[0].y : 0);
 
-          const wNode = getWorldCoords(node.coords.x, node.coords.y, w, h);
+          if (!isWithinScale(nodeX, nodeY)) return;
+
+          const wNode = getWorldCoords(nodeX, nodeY, w, h);
           const sNode = toScreenCoords(wNode.x, wNode.y);
 
           const isNodeHovered = hoveredItem?.id === node.id;
           const isNodeSelected = selectedItem?.id === node.id;
 
-          // Pick colors based on node type
           let mainColor = '#0369a1';
           let subColor = '#0c4a6e';
           let connectionColor = '#3b82f6';
@@ -537,9 +562,9 @@ const parseBilingualTitle = (title) => {
             connectionColor = '#3b82f6';
           }
 
-          // 1. Multi-Leg Curved Connections to Target Physical Objects/States
-          if (node.legs) {
-            node.legs.forEach(legId => {
+          // Multi-Leg Curved Connections
+          if (node.legs && Array.isArray(node.legs)) {
+            node.legs.forEach((legId: string) => {
               const targetObj = ACADEMIC_OBJECTS.find(o => o.id === legId);
               if (targetObj) {
                 const wObj = getWorldCoords(targetObj.coords.x, targetObj.coords.y, w, h);
@@ -558,19 +583,17 @@ const parseBilingualTitle = (title) => {
             });
           }
 
-          // 2. Pure Text Dual-Line Rendering (Line 1: Chinese, Line 2: English)
-          const { zh, en } = parseBilingualTitle(node.title || node.name);
+          // Pure Text Dual-Line Rendering
+          const { zh, en } = parseBilingualTitle(node.title || node.name || node.label || '');
 
           ctx.save();
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           ctx.lineJoin = 'round';
 
-          // White halo outline for high contrast on paper & heatmaps
           ctx.strokeStyle = 'rgba(255, 255, 255, 0.95)';
           ctx.lineWidth = 3.5;
 
-          // Line 1: Chinese Title
           ctx.font = isNodeHovered || isNodeSelected
             ? '700 12px "Inter", "PingFang SC", "STHeiti", sans-serif'
             : '600 11.5px "Inter", "PingFang SC", "STHeiti", sans-serif';
@@ -580,7 +603,6 @@ const parseBilingualTitle = (title) => {
           ctx.fillStyle = mainColor;
           ctx.fillText(zh, sNode.x, line1Y);
 
-          // Line 2: English Subtitle (if present)
           if (en) {
             const line2Y = sNode.y + 7;
             ctx.font = isNodeHovered || isNodeSelected
@@ -591,7 +613,6 @@ const parseBilingualTitle = (title) => {
             ctx.fillText(en, sNode.x, line2Y);
           }
 
-          // Central Anchor Node Dot
           ctx.fillStyle = mainColor;
           ctx.beginPath();
           ctx.arc(sNode.x, sNode.y, isNodeHovered || isNodeSelected ? 3.5 : 2.5, 0, Math.PI * 2);
@@ -603,7 +624,7 @@ const parseBilingualTitle = (title) => {
 
       // --- Physical Objects with PDG Error Bars & Tight KaTeX Labels ---
       if (layerVisibility.objects) {
-        ACADEMIC_OBJECTS.forEach(obj => {
+        ACADEMIC_OBJECTS.forEach((obj: PhysicsNode) => {
           if (!isWithinScale(obj.coords.x, obj.coords.y)) return;
 
           const wObj = getWorldCoords(obj.coords.x, obj.coords.y, w, h);
@@ -612,23 +633,20 @@ const parseBilingualTitle = (title) => {
           const isObjHovered = hoveredItem?.id === obj.id;
           const isObjSelected = selectedItem?.id === obj.id;
 
-          // --- Particle Geometry Detection ---
           const isGaugeBoson = ['obj-photon', 'obj-gluon', 'obj-w-boson', 'obj-z-boson', 'obj-gut-boson'].includes(obj.id);
           const isScalarBoson = obj.id === 'obj-higgs';
-          const isFermion = obj.type === 'fundamental' && !isGaugeBoson && !isScalarBoson;
           const isCompositeHadron = obj.type === 'composite' || obj.type === 'bound-state';
           const isPhaseOrAstro = obj.type === 'phase' || obj.type === 'astro-object' || obj.type === 'out-of-equilibrium' || obj.type === 'probe' || obj.type === 'quantum-material';
 
           const radius = isObjHovered || isObjSelected ? 7 : 5;
           const mainColor = isObjSelected ? '#dc2626' : isObjHovered ? '#2563eb' : (isGaugeBoson ? '#9333ea' : isScalarBoson ? '#0284c7' : '#1e3a8a');
 
-          // --- Draw PDG Decay Width / Uncertainty Error Bars ---
+          // Draw PDG Decay Width / Uncertainty Error Bars
           if (obj.errorBar) {
             const margin = 70;
             const plotW = w - margin * 2;
             const plotH = h - margin * 2;
 
-            // X scale: 63 log units (-36 to 27), Y scale: 34 log units (-5 to 29)
             const ebX = obj.errorBar.dx * (plotW / 63) * transform.scale;
             const ebY = obj.errorBar.dy * (plotH / 34) * transform.scale;
 
@@ -636,15 +654,13 @@ const parseBilingualTitle = (title) => {
             ctx.lineWidth = isObjHovered || isObjSelected ? 1.6 : 1.2;
             const rGap = radius + 2;
 
-            // Render X Error Bar segments outside particle radius
             if (ebX > rGap) {
               ctx.beginPath();
-              // Left
               ctx.moveTo(sObj.x - rGap, sObj.y);
               ctx.lineTo(sObj.x - ebX, sObj.y);
               ctx.moveTo(sObj.x - ebX, sObj.y - 3);
               ctx.lineTo(sObj.x - ebX, sObj.y + 3);
-              // Right
+
               ctx.moveTo(sObj.x + rGap, sObj.y);
               ctx.lineTo(sObj.x + ebX, sObj.y);
               ctx.moveTo(sObj.x + ebX, sObj.y - 3);
@@ -652,15 +668,13 @@ const parseBilingualTitle = (title) => {
               ctx.stroke();
             }
 
-            // Render Y Error Bar segments outside particle radius
             if (ebY > rGap) {
               ctx.beginPath();
-              // Top
               ctx.moveTo(sObj.x, sObj.y - rGap);
               ctx.lineTo(sObj.x, sObj.y - ebY);
               ctx.moveTo(sObj.x - 3, sObj.y - ebY);
               ctx.lineTo(sObj.x + 3, sObj.y - ebY);
-              // Bottom
+
               ctx.moveTo(sObj.x, sObj.y + rGap);
               ctx.lineTo(sObj.x, sObj.y + ebY);
               ctx.moveTo(sObj.x - 3, sObj.y + ebY);
@@ -678,7 +692,6 @@ const parseBilingualTitle = (title) => {
           }
 
           if (isGaugeBoson) {
-            // 1. Vector Gauge Boson (Spin-1 Field Mediator): Pure Clean Hollow Circle (\circ)
             ctx.fillStyle = '#ffffff';
             ctx.strokeStyle = mainColor;
             ctx.lineWidth = 2.2;
@@ -687,7 +700,6 @@ const parseBilingualTitle = (title) => {
             ctx.fill();
             ctx.stroke();
           } else if (isScalarBoson) {
-            // 2. Scalar Higgs Boson (Spin-0 Symmetry Breaking VEV): Concentric Ring Halo
             ctx.strokeStyle = mainColor;
             ctx.lineWidth = 1.5;
             ctx.beginPath();
@@ -702,7 +714,6 @@ const parseBilingualTitle = (title) => {
             ctx.fill();
             ctx.stroke();
           } else if (isCompositeHadron) {
-            // 3. Composite Hadron / Bound State: Dashed Boundary Concentric Circle
             ctx.strokeStyle = mainColor + '99';
             ctx.lineWidth = 1.2;
             ctx.setLineDash([3, 2]);
@@ -719,17 +730,19 @@ const parseBilingualTitle = (title) => {
             ctx.fill();
             ctx.stroke();
           } else if (isPhaseOrAstro) {
-            // 4. Thermodynamic Phase / Astro Object: Rounded Square Badge (\blacksquare)
             const side = (radius + 1) * 2;
             ctx.fillStyle = mainColor;
             ctx.strokeStyle = '#ffffff';
             ctx.lineWidth = 1.8;
             ctx.beginPath();
-            ctx.roundRect(sObj.x - side / 2, sObj.y - side / 2, side, side, 2.5);
+            if ((ctx as any).roundRect) {
+              (ctx as any).roundRect(sObj.x - side / 2, sObj.y - side / 2, side, side, 2.5);
+            } else {
+              ctx.rect(sObj.x - side / 2, sObj.y - side / 2, side, side);
+            }
             ctx.fill();
             ctx.stroke();
           } else {
-            // 5. Fundamental Spin-1/2 Fermion Matter Quanta: Solid Sphere (\bullet)
             ctx.fillStyle = mainColor;
             ctx.strokeStyle = '#ffffff';
             ctx.lineWidth = 2;
@@ -739,7 +752,6 @@ const parseBilingualTitle = (title) => {
             ctx.stroke();
           }
 
-          // Tight, compact label offsets right next to particle symbols
           let labelOffsetX = radius + 4;
           let labelOffsetY = -10;
           if (obj.id === 'obj-z-boson') { labelOffsetX = -28; labelOffsetY = -14; }
@@ -747,14 +759,14 @@ const parseBilingualTitle = (title) => {
           if (obj.id === 'obj-higgs') { labelOffsetX = 9; labelOffsetY = -14; }
           if (obj.id === 'obj-top-quark') { labelOffsetX = 9; labelOffsetY = 2; }
 
-          const katexSprite = getKatexSprite(obj.symbol, isObjSelected ? '#dc2626' : isObjHovered ? '#2563eb' : '#0f172a', 15);
+          const katexSprite = getKatexSprite(obj.symbol || obj.label || '', isObjSelected ? '#dc2626' : isObjHovered ? '#2563eb' : '#0f172a', 15);
           if (katexSprite && katexSprite.complete) {
             ctx.drawImage(katexSprite, sObj.x + labelOffsetX, sObj.y + labelOffsetY);
           }
         });
       }
 
-      // --- Draw Matplotlib Style Rubber-band Selection Box ---
+      // Draw Matplotlib Style Rubber-band Selection Box
       if (boxSelection) {
         const bx = Math.min(boxSelection.startX, boxSelection.endX);
         const by = Math.min(boxSelection.startY, boxSelection.endY);
@@ -777,7 +789,7 @@ const parseBilingualTitle = (title) => {
     setSpriteLoadCallback(render);
 
     const handleResize = () => {
-      if (!containerRef.current) return;
+      if (!containerRef.current || !canvasRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
       canvas.width = rect.width * window.devicePixelRatio;
       canvas.height = rect.height * window.devicePixelRatio;
@@ -791,7 +803,7 @@ const parseBilingualTitle = (title) => {
 
   // --- Mouse & Touch Gestures Handling ---
 
-  const onMouseDown = (e) => {
+  const onMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (e.button !== 0) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -808,7 +820,7 @@ const parseBilingualTitle = (title) => {
     }
   };
 
-  const onMouseMove = (e) => {
+  const onMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -816,9 +828,8 @@ const parseBilingualTitle = (title) => {
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
 
-    // Matplotlib Box Selection Mode
     if (isBoxZoomMode && boxSelection) {
-      setBoxSelection(prev => ({ ...prev, endX: mouseX, endY: mouseY }));
+      setBoxSelection(prev => (prev ? { ...prev, endX: mouseX, endY: mouseY } : null));
       return;
     }
 
@@ -831,11 +842,10 @@ const parseBilingualTitle = (title) => {
       return;
     }
 
-    // Hover Detection in Screen Space
     const w = canvas.width / window.devicePixelRatio;
     const h = canvas.height / window.devicePixelRatio;
 
-    let foundHover = null;
+    let foundHover: any = null;
 
     for (let obj of ACADEMIC_OBJECTS) {
       if (!isWithinScale(obj.coords.x, obj.coords.y)) continue;
@@ -850,8 +860,10 @@ const parseBilingualTitle = (title) => {
 
     if (!foundHover) {
       for (let node of ACADEMIC_RESEARCH_NODES) {
-        if (!isWithinScale(node.coords.x, node.coords.y)) continue;
-        const wNode = getWorldCoords(node.coords.x, node.coords.y, w, h);
+        const nodeX = node.coords ? node.coords.x : (node.points && node.points[0] ? node.points[0].x : 0);
+        const nodeY = node.coords ? node.coords.y : (node.points && node.points[0] ? node.points[0].y : 0);
+        if (!isWithinScale(nodeX, nodeY)) continue;
+        const wNode = getWorldCoords(nodeX, nodeY, w, h);
         const sNode = toScreenCoords(wNode.x, wNode.y);
         const dist = Math.hypot(sNode.x - mouseX, sNode.y - mouseY);
         if (dist < 22) {
@@ -879,14 +891,12 @@ const parseBilingualTitle = (title) => {
         const w = canvas.width / window.devicePixelRatio;
         const h = canvas.height / window.devicePixelRatio;
 
-        // Convert selection box corners to World space
         const w1 = toWorldCoords(bx, by);
         const w2 = toWorldCoords(bx + bw, by + bh);
 
         const wBoxW = Math.abs(w2.x - w1.x);
         const wBoxH = Math.abs(w2.y - w1.y);
 
-        // Compute target scale & offsets purely changing Viewport
         const targetScale = Math.max(0.5, Math.min(30.0, Math.min(w / wBoxW, h / wBoxH)));
         const centerWorldX = (w1.x + w2.x) / 2;
         const centerWorldY = (w1.y + w2.y) / 2;
@@ -908,7 +918,7 @@ const parseBilingualTitle = (title) => {
     isDraggingRef.current = false;
   };
 
-  const onWheel = useCallback((e) => {
+  const onWheel = useCallback((e: WheelEvent) => {
     e.preventDefault();
     if (e.ctrlKey) {
       const zoomFactor = e.deltaY < 0 ? 1.08 : 0.92;
@@ -929,7 +939,7 @@ const parseBilingualTitle = (title) => {
     }
   }, []);
 
-  const onTouchStart = (e) => {
+  const onTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     if (e.touches.length === 2) {
       const t1 = e.touches[0];
       const t2 = e.touches[1];
@@ -946,7 +956,7 @@ const parseBilingualTitle = (title) => {
     }
   };
 
-  const onTouchMove = (e) => {
+  const onTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
     if (e.touches.length === 2) {
       e.preventDefault();
       const t1 = e.touches[0];
@@ -998,7 +1008,6 @@ const parseBilingualTitle = (title) => {
     }
   };
 
-  // Actions
   const zoomIn = () => setTransform(prev => ({ ...prev, scale: Math.min(30.0, prev.scale * 1.5) }));
   const zoomOut = () => setTransform(prev => ({ ...prev, scale: Math.max(0.5, prev.scale / 1.5) }));
   const resetFullScale = () => setTransform({ scale: 1.0, offsetX: 70, offsetY: 30 });
@@ -1009,8 +1018,9 @@ const parseBilingualTitle = (title) => {
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
-      className={`relative w-full h-full bg-white overflow-hidden select-none touch-none ${isBoxZoomMode ? 'cursor-crosshair' : 'cursor-grab active:cursor-grabbing'
-        }`}
+      className={`relative w-full h-full bg-white overflow-hidden select-none touch-none ${
+        isBoxZoomMode ? 'cursor-crosshair' : 'cursor-grab active:cursor-grabbing'
+      }`}
     >
       <canvas
         ref={canvasRef}
@@ -1031,7 +1041,6 @@ const parseBilingualTitle = (title) => {
 
       {/* Right Academic Toolbar */}
       <div className="absolute top-16 right-6 z-20 flex flex-col gap-1.5 bg-white/95 backdrop-blur border border-slate-300 rounded shadow-md p-1.5 font-serif text-xs">
-        {/* 1. Zoom In */}
         <button
           onClick={zoomIn}
           title="放大视野 (Zoom In)"
@@ -1043,7 +1052,6 @@ const parseBilingualTitle = (title) => {
           </span>
         </button>
 
-        {/* 2. Zoom Out */}
         <button
           onClick={zoomOut}
           title="缩小视野 (Zoom Out)"
@@ -1057,7 +1065,6 @@ const parseBilingualTitle = (title) => {
 
         <div className="w-full h-px bg-slate-200" />
 
-        {/* 3. Fit Viewport to Selected Range (With Tooltip) */}
         <button
           onClick={fitViewToSelection}
           title="将视野放大或平移以完全对齐左侧面板选定的标度区间"
@@ -1069,7 +1076,6 @@ const parseBilingualTitle = (title) => {
           </span>
         </button>
 
-        {/* 4. Reset Full Viewport */}
         <button
           onClick={resetFullScale}
           title="全视角 (Reset Full Viewport)"
@@ -1083,14 +1089,14 @@ const parseBilingualTitle = (title) => {
 
         <div className="w-full h-px bg-slate-200" />
 
-        {/* 5. Matplotlib Style Box Zoom Mode */}
         <button
           onClick={() => setIsBoxZoomMode(!isBoxZoomMode)}
           title="进入 Matplotlib 式框选模式（在相图拖拽矩形直接放大指定视域，不改变过滤器标度）"
-          className={`p-2 rounded transition-all flex items-center justify-center group relative ${isBoxZoomMode
-            ? 'bg-cyan-600 text-white shadow-inner'
-            : 'hover:bg-slate-100 text-slate-800'
-            }`}
+          className={`p-2 rounded transition-all flex items-center justify-center group relative ${
+            isBoxZoomMode
+              ? 'bg-cyan-600 text-white shadow-inner'
+              : 'hover:bg-slate-100 text-slate-800'
+          }`}
         >
           <Crop className="w-4 h-4" />
           <span className="absolute right-full mr-2 hidden group-hover:block whitespace-nowrap bg-slate-900 text-white text-[10px] px-2 py-1 rounded shadow">
@@ -1099,7 +1105,7 @@ const parseBilingualTitle = (title) => {
         </button>
       </div>
 
-      {/* Hover Inspection Tooltip - Light Academic Paper Theme */}
+      {/* Hover Inspection Tooltip */}
       {hoveredItem && !isBoxZoomMode && (
         <div
           style={{ left: tooltipPos.x + 14, top: tooltipPos.y + 14 }}
@@ -1131,7 +1137,7 @@ const parseBilingualTitle = (title) => {
             )}
           </div>
           <div className="text-[11px] text-slate-700 leading-snug my-1">
-            {hoveredItem.annotation || hoveredItem.abstract}
+            {hoveredItem.annotation || hoveredItem.abstract || hoveredItem.description}
           </div>
           <div className="text-[10px] text-slate-400 font-mono mt-1.5 border-t border-slate-200 pt-1 flex justify-between">
             <span>点击查看算符与规格</span>
@@ -1177,4 +1183,6 @@ const parseBilingualTitle = (title) => {
       </div>
     </div>
   );
-}
+};
+
+export default Canvas2D;

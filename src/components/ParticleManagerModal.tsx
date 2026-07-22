@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { X, Plus, Trash2, Edit2, RefreshCw, Server, CheckCircle, Database } from 'lucide-react';
+import { X, Plus, Trash2, Edit2, RefreshCw, Server, Database } from 'lucide-react';
+import { PhysicsNode } from '../types/physics';
 
-export default function ParticleManagerModal({ isOpen, onClose, onRefreshData }) {
-  const [objects, setObjects] = useState([]);
+interface ParticleManagerModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onRefreshData?: () => void;
+}
+
+export const ParticleManagerModal: React.FC<ParticleManagerModalProps> = ({
+  isOpen,
+  onClose,
+  onRefreshData
+}) => {
+  const [objects, setObjects] = useState<PhysicsNode[]>([]);
   const [loading, setLoading] = useState(false);
-  const [serverStatus, setServerStatus] = useState('unknown'); // 'online' | 'offline'
-  const [editingItem, setEditingItem] = useState(null);
+  const [serverStatus, setServerStatus] = useState<'online' | 'offline' | 'unknown'>('unknown');
+  const [editingItem, setEditingItem] = useState<PhysicsNode | null>(null);
   const [isAdding, setIsAdding] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -63,7 +74,7 @@ export default function ParticleManagerModal({ isOpen, onClose, onRefreshData })
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: string) => {
     if (!window.confirm(`确认删除 ID 为 ${id} 的物理标度对象？`)) return;
     try {
       const res = await fetch(`${API_BASE}/objects/${id}`, { method: 'DELETE' });
@@ -76,7 +87,7 @@ export default function ParticleManagerModal({ isOpen, onClose, onRefreshData })
     }
   };
 
-  const handleSaveForm = async (e) => {
+  const handleSaveForm = async (e: React.FormEvent) => {
     e.preventDefault();
     const payload = {
       id: formData.id,
@@ -120,18 +131,18 @@ export default function ParticleManagerModal({ isOpen, onClose, onRefreshData })
     }
   };
 
-  const startEdit = (item) => {
+  const startEdit = (item: PhysicsNode) => {
     setEditingItem(item);
     setIsAdding(false);
     setFormData({
       id: item.id,
-      label: item.label,
+      label: item.label || item.name || '',
       pdgCode: item.pdgCode || '',
-      domainId: item.domainId,
-      coordsX: item.coords.x,
-      coordsY: item.coords.y,
-      symbol: item.symbol,
-      type: item.type,
+      domainId: item.domainId || 'domain-ew',
+      coordsX: String(item.coords?.x ?? 0),
+      coordsY: String(item.coords?.y ?? 0),
+      symbol: item.symbol || '',
+      type: item.type || 'fundamental',
       annotation: item.annotation || ''
     });
   };
@@ -155,8 +166,8 @@ export default function ParticleManagerModal({ isOpen, onClose, onRefreshData })
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-      <div className="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-4xl max-h-[85vh] flex flex-col overflow-hidden font-sans">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4 animate-in fade-in duration-200 font-sans">
+      <div className="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-4xl max-h-[85vh] flex flex-col overflow-hidden">
         {/* Modal Header */}
         <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-900 text-white">
           <div className="flex items-center gap-3">
@@ -228,7 +239,7 @@ export default function ParticleManagerModal({ isOpen, onClose, onRefreshData })
                 {objects.map(item => (
                   <tr key={item.id} className="hover:bg-slate-50/80 transition-colors">
                     <td className="p-2.5 font-bold font-serif text-slate-900">{item.symbol}</td>
-                    <td className="p-2.5 text-slate-800">{item.label}</td>
+                    <td className="p-2.5 text-slate-800">{item.label || item.name}</td>
                     <td className="p-2.5 text-slate-500 text-[11px]">{item.pdgCode}</td>
                     <td className="p-2.5 text-slate-600">
                       ({item.coords?.x?.toFixed(2)}, {item.coords?.y?.toFixed(2)})
@@ -268,7 +279,7 @@ export default function ParticleManagerModal({ isOpen, onClose, onRefreshData })
           {(isAdding || editingItem) && (
             <div className="w-full md:w-80 bg-slate-50 border border-slate-200 rounded-lg p-4 flex flex-col gap-3 text-xs">
               <h3 className="font-bold font-serif text-slate-900 border-b border-slate-200 pb-2">
-                {editingItem ? `编辑对象: ${editingItem.label}` : '新增物理对象'}
+                {editingItem ? `编辑对象: ${editingItem.label || editingItem.name}` : '新增物理对象'}
               </h3>
 
               <form onSubmit={handleSaveForm} className="flex flex-col gap-2.5">
@@ -374,4 +385,6 @@ export default function ParticleManagerModal({ isOpen, onClose, onRefreshData })
       </div>
     </div>
   );
-}
+};
+
+export default ParticleManagerModal;

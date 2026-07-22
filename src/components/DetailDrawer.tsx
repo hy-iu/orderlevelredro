@@ -1,19 +1,32 @@
 import React from 'react';
-import { X, Scale, ExternalLink, ShieldCheck } from 'lucide-react';
+import { X, ExternalLink, ShieldCheck } from 'lucide-react';
 import { BlockMath, AutoMathText } from './MathFormula';
+import { PhysicsNode, ResearchRoute } from '../types/physics';
 
-export default function DetailDrawer({ item, itemType, onClose, onSelectSubItem }) {
+interface DetailDrawerProps {
+  item: (PhysicsNode & ResearchRoute) | null;
+  itemType: 'object' | 'node' | 'relation' | null;
+  onClose: () => void;
+  onSelectSubItem?: (itemId: string) => void;
+}
+
+export const DetailDrawer: React.FC<DetailDrawerProps> = ({
+  item,
+  itemType,
+  onClose,
+  onSelectSubItem
+}) => {
   if (!item) return null;
 
   const formulaStr = item.specs?.lagrangian || item.formula || item.equation;
 
   return (
-    <div className="absolute top-16 right-6 bottom-6 z-20 w-96 bg-white/95 backdrop-blur border border-slate-300 rounded-lg shadow-xl p-5 flex flex-col justify-between overflow-y-auto font-serif text-slate-900">
+    <div className="absolute top-16 right-6 bottom-6 z-20 w-96 bg-white/95 backdrop-blur border border-slate-300 rounded-lg shadow-xl p-5 flex flex-col justify-between overflow-y-auto font-serif text-slate-900 animate-fade-in">
       <div>
         {/* Academic Drawer Header */}
         <div className="flex items-start justify-between border-b border-slate-300 pb-3 mb-4">
           <div>
-            <div className="flex items-center gap-1.5 mb-0.5">
+            <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
               <span className="text-[10px] uppercase font-mono tracking-wider text-slate-500 font-bold">
                 {item.type === 'theory'
                   ? 'Sec. Theoretical Formulation'
@@ -131,4 +144,6 @@ export default function DetailDrawer({ item, itemType, onClose, onSelectSubItem 
       </div>
     </div>
   );
-}
+};
+
+export default DetailDrawer;

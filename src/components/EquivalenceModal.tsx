@@ -2,7 +2,26 @@ import React, { useState } from 'react';
 import { X, Code, Image as ImageIcon, Cpu, FileText } from 'lucide-react';
 import { BlockMath, InlineMath } from './MathFormula';
 
-const EQUIVALENCE_CASES = [
+interface EquivalenceScale {
+  scaleTitle: string;
+  form: string;
+  physics: string;
+}
+
+interface EquivalenceCase {
+  id: string;
+  title: string;
+  subtitle: string;
+  baseEquation: string;
+  scales: EquivalenceScale[];
+}
+
+interface EquivalenceModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const EQUIVALENCE_CASES: EquivalenceCase[] = [
   {
     id: 'case-dirac-schrodinger',
     title: 'A. 波动算符与自由/有效场方程演化 (Wave & Effective Field Equations)',
@@ -101,9 +120,9 @@ spatial_Weak = np.where(X <= -17.6, np.exp(-0.4 * np.square(X - (-17.6))), np.ex
 energy_Weak = np.exp(-0.15 * np.square(Y - 11.4))
 I_Weak = fermi_suppression * spatial_Weak * energy_Weak`;
 
-export default function EquivalenceModal({ isOpen, onClose }) {
-  const [tab, setTab] = useState('heatmaps'); // 'heatmaps' | 'operators'
-  const [activeCase, setActiveCase] = useState(EQUIVALENCE_CASES[0] || null);
+export const EquivalenceModal: React.FC<EquivalenceModalProps> = ({ isOpen, onClose }) => {
+  const [tab, setTab] = useState<'heatmaps' | 'operators'>('heatmaps');
+  const [activeCase, setActiveCase] = useState<EquivalenceCase>(EQUIVALENCE_CASES[0]);
   const [imgError, setImgError] = useState(false);
 
   if (!isOpen) return null;
@@ -297,4 +316,6 @@ export default function EquivalenceModal({ isOpen, onClose }) {
       </div>
     </div>
   );
-}
+};
+
+export default EquivalenceModal;

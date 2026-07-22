@@ -1,9 +1,18 @@
+import {
+  AcademicDomain,
+  FundamentalForce,
+  PhysicsNode,
+  ResearchRoute,
+  EquivalenceRelation,
+  QuantumHardwareRoute
+} from '../types/physics';
+
 /**
  * Rigorous Physics Energy-Scale Data (PDG - Particle Data Group 2024/2026 Reference)
  * Includes Particle Uncertainties (Error Bars / Decay Widths) & Fundamental Force Ranges.
  */
 
-export const ACADEMIC_DOMAINS = [
+export const ACADEMIC_DOMAINS: AcademicDomain[] = [
   {
     id: 'domain-qg-gut',
     name: 'I. 量子引力与大统一标度 (Planck & GUT Scale)',
@@ -2106,3 +2115,38 @@ export const ACADEMIC_RELATIONS = [
     description: '单电子高能狄拉克相对论波动方程，在二维晶体莫尔势场中形式完全同构地形变为描述有效能带平坦化的低能极值哈密顿量。'
   }
 ];
+
+// --- 3D Canvas Compatibility Exports & Conversions ---
+export const DOMAIN_CLOUDS = ACADEMIC_DOMAINS.map(d => ({
+  ...d,
+  center: [
+    (d.bounds.xMin + d.bounds.xMax) / 2,
+    (d.bounds.yMin + d.bounds.yMax) / 2,
+    0
+  ] as [number, number, number],
+  radius: Math.abs(d.bounds.xMax - d.bounds.xMin) / 2
+}));
+
+export const OBJECTS = ACADEMIC_OBJECTS.map(o => ({
+  ...o,
+  coords: [
+    o.coords?.x ?? 0,
+    o.coords?.y ?? 0,
+    0
+  ] as [number, number, number],
+  color: o.color || '#38bdf8',
+  size: o.size || 0.6
+}));
+
+export const RESEARCH_NODES = ACADEMIC_RESEARCH_NODES.map(n => ({
+  ...n,
+  coords: [
+    n.coords?.x ?? (n.points && n.points[0] ? n.points[0].x : 0),
+    n.coords?.y ?? (n.points && n.points[0] ? n.points[0].y : 0),
+    0
+  ] as [number, number, number],
+  color: n.color || '#a855f7'
+}));
+
+export const RELATION_LINKS = ACADEMIC_RELATIONS;
+

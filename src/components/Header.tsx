@@ -1,13 +1,20 @@
 import React from 'react';
-import { BookOpen, FileText, Compass, Network, Database } from 'lucide-react';
+import { Network, Database } from 'lucide-react';
 import { ACADEMIC_DOMAINS } from '../data/physicsData';
 
-export default function Header({
+interface HeaderProps {
+  activeDomain: string;
+  setActiveDomain: (domain: string) => void;
+  onOpenEquivalenceModal: () => void;
+  onOpenParticleManager: () => void;
+}
+
+export const Header: React.FC<HeaderProps> = ({
   activeDomain,
   setActiveDomain,
   onOpenEquivalenceModal,
   onOpenParticleManager
-}) {
+}) => {
   return (
     <header className="absolute top-0 left-0 right-0 z-20 px-6 py-3 bg-white/90 backdrop-blur-md border-b border-slate-200 flex items-center justify-between shadow-sm">
       {/* Paper Title Header */}
@@ -72,4 +79,6 @@ export default function Header({
       </div>
     </header>
   );
-}
+};
+
+export default Header;

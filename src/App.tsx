@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import Header from './components/Header';
 import Canvas2D from './components/Canvas2D';
-import ControlPanel from './components/ControlPanel';
+import ControlPanel, { LayerVisibility } from './components/ControlPanel';
 import DetailDrawer from './components/DetailDrawer';
 import EquivalenceModal from './components/EquivalenceModal';
 import ParticleManagerModal from './components/ParticleManagerModal';
 import { ACADEMIC_OBJECTS, ACADEMIC_RESEARCH_NODES } from './data/physicsData';
 
-export default function App() {
+export function App() {
   const [activeDomain, setActiveDomain] = useState('all');
 
-  const [layerVisibility, setLayerVisibility] = useState({
+  const [layerVisibility, setLayerVisibility] = useState<LayerVisibility>({
     clouds: true,
     heatmaps: true,
     forces: true,
@@ -19,21 +19,21 @@ export default function App() {
     relations: true
   });
 
-  const [spatialRange, setSpatialRange] = useState([-35, 26]);
-  const [energyRange, setEnergyRange] = useState([-4, 28]);
+  const [spatialRange, setSpatialRange] = useState<[number, number]>([-35, 26]);
+  const [energyRange, setEnergyRange] = useState<[number, number]>([-4, 28]);
   const [fitTrigger, setFitTrigger] = useState(0);
 
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [selectedType, setSelectedType] = useState(null); // 'object' | 'node' | 'relation'
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [selectedType, setSelectedType] = useState<'object' | 'node' | 'relation' | null>(null);
   const [isEquivalenceOpen, setIsEquivalenceOpen] = useState(false);
   const [isParticleManagerOpen, setIsParticleManagerOpen] = useState(false);
 
-  const handleSelectItem = (itemData, type) => {
+  const handleSelectItem = (itemData: any, type: string) => {
     setSelectedItem(itemData);
-    setSelectedType(type);
+    setSelectedType(type as 'object' | 'node' | 'relation');
   };
 
-  const handleSelectSubItem = (itemId) => {
+  const handleSelectSubItem = (itemId: string) => {
     const foundObj = ACADEMIC_OBJECTS.find(o => o.id === itemId);
     if (foundObj) {
       setSelectedItem(foundObj);
@@ -119,3 +119,5 @@ export default function App() {
     </div>
   );
 }
+
+export default App;

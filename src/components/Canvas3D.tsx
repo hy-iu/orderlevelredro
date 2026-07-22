@@ -1,21 +1,35 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { DOMAIN_CLOUDS, OBJECTS, RESEARCH_NODES, RELATION_LINKS } from '../data/physicsData';
+import { LayerVisibility } from './ControlPanel';
 
-export default function Canvas3D({ 
-  viewMode, 
-  activeDomain, 
-  layerVisibility, 
+interface Canvas3DProps {
+  viewMode?: '2d' | '3d';
+  activeDomain?: string;
+  layerVisibility: LayerVisibility;
+  onSelectItem: (item: any, type: string) => void;
+  selectedItem?: any;
+  scaleFilter?: any;
+}
+
+export const Canvas3D: React.FC<Canvas3DProps> = ({
+  viewMode = '3d',
+  activeDomain = 'all',
+  layerVisibility,
   onSelectItem,
   selectedItem,
   scaleFilter
-}) {
-  const containerRef = useRef(null);
-  const sceneRef = useRef(null);
-  const cameraRef = useRef(null);
-  const rendererRef = useRef(null);
-  const controlsRef = useRef(null);
-  const animatedObjectsRef = useRef([]);
+}) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const sceneRef = useRef<THREE.Scene | null>(null);
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const animatedObjectsRef = useRef<{
+    clouds?: THREE.Mesh[];
+    pulses?: { mesh: THREE.Mesh; curve: THREE.QuadraticBezierCurve3; speed: number; progress: number }[];
+    nodes?: THREE.Mesh[];
+    objects?: THREE.Mesh[];
+  }>({});
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -69,28 +83,27 @@ export default function Canvas3D({
 
     // --- Build 3D Axes & Grid ---
     const buildGrid = () => {
-      // Main 3D Axes
       const axesHelper = new THREE.AxesHelper(35);
       gridGroup.add(axesHelper);
 
-      // Grid planes
       const gridXZ = new THREE.GridHelper(70, 70, 0x38bdf8, 0x1e293b);
       gridXZ.position.y = -20;
       gridGroup.add(gridXZ);
 
-      // Helper Labels function using Canvas Texture
-      const createTextSprite = (text, color = '#38bdf8', fontSize = 32) => {
+      const createTextSprite = (text: string, color = '#38bdf8', fontSize = 32) => {
         const canvas = document.createElement('canvas');
         canvas.width = 512;
         canvas.height = 128;
         const ctx = canvas.getContext('2d');
-        ctx.fillStyle = color;
-        ctx.font = `Bold ${fontSize}px "JetBrains Mono", sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.shadowColor = color;
-        ctx.shadowBlur = 10;
-        ctx.fillText(text, 256, 64);
+        if (ctx) {
+          ctx.fillStyle = color;
+          ctx.font = `Bold ${fontSize}px "JetBrains Mono", sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.shadowColor = color;
+          ctx.shadowBlur = 10;
+          ctx.fillText(text, 256, 64);
+        }
 
         const texture = new THREE.CanvasTexture(canvas);
         const spriteMat = new THREE.SpriteMaterial({ map: texture, transparent: true });
@@ -115,9 +128,10 @@ export default function Canvas3D({
     buildGrid();
 
     // --- Build Domain Clouds ---
-    const cloudMeshes = [];
-    DOMAIN_CLOUDS.forEach(cloud => {
-      const geo = new THREE.IcosahedronGeometry(cloud.radius, 3);
+    const cloudMeshes: THREE.Mesh[] = [];
+    DOMAIN_CLOUDS.forEach((cloud: any) => {
+      const radius = cloud.radius || 10;
+      const geo = new THREE.IcosahedronGeometry(radius, 3);
       const mat = new THREE.MeshPhongMaterial({
         color: cloud.color,
         transparent: true,
@@ -127,12 +141,12 @@ export default function Canvas3D({
         depthWrite: false
       });
       const mesh = new THREE.Mesh(geo, mat);
-      mesh.position.set(...cloud.center);
+      const center = cloud.center || [0, 0, 0];
+      mesh.position.set(center[0], center[1], center[2]);
       mesh.userData = { type: 'cloud', data: cloud };
       cloudsGroup.add(mesh);
 
-      // Inner glow sphere
-      const innerGeo = new THREE.SphereGeometry(cloud.radius * 0.7, 16, 16);
+      const innerGeo = new THREE.SphereGeometry(radius * 0.7, 16, 16);
       const innerMat = new THREE.MeshBasicMaterial({
         color: cloud.color,
         transparent: true,
@@ -145,26 +159,26 @@ export default function Canvas3D({
     });
 
     // --- Build Objects (Points & Lines) ---
-    const objectMeshesMap = new Map();
-    OBJECTS.forEach(obj => {
+    const objectMeshesMap = new Map<string, THREE.Mesh>();
+    OBJECTS.forEach((obj: any) => {
       const pointGeo = new THREE.SphereGeometry(obj.size || 0.6, 24, 24);
       const pointMat = new THREE.MeshStandardMaterial({
-        color: obj.color,
-        emissive: obj.color,
+        color: obj.color || '#38bdf8',
+        emissive: obj.color || '#38bdf8',
         emissiveIntensity: 0.6,
         roughness: 0.2,
         metalness: 0.8
       });
       const mesh = new THREE.Mesh(pointGeo, pointMat);
-      mesh.position.set(...obj.coords);
+      const coords = obj.coords || [0, 0, 0];
+      mesh.position.set(coords[0], coords[1], coords[2]);
       mesh.userData = { type: 'object', data: obj };
       objectsGroup.add(mesh);
       objectMeshesMap.set(obj.id, mesh);
 
-      // Outer glow halo
       const haloGeo = new THREE.SphereGeometry((obj.size || 0.6) * 1.6, 16, 16);
       const haloMat = new THREE.MeshBasicMaterial({
-        color: obj.color,
+        color: obj.color || '#38bdf8',
         transparent: true,
         opacity: 0.25,
         blending: THREE.AdditiveBlending
@@ -174,26 +188,25 @@ export default function Canvas3D({
     });
 
     // --- Build n-Leg Flexible Nodes (Research Topics) ---
-    const nodeMeshesMap = new Map();
-    const animPulses = [];
+    const nodeMeshesMap = new Map<string, THREE.Mesh>();
+    const animPulses: { mesh: THREE.Mesh; curve: THREE.QuadraticBezierCurve3; speed: number; progress: number }[] = [];
 
-    RESEARCH_NODES.forEach(node => {
-      // Octahedron core for n-leg node
+    RESEARCH_NODES.forEach((node: any) => {
       const nodeGeo = new THREE.OctahedronGeometry(0.8, 1);
       const nodeMat = new THREE.MeshStandardMaterial({
-        color: node.color,
-        emissive: node.color,
+        color: node.color || '#a855f7',
+        emissive: node.color || '#a855f7',
         emissiveIntensity: 0.8,
         wireframe: false,
         roughness: 0.1
       });
       const mesh = new THREE.Mesh(nodeGeo, nodeMat);
-      mesh.position.set(...node.coords);
+      const coords = node.coords || [0, 0, 0];
+      mesh.position.set(coords[0], coords[1], coords[2]);
       mesh.userData = { type: 'node', data: node };
       nodesGroup.add(mesh);
       nodeMeshesMap.set(node.id, mesh);
 
-      // Wireframe overlay
       const wireGeo = new THREE.OctahedronGeometry(1.0, 1);
       const wireMat = new THREE.MeshBasicMaterial({
         color: '#ffffff',
@@ -206,22 +219,21 @@ export default function Canvas3D({
 
       // Build Flexible Legs connecting to target Points
       if (node.legs && Array.isArray(node.legs)) {
-        node.legs.forEach(targetId => {
+        node.legs.forEach((targetId: string) => {
           const targetObjMesh = objectMeshesMap.get(targetId);
           if (targetObjMesh) {
             const startPos = mesh.position.clone();
             const endPos = targetObjMesh.position.clone();
 
-            // Elastic Curve
             const midPos = new THREE.Vector3().addVectors(startPos, endPos).multiplyScalar(0.5);
-            midPos.y += 2.0; // Curve lift
+            midPos.y += 2.0;
 
             const curve = new THREE.QuadraticBezierCurve3(startPos, midPos, endPos);
             const points = curve.getPoints(30);
             const legGeo = new THREE.BufferGeometry().setFromPoints(points);
 
             const legMat = new THREE.LineDashedMaterial({
-              color: node.color,
+              color: node.color || '#a855f7',
               dashSize: 0.4,
               gapSize: 0.2,
               transparent: true,
@@ -232,7 +244,6 @@ export default function Canvas3D({
             line.computeLineDistances();
             nodesGroup.add(line);
 
-            // Flowing pulse particle along leg
             const pGeo = new THREE.SphereGeometry(0.2, 8, 8);
             const pMat = new THREE.MeshBasicMaterial({
               color: '#ffffff',
@@ -249,7 +260,7 @@ export default function Canvas3D({
     });
 
     // --- Build Relationships (RG Flow, Duality, Model Correspondence) ---
-    RELATION_LINKS.forEach(rel => {
+    RELATION_LINKS.forEach((rel: any) => {
       const srcMesh = objectMeshesMap.get(rel.source) || nodeMeshesMap.get(rel.source);
       const tgtMesh = objectMeshesMap.get(rel.target) || nodeMeshesMap.get(rel.target);
 
@@ -257,8 +268,7 @@ export default function Canvas3D({
         const start = srcMesh.position.clone();
         const end = tgtMesh.position.clone();
         const mid = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
-        
-        // Offset for visual distinction
+
         if (rel.type === 'duality') mid.z += 4;
         else if (rel.type === 'rg-flow') mid.y += 3;
         else mid.x -= 3;
@@ -267,7 +277,7 @@ export default function Canvas3D({
         const points = curve.getPoints(40);
         const geo = new THREE.BufferGeometry().setFromPoints(points);
 
-        let color = '#ec4899'; // RG flow
+        let color = '#ec4899';
         if (rel.type === 'duality') color = '#a855f7';
         if (rel.type === 'model-correspondence') color = '#38bdf8';
 
@@ -281,7 +291,6 @@ export default function Canvas3D({
         line.userData = { type: 'relation', data: rel };
         relationsGroup.add(line);
 
-        // Animated particles along relation flow
         const pGeo = new THREE.SphereGeometry(0.25, 8, 8);
         const pMat = new THREE.MeshBasicMaterial({ color, blending: THREE.AdditiveBlending });
         const pMesh = new THREE.Mesh(pGeo, pMat);
@@ -290,7 +299,6 @@ export default function Canvas3D({
       }
     });
 
-    // Save animatable references
     animatedObjectsRef.current = {
       clouds: cloudMeshes,
       pulses: animPulses,
@@ -298,25 +306,23 @@ export default function Canvas3D({
       objects: Array.from(objectMeshesMap.values())
     };
 
-    // --- Simple Orbit Mouse Controls ---
+    // Orbit Drag Control Handlers
     let isDragging = false;
     let previousMousePosition = { x: 0, y: 0 };
-
     const domElem = containerRef.current;
 
-    const onMouseDown = (e) => {
+    const onMouseDown = (e: MouseEvent) => {
       isDragging = true;
       previousMousePosition = { x: e.clientX, y: e.clientY };
     };
 
-    const onMouseMove = (e) => {
+    const onMouseMove = (e: MouseEvent) => {
       if (!isDragging) return;
       const deltaX = e.clientX - previousMousePosition.x;
       const deltaY = e.clientY - previousMousePosition.y;
 
       const camera = cameraRef.current;
       if (camera) {
-        // Orbit around center (0,0,0)
         const radius = camera.position.length();
         let theta = Math.atan2(camera.position.x, camera.position.z);
         let phi = Math.acos(Math.max(-1, Math.min(1, camera.position.y / radius)));
@@ -338,7 +344,7 @@ export default function Canvas3D({
       isDragging = false;
     };
 
-    const onWheel = (e) => {
+    const onWheel = (e: WheelEvent) => {
       e.preventDefault();
       const camera = cameraRef.current;
       if (camera) {
@@ -353,19 +359,20 @@ export default function Canvas3D({
     window.addEventListener('mouseup', onMouseUp);
     domElem.addEventListener('wheel', onWheel, { passive: false });
 
-    // --- Raycasting for Click / Select ---
+    // Raycaster for Selection
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
 
-    const onClick = (e) => {
+    const onClick = (e: MouseEvent) => {
       const rect = domElem.getBoundingClientRect();
       mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
       mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
 
+      if (!cameraRef.current) return;
       raycaster.setFromCamera(mouse, cameraRef.current);
-      const interactables = [];
-      objectsGroup.traverse(child => { if (child.isMesh) interactables.push(child); });
-      nodesGroup.traverse(child => { if (child.isMesh && child.userData.type === 'node') interactables.push(child); });
+      const interactables: THREE.Object3D[] = [];
+      objectsGroup.traverse(child => { if ((child as THREE.Mesh).isMesh) interactables.push(child); });
+      nodesGroup.traverse(child => { if ((child as THREE.Mesh).isMesh && child.userData.type === 'node') interactables.push(child); });
 
       const intersects = raycaster.intersectObjects(interactables, false);
       if (intersects.length > 0) {
@@ -378,16 +385,13 @@ export default function Canvas3D({
 
     domElem.addEventListener('click', onClick);
 
-    // --- Animation Loop ---
-    let animationFrameId;
+    let animationFrameId: number;
     const clock = new THREE.Clock();
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
       const delta = clock.getDelta();
-      const elapsedTime = clock.getElapsedTime();
 
-      // Rotate Clouds slowly
       if (animatedObjectsRef.current.clouds) {
         animatedObjectsRef.current.clouds.forEach(m => {
           m.rotation.y += 0.05 * delta;
@@ -395,7 +399,6 @@ export default function Canvas3D({
         });
       }
 
-      // Rotate Nodes
       if (animatedObjectsRef.current.nodes) {
         animatedObjectsRef.current.nodes.forEach(m => {
           m.rotation.y += 0.6 * delta;
@@ -403,7 +406,6 @@ export default function Canvas3D({
         });
       }
 
-      // Move Pulses
       if (animatedObjectsRef.current.pulses) {
         animatedObjectsRef.current.pulses.forEach(p => {
           p.progress += delta * p.speed;
@@ -413,12 +415,13 @@ export default function Canvas3D({
         });
       }
 
-      renderer.render(scene, camera);
+      if (rendererRef.current && cameraRef.current) {
+        rendererRef.current.render(scene, cameraRef.current);
+      }
     };
 
     animate();
 
-    // Resize Handler
     const handleResize = () => {
       if (!containerRef.current || !rendererRef.current || !cameraRef.current) return;
       const w = containerRef.current.clientWidth;
@@ -444,15 +447,12 @@ export default function Canvas3D({
     };
   }, []);
 
-  // Update Layer Visibilities & Camera Modes
   useEffect(() => {
     if (!sceneRef.current) return;
     const scene = sceneRef.current;
-    
-    // Find Groups
+
     scene.children.forEach(child => {
       if (child.type === 'Group') {
-        // Toggle visibility based on layerVisibility
         if (child.children.some(c => c.userData?.type === 'cloud')) {
           child.visible = layerVisibility.clouds;
         }
@@ -469,12 +469,10 @@ export default function Canvas3D({
     });
   }, [layerVisibility]);
 
-  // Adjust camera for 2D vs 3D projection
   useEffect(() => {
     if (!cameraRef.current) return;
     const camera = cameraRef.current;
     if (viewMode === '2d') {
-      // Look straight down at X-Y (Spatial - Energy) plane
       camera.position.set(0, 0, 70);
       camera.lookAt(0, 0, 0);
     } else {
@@ -486,12 +484,13 @@ export default function Canvas3D({
   return (
     <div className="relative w-full h-full">
       <div ref={containerRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
-      
-      {/* Viewport Hint */}
+
       <div className="absolute bottom-4 left-4 pointer-events-none glass-panel px-3 py-1.5 rounded-lg text-xs text-sky-300 font-mono flex items-center gap-2">
         <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
         按住左键拖拽旋转 | 滚轮缩放 | 点击可探索节点与相关联路线
       </div>
     </div>
   );
-}
+};
+
+export default Canvas3D;

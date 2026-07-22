@@ -2,9 +2,18 @@ import React, { useEffect, useRef } from 'react';
 import katex from '../utils/initKatex';
 import 'katex/dist/katex.min.css';
 
+interface MathProps {
+  math: string;
+  className?: string;
+}
 
-export function InlineMath({ math, className = '' }) {
-  const containerRef = useRef(null);
+interface AutoMathProps {
+  text?: string;
+  className?: string;
+}
+
+export const InlineMath: React.FC<MathProps> = ({ math, className = '' }) => {
+  const containerRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     if (containerRef.current && math) {
@@ -24,10 +33,10 @@ export function InlineMath({ math, className = '' }) {
   }, [math]);
 
   return <span ref={containerRef} className={`inline-block ${className}`} />;
-}
+};
 
-export function BlockMath({ math, className = '' }) {
-  const containerRef = useRef(null);
+export const BlockMath: React.FC<MathProps> = ({ math, className = '' }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (containerRef.current && math) {
@@ -47,12 +56,12 @@ export function BlockMath({ math, className = '' }) {
   }, [math]);
 
   return <div ref={containerRef} className={`overflow-x-auto my-1 text-center ${className}`} />;
-}
+};
 
-export function AutoMathText({ text, className = '' }) {
+export const AutoMathText: React.FC<AutoMathProps> = ({ text, className = '' }) => {
   if (!text) return null;
 
-  // Check if string contains LaTeX commands (like \approx, \times, \lambda, \Delta, \hbar, 10^{-2}, etc.)
+  // Check if string contains LaTeX commands
   const hasLatex = /[\\^_{}]/.test(text) || text.includes('\\approx') || text.includes('\\times') || text.includes('\\text');
 
   if (hasLatex) {
@@ -60,4 +69,4 @@ export function AutoMathText({ text, className = '' }) {
   }
 
   return <span className={className}>{text}</span>;
-}
+};

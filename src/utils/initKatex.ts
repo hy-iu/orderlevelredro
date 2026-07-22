@@ -3,19 +3,20 @@ import katexModule from 'katex';
 let katex = katexModule;
 
 if (typeof window !== 'undefined') {
-  if (window.katex) {
-    katex = window.katex;
+  if ((window as any).katex) {
+    katex = (window as any).katex;
   } else {
-    window.katex = katexModule;
+    (window as any).katex = katexModule;
   }
 }
+
 if (typeof self !== 'undefined') {
-  self.katex = katex;
+  (self as any).katex = katex;
 }
 
 // Side-effect import mhchem for bundled environments fallback
 try {
-  import('katex/dist/contrib/mhchem.js');
+  import('katex/dist/contrib/mhchem.js' as any);
 } catch (e) {
   // Ignore if already registered by CDN
 }

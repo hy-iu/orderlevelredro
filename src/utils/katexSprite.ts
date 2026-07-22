@@ -4,10 +4,10 @@ import katexCss from 'katex/dist/katex.min.css?raw';
 import { katexFontFaceCss } from './katexFontsBase64';
 
 // Cache for SVG DataURI Images rendered by KaTeX
-const spriteCache = new Map();
-let onSpriteLoadedCallback = null;
+const spriteCache = new Map<string, HTMLImageElement>();
+let onSpriteLoadedCallback: (() => void) | null = null;
 
-export function setSpriteLoadCallback(cb) {
+export function setSpriteLoadCallback(cb: () => void): void {
   onSpriteLoadedCallback = cb;
 }
 
@@ -15,10 +15,14 @@ export function setSpriteLoadCallback(cb) {
  * Render a LaTeX string into an HTMLImageElement using SVG foreignObject
  * Compact SVG container dimensions & zero padding to bring labels close to particle dots
  */
-export function getKatexSprite(latexStr, color = '#0f172a', fontSize = 15) {
+export function getKatexSprite(
+  latexStr: string,
+  color: string = '#0f172a',
+  fontSize: number = 15
+): HTMLImageElement | null {
   const cacheKey = `${latexStr}_${color}_${fontSize}`;
   if (spriteCache.has(cacheKey)) {
-    return spriteCache.get(cacheKey);
+    return spriteCache.get(cacheKey)!;
   }
 
   try {

@@ -1,10 +1,16 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useCallback, useEffect } from 'react';
 
-/**
- * Robust Dual-Thumb Range Slider with Direct Track Mouse/Touch Dragging
- * Completely eliminates z-index locking issues on right/left thumbs.
- */
-export default function DualRangeSlider({
+interface DualRangeSliderProps {
+  minLimit: number;
+  maxLimit: number;
+  minVal: number;
+  maxVal: number;
+  onChange: (range: [number, number]) => void;
+  unit?: string;
+  accentColor?: string;
+}
+
+export const DualRangeSlider: React.FC<DualRangeSliderProps> = ({
   minLimit,
   maxLimit,
   minVal,
@@ -12,15 +18,15 @@ export default function DualRangeSlider({
   onChange,
   unit = '',
   accentColor = '#0284c7'
-}) {
-  const trackRef = useRef(null);
-  const draggingThumbRef = useRef(null); // 'min' | 'max' | null
+}) => {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const draggingThumbRef = useRef<'min' | 'max' | null>(null);
 
   const minPercent = Math.max(0, Math.min(100, ((minVal - minLimit) / (maxLimit - minLimit)) * 100));
   const maxPercent = Math.max(0, Math.min(100, ((maxVal - minLimit) / (maxLimit - minLimit)) * 100));
 
   // Input Textbox Handlers
-  const handleMinInput = (e) => {
+  const handleMinInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = Number(e.target.value);
     if (!isNaN(val)) {
       const clamped = Math.max(minLimit, Math.min(val, maxVal));
@@ -28,7 +34,7 @@ export default function DualRangeSlider({
     }
   };
 
-  const handleMaxInput = (e) => {
+  const handleMaxInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = Number(e.target.value);
     if (!isNaN(val)) {
       const clamped = Math.min(maxLimit, Math.max(val, minVal));
@@ -37,7 +43,7 @@ export default function DualRangeSlider({
   };
 
   // Convert clientX to integer scale value within [minLimit, maxLimit]
-  const getValueFromX = useCallback((clientX) => {
+  const getValueFromX = useCallback((clientX: number) => {
     if (!trackRef.current) return minLimit;
     const rect = trackRef.current.getBoundingClientRect();
     const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
@@ -45,7 +51,7 @@ export default function DualRangeSlider({
   }, [minLimit, maxLimit]);
 
   // Track Pointer Down: Determine nearest thumb to drag
-  const onPointerDown = (e) => {
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     const val = getValueFromX(e.clientX);
     const distToMin = Math.abs(val - minVal);
     const distToMax = Math.abs(val - maxVal);
@@ -63,7 +69,7 @@ export default function DualRangeSlider({
 
   // Global Drag Events
   useEffect(() => {
-    const onPointerMove = (e) => {
+    const onPointerMove = (e: PointerEvent) => {
       if (!draggingThumbRef.current) return;
       const val = getValueFromX(e.clientX);
 
@@ -161,4 +167,6 @@ export default function DualRangeSlider({
       </div>
     </div>
   );
-}
+};
+
+export default DualRangeSlider;
