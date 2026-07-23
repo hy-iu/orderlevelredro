@@ -9,7 +9,7 @@ import {
 import { getKatexSprite, setSpriteLoadCallback } from '../../utils/katexSprite';
 import { ZoomIn, ZoomOut, RefreshCw, Target, Crop } from 'lucide-react';
 import { LayerVisibility } from '../ControlPanel';
-import { PhysicsNode, ResearchRoute, EquivalenceRelation } from '../../types/physics';
+import { PhysicsNode, ResearchRoute, EquivalenceRelation, CanvasTransform } from '../../types/physics';
 
 interface Canvas2DProps {
   activeDomain: string;
@@ -19,6 +19,9 @@ interface Canvas2DProps {
   spatialRange: [number, number];
   energyRange: [number, number];
   fitTrigger: number;
+  transform: CanvasTransform;
+  setTransform: React.Dispatch<React.SetStateAction<CanvasTransform>>;
+  onViewportChange: (size: { w: number; h: number }) => void;
 }
 
 interface BoxSelection {
@@ -52,13 +55,15 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
   onSelectItem,
   spatialRange,
   energyRange,
-  fitTrigger
+  fitTrigger,
+  transform,
+  setTransform,
+  onViewportChange
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Viewport State
-  const [transform, setTransform] = useState({ scale: 1.0, offsetX: 70, offsetY: 30 });
   const [hoveredItem, setHoveredItem] = useState<any>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
 
@@ -92,16 +97,16 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
   // Map World Coords to Screen Pixel Coords
   const toScreenCoords = useCallback((worldX: number, worldY: number) => {
     return {
-      x: worldX * transform.scale + transform.offsetX,
-      y: worldY * transform.scale + transform.offsetY
+      x: worldX * transform.scaleX + transform.offsetX,
+      y: worldY * transform.scaleY + transform.offsetY
     };
   }, [transform]);
 
   // Map Screen Pixel Coords back to World Coordinates
   const toWorldCoords = useCallback((screenX: number, screenY: number) => {
     return {
-      x: (screenX - transform.offsetX) / transform.scale,
-      y: (screenY - transform.offsetY) / transform.scale
+      x: (screenX - transform.offsetX) / transform.scaleX,
+      y: (screenY - transform.offsetY) / transform.scaleY
     };
   }, [transform]);
 
@@ -123,20 +128,24 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
 
     if (boxW === 0 || boxH === 0) return;
 
-    const targetScale = Math.max(0.6, Math.min(25.0, Math.min((w - 140) / boxW, (h - 100) / boxH)));
+    // Fit each axis independently so the selected log-range truly fills the
+    // viewport on both axes (no locked aspect ratio).
+    const targetScaleX = Math.max(0.6, Math.min(25.0, (w - 140) / boxW));
+    const targetScaleY = Math.max(0.6, Math.min(25.0, (h - 100) / boxH));
 
     const centerWorldX = (wMin.x + wMax.x) / 2;
     const centerWorldY = (wMin.y + wMax.y) / 2;
 
-    const newOffsetX = w / 2 - centerWorldX * targetScale;
-    const newOffsetY = h / 2 - centerWorldY * targetScale;
+    const newOffsetX = w / 2 - centerWorldX * targetScaleX;
+    const newOffsetY = h / 2 - centerWorldY * targetScaleY;
 
     setTransform({
-      scale: targetScale,
+      scaleX: targetScaleX,
+      scaleY: targetScaleY,
       offsetX: newOffsetX,
       offsetY: newOffsetY
     });
-  }, [spatialRange, energyRange, getWorldCoords]);
+  }, [spatialRange, energyRange, getWorldCoords, setTransform]);
 
   // Trigger fit view when fitTrigger updates
   useEffect(() => {
@@ -173,41 +182,81 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, w, h);
 
-      // --- Draw Grid Lines & Subdivisions ---
-      ctx.strokeStyle = '#f1f5f9';
+      // --- Adaptive Grid: subdivisions densify as each axis is zoomed in ---
+      // Pixels per decade on each axis (world span is 63 dex in L, 34 dex in E).
+      const ppdX = ((w - 140) * transform.scaleX) / 63;
+      const ppdY = ((h - 140) * transform.scaleY) / 34;
+
+      // Pick the coarsest "nice" major step (integer decades) that still keeps
+      // labelled lines >= ~70px apart; minor lines subdivide it 5-fold.
+      const niceMajor = (ppd: number) => {
+        for (const s of [1, 2, 5, 10, 20]) if (s * ppd >= 70) return s;
+        return 20;
+      };
+      const majorX = niceMajor(ppdX), minorX = majorX / 5;
+      const majorY = niceMajor(ppdY), minorY = majorY / 5;
+
       ctx.lineWidth = 1;
 
-      // Vertical Grid lines (Spatial Scale logL)
-      for (let logL = -35; logL <= 25; logL += 5) {
-        const wP = getWorldCoords(logL, 0, w, h);
-        const sP = toScreenCoords(wP.x, wP.y);
-
+      // Minor vertical lines (spatial) — light, unlabelled
+      if (minorX * ppdX >= 16) {
+        ctx.strokeStyle = '#f1f5f9';
+        const ratioX = Math.round(majorX / minorX);
+        for (let i = Math.ceil(-36 / minorX); i * minorX <= 27; i++) {
+          if (i % ratioX === 0) continue;
+          const sP = toScreenCoords(getWorldCoords(i * minorX, 0, w, h).x, 0);
+          ctx.beginPath();
+          ctx.moveTo(sP.x, 20);
+          ctx.lineTo(sP.x, h - 45);
+          ctx.stroke();
+        }
+      }
+      // Major vertical lines + labels
+      ctx.strokeStyle = '#e2e8f0';
+      for (let i = Math.ceil(-36 / majorX); i * majorX <= 27; i++) {
+        const logL = i * majorX;
+        const sP = toScreenCoords(getWorldCoords(logL, 0, w, h).x, 0);
         ctx.beginPath();
         ctx.moveTo(sP.x, 20);
         ctx.lineTo(sP.x, h - 45);
         ctx.stroke();
-
-        ctx.fillStyle = '#64748b';
-        ctx.font = '11px "STIX Two Text", "Times New Roman", serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(`10^${logL} m`, sP.x, h - 30);
+        if (sP.x > 40 && sP.x < w - 30) {
+          ctx.fillStyle = '#64748b';
+          ctx.font = '11px "STIX Two Text", "Times New Roman", serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(`10^${logL} m`, sP.x, h - 30);
+        }
       }
 
-      // Horizontal Grid lines (Energy Scale logE)
-      for (let logE = -4; logE <= 28; logE += 4) {
-        const wP = getWorldCoords(0, logE, w, h);
-        const sP = toScreenCoords(wP.x, wP.y);
-
+      // Minor horizontal lines (energy) — light, unlabelled
+      if (minorY * ppdY >= 16) {
+        ctx.strokeStyle = '#f1f5f9';
+        const ratioY = Math.round(majorY / minorY);
+        for (let i = Math.ceil(-5 / minorY); i * minorY <= 29; i++) {
+          if (i % ratioY === 0) continue;
+          const sP = toScreenCoords(0, getWorldCoords(0, i * minorY, w, h).y);
+          ctx.beginPath();
+          ctx.moveTo(60, sP.y);
+          ctx.lineTo(w - 20, sP.y);
+          ctx.stroke();
+        }
+      }
+      // Major horizontal lines + labels
+      ctx.strokeStyle = '#e2e8f0';
+      for (let i = Math.ceil(-5 / majorY); i * majorY <= 29; i++) {
+        const logE = i * majorY;
+        const sP = toScreenCoords(0, getWorldCoords(0, logE, w, h).y);
         ctx.beginPath();
         ctx.moveTo(60, sP.y);
         ctx.lineTo(w - 20, sP.y);
         ctx.stroke();
-
-        ctx.fillStyle = '#64748b';
-        ctx.font = '11px "STIX Two Text", "Times New Roman", serif';
-        ctx.textAlign = 'right';
-        let unitStr = logE >= 9 ? `10^${logE - 9} GeV` : logE >= 6 ? `10^${logE - 6} MeV` : logE >= 3 ? `10^${logE - 3} keV` : `10^${logE} eV`;
-        ctx.fillText(unitStr, 54, sP.y + 4);
+        if (sP.y > 25 && sP.y < h - 50) {
+          ctx.fillStyle = '#64748b';
+          ctx.font = '11px "STIX Two Text", "Times New Roman", serif';
+          ctx.textAlign = 'right';
+          const unitStr = logE >= 9 ? `10^${logE - 9} GeV` : logE >= 6 ? `10^${logE - 6} MeV` : logE >= 3 ? `10^${logE - 3} keV` : `10^${logE} eV`;
+          ctx.fillText(unitStr, 54, sP.y + 4);
+        }
       }
 
       // --- Main Axes Lines ---
@@ -231,13 +280,17 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
       ctx.fillText('Energy Scale log₁₀(E / eV) →', 0, 0);
       ctx.restore();
 
-      // --- Quantum Uncertainty Bound Line: E * L ~ \hbar c ---
+      // --- Relativistic Quantum Bound: E · L ~ ℏc ---
+      // In log space: log10(E/eV) + log10(L/m) = log10(ℏc/eV·m) ≈ -6.7,
+      // i.e. a slope -1 line  y = -x - 6.7  passing through the Planck point,
+      // the QCD point (-15, 8.3) and every particle's Compton wavelength.
+      const HBARC_LOG = -6.7;
       ctx.strokeStyle = '#cbd5e1';
       ctx.setLineDash([4, 4]);
       ctx.lineWidth = 1.2;
       ctx.beginPath();
-      const wP1 = getWorldCoords(-35, 8.3 - (-35), w, h);
-      const wP2 = getWorldCoords(25, 8.3 - (25), w, h);
+      const wP1 = getWorldCoords(-36, HBARC_LOG - (-36), w, h);
+      const wP2 = getWorldCoords(2, HBARC_LOG - 2, w, h);
       const sP1 = toScreenCoords(wP1.x, wP1.y);
       const sP2 = toScreenCoords(wP2.x, wP2.y);
       ctx.moveTo(sP1.x, sP1.y);
@@ -245,9 +298,13 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
       ctx.stroke();
       ctx.setLineDash([]);
 
+      // Anchor the label to a point on the line sitting in the empty gap
+      // between the QG and electroweak domains, offset just below the line.
+      const wLbl = getWorldCoords(-23, HBARC_LOG - (-23), w, h);
+      const sLbl = toScreenCoords(wLbl.x, wLbl.y);
       ctx.fillStyle = '#94a3b8';
       ctx.font = 'italic 11px "STIX Two Text", serif';
-      ctx.fillText('Relativistic Quantum Bound: E · L ~ ℏc', sP1.x + 110, sP1.y + 14);
+      ctx.fillText('Relativistic Quantum Bound: E · L ~ ℏc', sLbl.x + 12, sLbl.y + 16);
 
       // --- 2D Fundamental Interaction Field Heatmaps (Exact QFT / QED / QCD / EW Physics Buffer) ---
       if (layerVisibility.heatmaps !== false) {
@@ -503,6 +560,11 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
 
             ctx.strokeStyle = isRelHovered || isRelSelected ? strokeColor : strokeColor + 'bb';
             ctx.lineWidth = isRelHovered || isRelSelected ? 2.5 : 1.5;
+            // RG flows (running couplings) and dualities (equivalences) read as dashed;
+            // model-correspondences stay solid. Distinct dash patterns keep them apart.
+            if (rel.type === 'rg-flow') ctx.setLineDash([7, 4]);
+            else if (rel.type === 'duality') ctx.setLineDash([2, 3]);
+            else ctx.setLineDash([]);
             ctx.beginPath();
 
             const midX = (sSrc.x + sTgt.x) / 2;
@@ -510,6 +572,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
             ctx.moveTo(sSrc.x, sSrc.y);
             ctx.quadraticCurveTo(midX, midY, sTgt.x, sTgt.y);
             ctx.stroke();
+            ctx.setLineDash([]);
 
             const angle = Math.atan2(sTgt.y - midY, sTgt.x - midX);
             ctx.fillStyle = strokeColor;
@@ -544,21 +607,30 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
           const isNodeHovered = hoveredItem?.id === node.id;
           const isNodeSelected = selectedItem?.id === node.id;
 
+          // When the hovered/selected physical object is one of this node's legs,
+          // light the node up so the user can trace which research topics it feeds.
+          const hoveredObjId = hoveredItem && hoveredItem.symbol ? hoveredItem.id : null;
+          const selectedObjId = selectedItem && selectedItem.symbol ? selectedItem.id : null;
+          const isNodeRelated =
+            (hoveredObjId !== null && Array.isArray(node.legs) && node.legs.includes(hoveredObjId)) ||
+            (selectedObjId !== null && Array.isArray(node.legs) && node.legs.includes(selectedObjId));
+          const nodeActive = isNodeHovered || isNodeSelected || isNodeRelated;
+
           let mainColor = '#0369a1';
           let subColor = '#0c4a6e';
           let connectionColor = '#3b82f6';
 
           if (node.type === 'theory') {
-            mainColor = isNodeSelected ? '#9333ea' : isNodeHovered ? '#a855f7' : '#7e22ce';
-            subColor = isNodeSelected ? '#a855f7' : isNodeHovered ? '#c084fc' : '#6b21a8';
+            mainColor = isNodeSelected ? '#9333ea' : (isNodeHovered || isNodeRelated) ? '#a855f7' : '#7e22ce';
+            subColor = isNodeSelected ? '#a855f7' : (isNodeHovered || isNodeRelated) ? '#c084fc' : '#6b21a8';
             connectionColor = '#8b5cf6';
           } else if (node.type === 'method') {
-            mainColor = isNodeSelected ? '#059669' : isNodeHovered ? '#10b981' : '#047857';
-            subColor = isNodeSelected ? '#10b981' : isNodeHovered ? '#34d399' : '#065f46';
+            mainColor = isNodeSelected ? '#059669' : (isNodeHovered || isNodeRelated) ? '#10b981' : '#047857';
+            subColor = isNodeSelected ? '#10b981' : (isNodeHovered || isNodeRelated) ? '#34d399' : '#065f46';
             connectionColor = '#10b981';
           } else {
-            mainColor = isNodeSelected ? '#0284c7' : isNodeHovered ? '#38bdf8' : '#0369a1';
-            subColor = isNodeSelected ? '#38bdf8' : isNodeHovered ? '#7dd3fc' : '#0c4a6e';
+            mainColor = isNodeSelected ? '#0284c7' : (isNodeHovered || isNodeRelated) ? '#38bdf8' : '#0369a1';
+            subColor = isNodeSelected ? '#38bdf8' : (isNodeHovered || isNodeRelated) ? '#7dd3fc' : '#0c4a6e';
             connectionColor = '#3b82f6';
           }
 
@@ -573,8 +645,9 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
                 const midX = (sNode.x + sObj.x) / 2;
                 const midY = (sNode.y + sObj.y) / 2 - 12;
 
-                ctx.strokeStyle = isNodeHovered || isNodeSelected ? connectionColor : '#94a3b866';
-                ctx.lineWidth = isNodeHovered || isNodeSelected ? 2.0 : 1.0;
+                const isLegActive = isNodeHovered || isNodeSelected || legId === hoveredObjId || legId === selectedObjId;
+                ctx.strokeStyle = isLegActive ? connectionColor : '#94a3b866';
+                ctx.lineWidth = isLegActive ? 2.0 : 1.0;
                 ctx.beginPath();
                 ctx.moveTo(sNode.x, sNode.y);
                 ctx.quadraticCurveTo(midX, midY, sObj.x, sObj.y);
@@ -594,7 +667,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
           ctx.strokeStyle = 'rgba(255, 255, 255, 0.95)';
           ctx.lineWidth = 3.5;
 
-          ctx.font = isNodeHovered || isNodeSelected
+          ctx.font = nodeActive
             ? '700 12px "Inter", "PingFang SC", "STHeiti", sans-serif'
             : '600 11.5px "Inter", "PingFang SC", "STHeiti", sans-serif';
 
@@ -605,7 +678,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
 
           if (en) {
             const line2Y = sNode.y + 7;
-            ctx.font = isNodeHovered || isNodeSelected
+            ctx.font = nodeActive
               ? '600 10px "Inter", serif'
               : '500 9.5px "Inter", serif';
             ctx.strokeText(en, sNode.x, line2Y);
@@ -615,7 +688,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
 
           ctx.fillStyle = mainColor;
           ctx.beginPath();
-          ctx.arc(sNode.x, sNode.y, isNodeHovered || isNodeSelected ? 3.5 : 2.5, 0, Math.PI * 2);
+          ctx.arc(sNode.x, sNode.y, nodeActive ? 3.5 : 2.5, 0, Math.PI * 2);
           ctx.fill();
 
           ctx.restore();
@@ -647,8 +720,8 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
             const plotW = w - margin * 2;
             const plotH = h - margin * 2;
 
-            const ebX = obj.errorBar.dx * (plotW / 63) * transform.scale;
-            const ebY = obj.errorBar.dy * (plotH / 34) * transform.scale;
+            const ebX = obj.errorBar.dx * (plotW / 63) * transform.scaleX;
+            const ebY = obj.errorBar.dy * (plotH / 34) * transform.scaleY;
 
             ctx.strokeStyle = isObjHovered || isObjSelected ? '#dc2626' : '#64748b';
             ctx.lineWidth = isObjHovered || isObjSelected ? 1.6 : 1.2;
@@ -752,14 +825,21 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
             ctx.stroke();
           }
 
-          let labelOffsetX = radius + 4;
-          let labelOffsetY = -10;
+          const katexSprite = getKatexSprite(obj.symbol || obj.label || '', isObjSelected ? '#dc2626' : isObjHovered ? '#2563eb' : '#0f172a', 15);
+
+          // Fixed diagonal offset to the upper-right so the label clears the
+          // error-bar cross (horizontal arm along y = sObj.y, vertical along x = sObj.x).
+          // Canvas y grows downward, so a MORE-negative offset sits HIGHER:
+          // -30 lifts the label ~12px clear of the horizontal error-bar arm.
+          let labelOffsetX = radius;
+          let labelOffsetY = 0;
+
+          // Manual overrides for the crowded electroweak cluster.
           if (obj.id === 'obj-z-boson') { labelOffsetX = -28; labelOffsetY = -14; }
           if (obj.id === 'obj-w-boson') { labelOffsetX = -28; labelOffsetY = 0; }
           if (obj.id === 'obj-higgs') { labelOffsetX = 9; labelOffsetY = -14; }
           if (obj.id === 'obj-top-quark') { labelOffsetX = 9; labelOffsetY = 2; }
 
-          const katexSprite = getKatexSprite(obj.symbol || obj.label || '', isObjSelected ? '#dc2626' : isObjHovered ? '#2563eb' : '#0f172a', 15);
           if (katexSprite && katexSprite.complete) {
             ctx.drawImage(katexSprite, sObj.x + labelOffsetX, sObj.y + labelOffsetY);
           }
@@ -793,13 +873,14 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
       const rect = containerRef.current.getBoundingClientRect();
       canvas.width = rect.width * window.devicePixelRatio;
       canvas.height = rect.height * window.devicePixelRatio;
+      onViewportChange({ w: rect.width, h: rect.height });
       render();
     };
 
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [transform, activeDomain, layerVisibility, selectedItem, hoveredItem, spatialRange, energyRange, boxSelection, getWorldCoords, toScreenCoords]);
+  }, [transform, activeDomain, layerVisibility, selectedItem, hoveredItem, spatialRange, energyRange, boxSelection, getWorldCoords, toScreenCoords, onViewportChange]);
 
   // --- Mouse & Touch Gestures Handling ---
 
@@ -897,15 +978,17 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
         const wBoxW = Math.abs(w2.x - w1.x);
         const wBoxH = Math.abs(w2.y - w1.y);
 
-        const targetScale = Math.max(0.5, Math.min(30.0, Math.min(w / wBoxW, h / wBoxH)));
+        const targetScaleX = Math.max(0.5, Math.min(30.0, w / wBoxW));
+        const targetScaleY = Math.max(0.5, Math.min(30.0, h / wBoxH));
         const centerWorldX = (w1.x + w2.x) / 2;
         const centerWorldY = (w1.y + w2.y) / 2;
 
-        const newOffsetX = w / 2 - centerWorldX * targetScale;
-        const newOffsetY = h / 2 - centerWorldY * targetScale;
+        const newOffsetX = w / 2 - centerWorldX * targetScaleX;
+        const newOffsetY = h / 2 - centerWorldY * targetScaleY;
 
         setTransform({
-          scale: targetScale,
+          scaleX: targetScaleX,
+          scaleY: targetScaleY,
           offsetX: newOffsetX,
           offsetY: newOffsetY
         });
@@ -922,13 +1005,23 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
     e.preventDefault();
     if (e.ctrlKey) {
       const zoomFactor = e.deltaY < 0 ? 1.08 : 0.92;
+      const zoomX = !e.altKey;   // Alt held  -> Y axis only
+      const zoomY = !e.shiftKey; // Shift held -> X axis only
       setTransform(prev => {
-        const newScale = Math.max(0.5, Math.min(30.0, prev.scale * zoomFactor));
+        let { scaleX, scaleY, offsetX, offsetY } = prev;
         const mouseX = e.clientX;
         const mouseY = e.clientY;
-        const newOffsetX = mouseX - (mouseX - prev.offsetX) * (newScale / prev.scale);
-        const newOffsetY = mouseY - (mouseY - prev.offsetY) * (newScale / prev.scale);
-        return { scale: newScale, offsetX: newOffsetX, offsetY: newOffsetY };
+        if (zoomX) {
+          const ns = Math.max(0.5, Math.min(30.0, scaleX * zoomFactor));
+          offsetX = mouseX - (mouseX - offsetX) * (ns / scaleX);
+          scaleX = ns;
+        }
+        if (zoomY) {
+          const ns = Math.max(0.5, Math.min(30.0, scaleY * zoomFactor));
+          offsetY = mouseY - (mouseY - offsetY) * (ns / scaleY);
+          scaleY = ns;
+        }
+        return { scaleX, scaleY, offsetX, offsetY };
       });
     } else {
       setTransform(prev => ({
@@ -972,11 +1065,12 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
       const zoomRatio = currentDist / prevDist;
 
       setTransform(prev => {
-        const newScale = Math.max(0.5, Math.min(30.0, prev.scale * zoomRatio));
-        const newOffsetX = currentCenter.x - (currentCenter.x - (prev.offsetX + deltaX)) * (newScale / prev.scale);
-        const newOffsetY = currentCenter.y - (currentCenter.y - (prev.offsetY + deltaY)) * (newScale / prev.scale);
+        const newScaleX = Math.max(0.5, Math.min(30.0, prev.scaleX * zoomRatio));
+        const newScaleY = Math.max(0.5, Math.min(30.0, prev.scaleY * zoomRatio));
+        const newOffsetX = currentCenter.x - (currentCenter.x - (prev.offsetX + deltaX)) * (newScaleX / prev.scaleX);
+        const newOffsetY = currentCenter.y - (currentCenter.y - (prev.offsetY + deltaY)) * (newScaleY / prev.scaleY);
 
-        return { scale: newScale, offsetX: newOffsetX, offsetY: newOffsetY };
+        return { scaleX: newScaleX, scaleY: newScaleY, offsetX: newOffsetX, offsetY: newOffsetY };
       });
 
       touchStateRef.current = { prevDist: currentDist, prevCenter: currentCenter };
@@ -1008,9 +1102,9 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
     }
   };
 
-  const zoomIn = () => setTransform(prev => ({ ...prev, scale: Math.min(30.0, prev.scale * 1.5) }));
-  const zoomOut = () => setTransform(prev => ({ ...prev, scale: Math.max(0.5, prev.scale / 1.5) }));
-  const resetFullScale = () => setTransform({ scale: 1.0, offsetX: 70, offsetY: 30 });
+  const zoomIn = () => setTransform(prev => ({ ...prev, scaleX: Math.min(30.0, prev.scaleX * 1.5), scaleY: Math.min(30.0, prev.scaleY * 1.5) }));
+  const zoomOut = () => setTransform(prev => ({ ...prev, scaleX: Math.max(0.5, prev.scaleX / 1.5), scaleY: Math.max(0.5, prev.scaleY / 1.5) }));
+  const resetFullScale = () => setTransform({ scaleX: 1.0, scaleY: 1.0, offsetX: 70, offsetY: 30 });
 
   return (
     <div
@@ -1018,9 +1112,8 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
-      className={`relative w-full h-full bg-white overflow-hidden select-none touch-none ${
-        isBoxZoomMode ? 'cursor-crosshair' : 'cursor-grab active:cursor-grabbing'
-      }`}
+      className={`relative w-full h-full bg-white overflow-hidden select-none touch-none ${isBoxZoomMode ? 'cursor-crosshair' : 'cursor-grab active:cursor-grabbing'
+        }`}
     >
       <canvas
         ref={canvasRef}
@@ -1092,11 +1185,10 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
         <button
           onClick={() => setIsBoxZoomMode(!isBoxZoomMode)}
           title="进入 Matplotlib 式框选模式（在相图拖拽矩形直接放大指定视域，不改变过滤器标度）"
-          className={`p-2 rounded transition-all flex items-center justify-center group relative ${
-            isBoxZoomMode
-              ? 'bg-cyan-600 text-white shadow-inner'
-              : 'hover:bg-slate-100 text-slate-800'
-          }`}
+          className={`p-2 rounded transition-all flex items-center justify-center group relative ${isBoxZoomMode
+            ? 'bg-cyan-600 text-white shadow-inner'
+            : 'hover:bg-slate-100 text-slate-800'
+            }`}
         >
           <Crop className="w-4 h-4" />
           <span className="absolute right-full mr-2 hidden group-hover:block whitespace-nowrap bg-slate-900 text-white text-[10px] px-2 py-1 rounded shadow">
@@ -1178,7 +1270,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
         </div>
 
         <div className="font-mono text-[10px] text-slate-500">
-          Scale: {transform.scale.toFixed(2)}x | Physical Review Light Theme
+          Zoom X {transform.scaleX.toFixed(2)}× · Y {transform.scaleY.toFixed(2)}× | Physical Review Light Theme
         </div>
       </div>
     </div>

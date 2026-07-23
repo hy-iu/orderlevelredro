@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import Header from './components/Header';
 import Canvas2D from './components/Canvas2D';
 import ControlPanel, { LayerVisibility } from './components/ControlPanel';
@@ -6,6 +6,7 @@ import DetailDrawer from './components/DetailDrawer';
 import EquivalenceModal from './components/EquivalenceModal';
 import ParticleManagerModal from './components/ParticleManagerModal';
 import { ACADEMIC_OBJECTS, ACADEMIC_RESEARCH_NODES } from './data/physicsData';
+import { CanvasTransform } from './types/physics';
 
 export function App() {
   const [activeDomain, setActiveDomain] = useState('all');
@@ -22,6 +23,29 @@ export function App() {
   const [spatialRange, setSpatialRange] = useState<[number, number]>([-35, 26]);
   const [energyRange, setEnergyRange] = useState<[number, number]>([-4, 28]);
   const [fitTrigger, setFitTrigger] = useState(0);
+
+  // Independent per-axis viewport transform (zoom X / zoom Y / pan), lifted here
+  // so the control panel's per-axis zoom sliders and the canvas share one source of truth.
+  const [transform, setTransform] = useState<CanvasTransform>({ scaleX: 1, scaleY: 1, offsetX: 70, offsetY: 30 });
+  const viewportRef = useRef({ w: 1200, h: 800 });
+
+  const handleViewportChange = useCallback((size: { w: number; h: number }) => {
+    viewportRef.current = size;
+  }, []);
+
+  // Zoom a single axis about the viewport centre so the view doesn't drift sideways.
+  const handleZoomAxis = useCallback((axis: 'x' | 'y', newScale: number) => {
+    setTransform(prev => {
+      const { w, h } = viewportRef.current;
+      const cx = w / 2, cy = h / 2;
+      if (axis === 'x') {
+        const ratio = newScale / prev.scaleX;
+        return { ...prev, scaleX: newScale, offsetX: cx - (cx - prev.offsetX) * ratio };
+      }
+      const ratio = newScale / prev.scaleY;
+      return { ...prev, scaleY: newScale, offsetY: cy - (cy - prev.offsetY) * ratio };
+    });
+  }, []);
 
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [selectedType, setSelectedType] = useState<'object' | 'node' | 'relation' | null>(null);
@@ -76,6 +100,9 @@ export function App() {
         setEnergyRange={setEnergyRange}
         onFitViewToSelection={triggerFitView}
         onResetScales={resetAllScales}
+        scaleX={transform.scaleX}
+        scaleY={transform.scaleY}
+        onZoomAxis={handleZoomAxis}
       />
 
       {/* Dynamic Interactive 2D Canvas */}
@@ -88,6 +115,9 @@ export function App() {
           spatialRange={spatialRange}
           energyRange={energyRange}
           fitTrigger={fitTrigger}
+          transform={transform}
+          setTransform={setTransform}
+          onViewportChange={handleViewportChange}
         />
       </main>
 

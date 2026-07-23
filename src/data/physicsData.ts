@@ -165,7 +165,7 @@ const BASE_OBJECTS = [
     domainId: 'domain-ew',
     coords: { x: -17.80, y: 11.098 },
     errorBar: { dx: 0.000011, dy: 0.000011 }, // PDG Decay Width \Gamma_h = 3.2 MeV -> dy = \Gamma / (E ln10)
-    symbol: 'h⁰',
+    symbol: 'h^0',
     type: 'fundamental',
     specs: {
       length: '1.57 \\times 10^{-18} \\text{ m}',
@@ -185,7 +185,7 @@ const BASE_OBJECTS = [
     domainId: 'domain-ew',
     coords: { x: -17.67, y: 10.960 },
     errorBar: { dx: 0.01188, dy: 0.01188 }, // PDG Decay Width \Gamma_Z = 2.4952 GeV
-    symbol: 'Z⁰',
+    symbol: 'Z^0',
     type: 'fundamental',
     specs: {
       length: '2.16 \\times 10^{-18} \\text{ m}',
@@ -535,7 +535,7 @@ const BASE_OBJECTS = [
     domainId: 'domain-hadron-nuclear',
     coords: { x: -14.5, y: 8.3 },
     errorBar: { dx: 0.5, dy: 0.15 }, // QGP phase deconfinement boundary span (1-10 fm)
-    symbol: 'QGP',
+    symbol: '\\text{QGP}',
     type: 'phase',
     specs: {
       length: '1 - 10 \\text{ fm}',
@@ -607,7 +607,7 @@ const BASE_OBJECTS = [
     domainId: 'domain-condensed-matter',
     coords: { x: -8.1, y: -2.3 },
     errorBar: { dx: 0.1, dy: 0.1 }, // Flat band energy & moiré period span
-    symbol: 'MA-TBG',
+    symbol: '\\text{MA-TBG}',
     type: 'quantum-material',
     specs: {
       length: 'L_M = 13.4 \\text{ nm (Moire Period)}',
@@ -641,7 +641,7 @@ const BASE_OBJECTS = [
     domainId: 'domain-condensed-matter',
     coords: { x: -9.6, y: -2.6 },
     errorBar: { dx: 0.2, dy: 0.15 }, // Fractionalized excitation energy continuum
-    symbol: 'QSL',
+    symbol: '\\text{QSL}',
     type: 'phase',
     specs: {
       length: 'a_0 \\approx 0.3 \\text{ nm}',
@@ -660,7 +660,7 @@ const BASE_OBJECTS = [
     domainId: 'domain-stat-complex',
     coords: { x: -5.0, y: -3.0 },
     errorBar: { dx: 0.3, dy: 0.2 }, // Non-equilibrium active phase boundary
-    symbol: 'ABP',
+    symbol: '\\text{ABP}',
     type: 'out-of-equilibrium',
     specs: {
       length: '1 \\text{ \\mu m} - 1 \\text{ mm}',
@@ -696,7 +696,7 @@ const BASE_OBJECTS = [
     domainId: 'domain-cosmology',
     coords: { x: 26.0, y: -3.58 },
     errorBar: { dx: 0.2, dy: 0.1 }, // Acoustic horizon & photon decoupling span
-    symbol: 'CMB',
+    symbol: '\\text{CMB}',
     type: 'cosmological',
     specs: {
       length: '4.65 \\times 10^{26} \\text{ m (Particle Horizon)}',
@@ -711,47 +711,13 @@ const BASE_OBJECTS = [
 // --- GPT Reference Diagram Research Objects (Objects & Realized States) ---
 export const ACADEMIC_OBJECTS_GPT_EXTENDED = [
   {
-    id: 'obj-quark-gluon',
-    label: '夸克与胶子 (Quarks & Gluons)',
-    pdgCode: 'PDG-QG-QCD',
-    domainId: 'domain-hadron-nuclear',
-    coords: { x: -18.0, y: 8.5 },
-    errorBar: { dx: 0.1, dy: 0.1 },
-    symbol: 'q, g',
-    type: 'fundamental',
-    specs: {
-      length: '10^{-18} \\text{ m}',
-      energy: '200 \\text{ MeV} - 173 \\text{ GeV}',
-      time: '10^{-24} \\text{ s}',
-      lagrangian: '\\mathcal{L}_{QCD} = \\bar{q}(i\\gamma^\\mu D_\\mu - m)q - \\frac{1}{4}G_{\\mu\\nu}^a G^{a\\mu\\nu}'
-    },
-    annotation: '色规范能标下的渐进自由与色禁闭绝热相变核心媒介。'
-  },
-  {
-    id: 'obj-higgs-neutrino',
-    label: '希格斯与中微子 (Higgs & Neutrinos)',
-    pdgCode: 'PDG-EW-HN',
-    domainId: 'domain-ew',
-    coords: { x: -17.8, y: 11.1 },
-    errorBar: { dx: 0.05, dy: 0.05 },
-    symbol: 'h⁰, \\nu',
-    type: 'fundamental',
-    specs: {
-      length: '1.57 \\times 10^{-18} \\text{ m}',
-      energy: '125 \\text{ GeV} / < 0.1 \\text{ eV}',
-      time: '10^{-22} \\text{ s}',
-      lagrangian: '\\mathcal{L}_{Yukawa} = -y_f \\bar{L} H f_R + \\frac{c_5}{\\Lambda} (L H)^2'
-    },
-    annotation: '电弱自发对称性破缺与中微子马约拉纳跷跷板 (Seesaw) 质量起源。'
-  },
-  {
     id: 'obj-nucleus-dense',
     label: '原子核与致密核物质 (Nuclei & Dense Matter)',
     pdgCode: 'PDG-NUCL-01',
     domainId: 'domain-hadron-nuclear',
     coords: { x: -14.8, y: 7.5 },
     errorBar: { dx: 0.15, dy: 0.1 },
-    symbol: 'A, n_{core}',
+    symbol: 'A, n_{\\text{core}}',
     type: 'bound-state',
     specs: {
       length: '1.4 - 10 \\text{ fm}',
@@ -785,7 +751,7 @@ export const ACADEMIC_OBJECTS_GPT_EXTENDED = [
     domainId: 'domain-amo-atomic',
     coords: { x: -6.5, y: -1.0 },
     errorBar: { dx: 0.1, dy: 0.05 },
-    symbol: 'Sr/Yb Clock',
+    symbol: '\\text{Sr}/\\text{Yb Clock}',
     type: 'probe',
     specs: {
       length: '1 - 100 \\text{ \\mu m}',
@@ -802,7 +768,7 @@ export const ACADEMIC_OBJECTS_GPT_EXTENDED = [
     domainId: 'domain-condensed-matter',
     coords: { x: -9.0, y: -0.5 },
     errorBar: { dx: 0.1, dy: 0.1 },
-    symbol: 'e^- Lattice',
+    symbol: 'e^- \\text{Lattice}',
     type: 'quantum-material',
     specs: {
       length: '0.3 - 1 \\text{ nm}',
@@ -819,7 +785,7 @@ export const ACADEMIC_OBJECTS_GPT_EXTENDED = [
     domainId: 'domain-condensed-matter',
     coords: { x: -8.5, y: -1.5 },
     errorBar: { dx: 0.15, dy: 0.1 },
-    symbol: 'Hubbard-e',
+    symbol: '\\text{Hubbard-}e',
     type: 'quantum-material',
     specs: {
       length: '1 - 10 \\text{ nm}',
@@ -836,7 +802,7 @@ export const ACADEMIC_OBJECTS_GPT_EXTENDED = [
     domainId: 'domain-condensed-matter',
     coords: { x: -8.0, y: -2.2 },
     errorBar: { dx: 0.1, dy: 0.1 },
-    symbol: 'QSL, Anyon',
+    symbol: '\\text{QSL}, \\text{Anyon}',
     type: 'phase',
     specs: {
       length: '1 - 10 \\text{ nm}',
@@ -853,7 +819,7 @@ export const ACADEMIC_OBJECTS_GPT_EXTENDED = [
     domainId: 'domain-stat-complex',
     coords: { x: -2.0, y: -2.8 },
     errorBar: { dx: 0.2, dy: 0.1 },
-    symbol: 'MHD',
+    symbol: '\\text{MHD}',
     type: 'out-of-equilibrium',
     specs: {
       length: '1 \\text{ mm} - 1 \\text{ m}',
@@ -870,7 +836,7 @@ export const ACADEMIC_OBJECTS_GPT_EXTENDED = [
     domainId: 'domain-stat-complex',
     coords: { x: -4.5, y: -3.2 },
     errorBar: { dx: 0.2, dy: 0.1 },
-    symbol: 'Cell',
+    symbol: '\\text{Cell}',
     type: 'out-of-equilibrium',
     specs: {
       length: '10 \\text{ \\mu m} - 1 \\text{ mm}',
@@ -921,7 +887,7 @@ export const ACADEMIC_OBJECTS_GPT_EXTENDED = [
     domainId: 'domain-cosmology',
     coords: { x: 25.5, y: -3.6 },
     errorBar: { dx: 0.2, dy: 0.1 },
-    symbol: 'Galaxies',
+    symbol: '\\text{Galaxies}',
     type: 'cosmological',
     specs: {
       length: '10^{21} - 10^{26} \\text{ m}',
@@ -948,7 +914,7 @@ export const ACADEMIC_RESEARCH_NODES_GPT_EXTENDED = [
     title: '中微子与物质起源 (Neutrinos & Origin of Matter)',
     domainId: 'domain-ew',
     coords: { x: -17.5, y: 14.5 },
-    legs: ['obj-higgs-neutrino', 'obj-quark-gluon'],
+    legs: ['obj-higgs', 'obj-electron-neutrino'],
     formula: '\\mathcal{L} \\supset -y_\\nu \\bar{L} \\tilde{H} N_R - \\frac{1}{2} M_R \\bar{N}_R^c N_R',
     abstract: '探索轻子数不守恒与重子数不对称性（CPT/重子相干生成），解释为何可观测宇宙由物质主导而非反物质。'
   },
@@ -1018,7 +984,7 @@ export const ACADEMIC_OBJECTS_NEW = [
     domainId: 'domain-qg-gut',
     coords: { x: -34.0, y: 27.5 },
     errorBar: null,
-    symbol: 'l_s',
+    symbol: '\\ell_s',
     type: 'fundamental',
     specs: {
       length: 'l_s = \\sqrt{\\alpha\'} \\sim 10^{-34} \\text{ m}',
@@ -1090,7 +1056,7 @@ export const ACADEMIC_OBJECTS_NEW = [
     domainId: 'domain-hadron-nuclear',
     coords: { x: -15.8, y: 9.6 },
     errorBar: { dx: 0.1, dy: 0.05 },
-    symbol: 'X(3872), P_c',
+    symbol: '\\text{X}(3872),\\, P_c',
     type: 'composite',
     specs: {
       length: '1.2 \\text{ fm}',
@@ -1110,7 +1076,7 @@ export const ACADEMIC_OBJECTS_NEW = [
     domainId: 'domain-amo-atomic',
     coords: { x: -8.0, y: -1.5 },
     errorBar: { dx: 0.2, dy: 0.1 },
-    symbol: 'NaK / KRb',
+    symbol: '\\ce{NaK} / \\ce{KRb}',
     type: 'bound-state',
     specs: {
       length: '0.3 \\text{ nm}',
@@ -1163,7 +1129,7 @@ export const ACADEMIC_OBJECTS_NEW = [
     domainId: 'domain-condensed-matter',
     coords: { x: -9.1, y: -1.0 },
     errorBar: { dx: 0.1, dy: 0.1 },
-    symbol: 'RuO_2 / MnTe',
+    symbol: '\\ce{RuO2} / \\ce{MnTe}',
     type: 'quantum-material',
     specs: {
       length: 'a_0 \\approx 0.4 \\text{ nm}',
@@ -1201,7 +1167,7 @@ export const ACADEMIC_OBJECTS_NEW = [
     domainId: 'domain-cosmology',
     coords: { x: 14.5, y: -1.5 },
     errorBar: { dx: 0.2, dy: 0.1 },
-    symbol: 'NS-NS Merger',
+    symbol: '\\text{NS-NS Merger}',
     type: 'astro-object',
     specs: {
       length: 'R \\approx 11 - 13 \\text{ km}',
@@ -1251,7 +1217,7 @@ export const ACADEMIC_THEORIES_NEW = [
     domainId: 'domain-ew',
     type: 'theory',
     coords: { x: -16.8, y: 13.2 },
-    legs: ['obj-electron-neutrino', 'obj-sterile-neutrino', 'obj-higgs-neutrino'],
+    legs: ['obj-electron-neutrino', 'obj-sterile-neutrino', 'obj-higgs'],
     formula: 'm_\\nu \\approx - m_D M_R^{-1} m_D^T',
     abstract: '利用重马约拉纳中微子能标 \\Lambda_{GUT} 自然解释超轻左手微子质量阶梯降落机制。'
   },
@@ -1351,7 +1317,7 @@ export const ACADEMIC_THEORIES_NEW = [
     domainId: 'domain-cosmology',
     type: 'theory',
     coords: { x: 22.0, y: 6.0 },
-    legs: ['obj-cmb', 'obj-blackhole-early-universe', 'obj-galaxy-cosmic-structure'],
+    legs: ['obj-cmb', 'obj-primordial-blackhole', 'obj-galaxy-cosmic-structure'],
     formula: 'v_k\'\' + \\left( c_s^2 k^2 - \\frac{z\'\'}{z} \\right) v_k = 0',
     abstract: '推演极早期暴胀真空标量场量子涨落如何随膨胀被“拉扯”转化为今日百亿光年尺度星系网格根基。'
   },
@@ -2041,7 +2007,7 @@ export const QUANTUM_HARDWARE_ROUTES_NODES = [
     domainId: 'domain-condensed-matter',
     type: 'theory',
     coords: { x: -8.0, y: -2.9 },
-    legs: ['obj-majorana-wire', 'obj-anyon-statistics', 'obj-fci-zero-field'],
+    legs: ['obj-majorana-wire', 'obj-anyon-statistics', 'obj-tb-graphene'],
     formula: 'B_{ij} B_{jk} B_{ij} = B_{jk} B_{ij} B_{jk} \\quad (\\text{Braid Relation})',
     abstract: '利用一维超导纳米线或非阿贝尔任意子的无能隙马约拉纳零能模进行时空编织，从硬件层面免疫退相干噪声。'
   },
@@ -2057,19 +2023,884 @@ export const QUANTUM_HARDWARE_ROUTES_NODES = [
   }
 ];
 
-export const ACADEMIC_OBJECTS = [
+
+// ============================================================================
+// RMP 2024–2026 综述补全：现代物理地图新增节点
+// 来源：Reviews of Modern Physics Vol. 96–98 (2024–2026)
+// ============================================================================
+
+export const ACADEMIC_OBJECTS_RMP_2024_2026: PhysicsNode[] = [
+  // --- Condensed Matter & Quantum Materials ---
+  {
+    id: 'obj-kitaev-qsl-rucl3',
+    label: 'Kitaev 量子自旋液体 (α-RuCl₃)',
+    pdgCode: 'RMP25-CM-KITEAEV',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -9.2, y: -2.4 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\alpha\\text{-}\\ce{RuCl3}',
+    type: 'quantum-material',
+    specs: {
+      length: 'a \\approx 0.59 \\text{ nm (Honeycomb Lattice)}',
+      energy: 'J_K \\sim 5-10 \\text{ meV}, \\quad T_N \\approx 7 \\text{ K}',
+      time: '10^{-12} \\text{ s}',
+      lagrangian: 'H_K = -K \\sum_{\\langle ij \\rangle_\\gamma} S_i^\\gamma S_j^\\gamma - \\Gamma \\sum (S_i^\\alpha S_j^\\beta + S_i^\\beta S_j^\\alpha)'
+    },
+    annotation: 'RMP 2025 (Matsuda et al.)：键方向 Ising 相互作用精确可解模型，自旋分数化为涌现 Majorana 费米子；磁场下转变为非阿贝尔手征自旋液体，拓扑量子计算资源。'
+  },
+  {
+    id: 'obj-magnetic-skyrmion',
+    label: '磁斯格明子 (Magnetic Skyrmions)',
+    pdgCode: 'RMP25-CM-SKYRMION',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -7.5, y: -2.8 },
+    errorBar: { dx: 0.15, dy: 0.1 },
+    symbol: 'N_{\\text{sk}}',
+    type: 'phase',
+    specs: {
+      length: 'd_{\\text{sk}} \\sim 1 - 100 \\text{ nm}',
+      energy: 'E_{\\text{sk}} \\sim 1 - 10 \\text{ meV}',
+      time: '10^{-9} - 10^{-6} \\text{ s}',
+      lagrangian: 'N_{\\text{sk}} = \\frac{1}{4\\pi} \\int \\mathbf{n} \\cdot (\\partial_x \\mathbf{n} \\times \\partial_y \\mathbf{n}) \\, d^2r'
+    },
+    annotation: 'RMP 2025 Colloquium：拓扑绕数保护的平滑磁化纹理；量子化螺旋度与宏观量子隧穿区分经典/量子斯格明子，自旋电子学与非传统计算平台。'
+  },
+  {
+    id: 'obj-kagome-metal',
+    label: '笼目金属 (Kagome Metals AV₃Sb₅)',
+    pdgCode: 'RMP26-CM-KAGOME',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -9.3, y: -2.0 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\ce{CsV3Sb5}',
+    type: 'quantum-material',
+    specs: {
+      length: 'a \\approx 0.54 \\text{ nm (Kagome Lattice)}',
+      energy: 'T_{\\text{CDW}} \\sim 78-102 \\text{ K}, \\quad T_c \\sim 0.9-2.5 \\text{ K}',
+      time: '10^{-13} \\text{ s}',
+      lagrangian: 'H_{\\text{kagome}} = -t \\sum_{\\langle ij \\rangle} c_i^\\dagger c_j + \\lambda_{SO} \\mathbf{L}\\cdot\\mathbf{S} + U\\sum n_{i\\uparrow}n_{i\\downarrow}'
+    },
+    annotation: 'RMP 2026：笼目晶格同时汇聚电子拓扑（Dirac 点、平带）、几何阻挫与强关联，稳定电荷密度波、非常规超导与手征反常等全新量子态。'
+  },
+  {
+    id: 'obj-2d-vdw-magnet',
+    label: '二维范德华磁体 (2D vdW Magnets)',
+    pdgCode: 'RMP26-CM-2DVDW',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -9.1, y: -2.5 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\ce{CrI3}',
+    type: 'quantum-material',
+    specs: {
+      length: 'd_{\\text{mono}} \\approx 0.68 \\text{ nm (Monolayer)}',
+      energy: 'T_c \\approx 45 \\text{ K} \\sim 3.9 \\text{ meV}',
+      time: '10^{-12} \\text{ s}',
+      lagrangian: 'H = -J \\sum_{\\langle ij \\rangle} \\mathbf{S}_i \\cdot \\mathbf{S}_j - K \\sum_i (S_i^z)^2 + \\text{Dzyaloshinskii-Moriya}'
+    },
+    annotation: 'RMP 2026：2017 年首次实验实现原子层厚磁有序；Floquet 工程态、光致亚稳磁相、磁激子等意外现象；自旋电子学量子功能新平台。'
+  },
+  {
+    id: 'obj-bcs-bec-crossover',
+    label: 'BCS-BEC 渡越超导体 (Crossover Superconductors)',
+    pdgCode: 'RMP24-CM-BCSBEC',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -8.4, y: -2.1 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\Delta/E_F',
+    type: 'phase',
+    specs: {
+      length: '\\xi \\sim 1 - 10 \\text{ nm (Coherence Length)}',
+      energy: '\\Delta \\sim 1 - 20 \\text{ meV}, \\quad T_c \\sim 1 - 100 \\text{ K}',
+      time: '10^{-12} \\text{ s}',
+      lagrangian: '\\frac{\\Delta}{E_F} \\gg 1: \\text{BEC (Preformed Pairs)}; \\quad \\frac{\\Delta}{E_F} \\ll 1: \\text{BCS (Weak Coupling)}'
+    },
+    annotation: 'RMP 2024 (Chen et al.)：超导从弱耦合 BCS 到强耦合 BEC（预形成对）的连续渡越；涵盖铁基、镍基、魔角石墨烯与人工异质结近邻化体系。'
+  },
+  {
+    id: 'obj-photo-doped-mott',
+    label: '光掺杂 Mott 绝缘体 (Photo-doped Mott States)',
+    pdgCode: 'RMP25-CM-PHOTOMOTT',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -9.4, y: 0.2 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\text{Mott}^*',
+    type: 'out-of-equilibrium',
+    specs: {
+      length: 'a \\sim 0.3 - 0.5 \\text{ nm}',
+      energy: 'U \\sim 1 - 3 \\text{ eV (Mott Gap)}',
+      time: '10^{-15} - 10^{-12} \\text{ s (fs-ps)}',
+      lagrangian: 'H = -t\\sum c^\\dagger c + U\\sum n_\\uparrow n_\\downarrow + \\mathbf{E}(t)\\cdot\\mathbf{P}'
+    },
+    annotation: 'RMP 2025：大 Mott 能隙保护下光激发载流子的亚稳态；非热自旋/轨道序、η 配对态与新型激子序的涌现。'
+  },
+  {
+    id: 'obj-spin-orbit-sc',
+    label: '自旋轨道超导异质结 (Spin-Orbit SC Hybrids)',
+    pdgCode: 'RMP24-CM-SOSC',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -7.8, y: -2.3 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\alpha_{\\text{R}}',
+    type: 'quantum-material',
+    specs: {
+      length: 'L_{so} \\sim 1 - 100 \\text{ nm}',
+      energy: '\\Delta_{so} \\sim 1 - 10 \\text{ meV}',
+      time: '10^{-12} \\text{ s}',
+      lagrangian: 'H_{so} = \\alpha_R (\\boldsymbol{\\sigma} \\times \\mathbf{p}) \\cdot \\hat{z} + \\Delta(\\mathbf{r}) \\tau_x'
+    },
+    annotation: 'RMP 2024 Colloquium：SOC 在超导异质结中诱导等自旋三重态配对、拓扑超导（Majorana 态）、非互易输运与修正 Josephson 电流-相位关系。'
+  },
+  {
+    id: 'obj-ion-coulomb-crystal',
+    label: '离子库仑晶体 (Ion Coulomb Crystals)',
+    pdgCode: 'RMP26-AMO-ICC',
+    domainId: 'domain-amo-atomic',
+    coords: { x: -5.3, y: -4.5 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\text{ICC}',
+    type: 'bound-state',
+    specs: {
+      length: 'd_{\\text{ion}} \\sim 3 - 10 \\text{ \\mu m}',
+      energy: 'E \\sim \\mu\\text{eV} \\quad (T \\sim 1 - 10 \\text{ mK})',
+      time: '1 - 100 \\text{ s}',
+      lagrangian: 'H = \\sum_i \\frac{p_i^2}{2m} + \\frac{e^2}{4\\pi\\epsilon_0}\\sum_{i<j}\\frac{1}{|r_i - r_j|} + V_{\\text{trap}}'
+    },
+    annotation: 'RMP 2026 (Morigi)：激光冷却离子在阱中形成的有序结构；强关联区凝聚态物理新平台，一维至三维结构相变与非平衡动力学。'
+  },
+  {
+    id: 'obj-polaron-2d',
+    label: '极化子 (Polarons in 2D & Atomic Gases)',
+    pdgCode: 'RMP26-AMO-POLARON',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -9.0, y: -1.5 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: 'E_P',
+    type: 'bound-state',
+    specs: {
+      length: 'a_{\\text{2D}} \\sim 0.3 - 1 \\text{ nm}; \\quad a_{\\text{cold}} \\sim 100 \\text{ nm}',
+      energy: 'E_P \\sim 1 - 50 \\text{ meV (TMD)}; \\quad \\mu\\text{eV (Cold Atoms)}',
+      time: '10^{-13} - 10^{-9} \\text{ s}',
+      lagrangian: 'H = \\epsilon_{\\mathbf{k}} c_{\\mathbf{k}}^\\dagger c_{\\mathbf{k}} + \\sum_{\\mathbf{q}} \\omega_{\\mathbf{q}} a_{\\mathbf{q}}^\\dagger a_{\\mathbf{q}} + g \\sum c^\\dagger c (a + a^\\dagger)'
+    },
+    annotation: 'RMP 2026 (Massignan & Schmidt)：移动杂质与量子多体环境强耦合形成的准粒子；统一超冷原子气体与二维 TMD 两大平台的普适物理。'
+  },
+  {
+    id: 'obj-spin-glass',
+    label: '自旋玻璃 (Spin-Glass Dynamics)',
+    pdgCode: 'RMP25-STAT-SPINGLASS',
+    domainId: 'domain-stat-complex',
+    coords: { x: -7.0, y: -2.6 },
+    errorBar: { dx: 0.2, dy: 0.1 },
+    symbol: '\\xi_{\\text{SG}}',
+    type: 'phase',
+    specs: {
+      length: '\\xi_{\\text{SG}} \\sim 1 - 100 \\text{ nm (Coherence Length)}',
+      energy: 'k_B T_g \\sim 1 - 10 \\text{ meV}',
+      time: '10^{-6} - 10^{6} \\text{ s (Aging)}',
+      lagrangian: 'H_{EA} = -\\sum_{\\langle ij \\rangle} J_{ij} \\mathbf{S}_i \\cdot \\mathbf{S}_j, \\quad \\langle J_{ij} \\rangle = 0, \\quad \\langle J_{ij}^2 \\rangle = J^2'
+    },
+    annotation: 'RMP 2025 (Dahlberg et al.)：无序与阻挫生成的范式复杂系统；Janus 专用计算机模拟逼近实验时空标度，温度混沌、记忆与再juvenation 效应。'
+  },
+  {
+    id: 'obj-colloidal-hard-spheres',
+    label: '胶体硬球 (Colloidal Hard Spheres)',
+    pdgCode: 'RMP24-STAT-COLLOID',
+    domainId: 'domain-stat-complex',
+    coords: { x: -6.0, y: -1.6 },
+    errorBar: { dx: 0.1, dy: 0.05 },
+    symbol: '\\phi',
+    type: 'phase',
+    specs: {
+      length: '\\sigma \\sim 0.1 - 5 \\text{ \\mu m}',
+      energy: 'k_B T \\approx 25 \\text{ meV (Room Temp)}',
+      time: '10^{-3} - 10^{3} \\text{ s}',
+      lagrangian: 'Z = \\frac{PV}{Nk_BT} = 1 + \\frac{4\\phi - 2\\phi^2}{(1-\\phi)^3} \\quad (\\text{Carnahan-Starling})'
+    },
+    annotation: 'RMP 2024：纯熵驱动的玻璃化转变与结晶；统计力学基准体系，连接平衡态热力学与非平衡玻璃动力学。'
+  },
+  {
+    id: 'obj-pt-symmetric',
+    label: 'PT 对称非厄米系统 (PT-Symmetric Systems)',
+    pdgCode: 'RMP24-QM-PTSYM',
+    domainId: 'domain-amo-atomic',
+    coords: { x: -5.5, y: 0.3 },
+    errorBar: { dx: 0.2, dy: 0.1 },
+    symbol: '\\mathcal{PT}',
+    type: 'phase',
+    specs: {
+      length: '1 \\text{ \\mu m} - 1 \\text{ mm (Photonic/Atomic)}',
+      energy: '1 - 3 \\text{ eV (Optical)}',
+      time: '10^{-12} - 10^{-9} \\text{ s}',
+      lagrangian: 'H = p^2 + x^2(ix)^\\epsilon, \\quad \\mathcal{PT}: x \\to -x, \\; i \\to -i'
+    },
+    annotation: 'RMP 2024 (Bender et al.)：以 PT 对称替代厄米性条件，复哈密顿量仍具实正谱；例外点 (EP) 处对称性自发破缺，光子学与原子物理实验验证。'
+  },
+  {
+    id: 'obj-quantum-battery',
+    label: '量子电池 (Quantum Batteries)',
+    pdgCode: 'RMP24-QI-QBATT',
+    domainId: 'domain-amo-atomic',
+    coords: { x: -7.0, y: 0.5 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: 'P_{\\text{QB}}',
+    type: 'hardware',
+    specs: {
+      length: '1 - 100 \\text{ nm (Quantum Device)}',
+      energy: '1 - 10 \\text{ eV}',
+      time: '10^{-9} - 10^{-6} \\text{ s}',
+      lagrangian: 'P_{\\max} = \\max_U \\frac{d}{dt}\\text{Tr}[H \\rho(t)] \\propto N \\quad (\\text{Quantum Advantage})'
+    },
+    annotation: 'RMP 2024 Colloquium：利用量子纠缠与多体关联实现超经典充电功率标度；开放系统退相干与能量保持的核心挑战。'
+  },
+  {
+    id: 'obj-driven-open-quantum',
+    label: '驱动耗散量子物质 (Driven-Dissipative Quantum Matter)',
+    pdgCode: 'RMP25-STAT-DRIVEN',
+    domainId: 'domain-stat-complex',
+    coords: { x: -4.8, y: -4.0 },
+    errorBar: { dx: 0.2, dy: 0.1 },
+    symbol: '\\mathcal{L}_{\\text{Lind}}',
+    type: 'out-of-equilibrium',
+    specs: {
+      length: '10 - 100 \\text{ \\mu m (Cold Atom Array)}',
+      energy: '1 - 100 \\text{ neV}',
+      time: '10^{-6} - 1 \\text{ s}',
+      lagrangian: '\\dot{\\rho} = -i[H, \\rho] + \\sum_\\alpha \\left( L_\\alpha \\rho L_\\alpha^\\dagger - \\frac{1}{2}\\{L_\\alpha^\\dagger L_\\alpha, \\rho\\} \\right)'
+    },
+    annotation: 'RMP 2025 (Sieberer et al.)：Lindblad-Keldysh 场论框架下驱动开放量子物质的普适性；对称性、态纯度与标度论证统一非平衡稳态分类。'
+  },
+  {
+    id: 'obj-dual-unitary-circuit',
+    label: '对偶酉线路与时空对偶 (Dual-Unitary Circuits)',
+    pdgCode: 'RMP26-QI-DUALUNIT',
+    domainId: 'domain-stat-complex',
+    coords: { x: -5.5, y: -3.8 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: 'U_{\\text{DU}}',
+    type: 'theory',
+    specs: {
+      length: '1 - 10 \\text{ \\mu m (Quantum Simulator)}',
+      energy: '1 - 100 \\text{ neV}',
+      time: '10^{-6} - 10^{-3} \\text{ s}',
+      lagrangian: 'U_{\\text{DU}}: \\quad U \\text{ unitary in both space and time directions}'
+    },
+    annotation: 'RMP 2026 (Bertini et al.)：时空对偶下精确可解的量子多体动力学；首个解析量化量子混沌、热化、扰码与纠缠增长的最小模型。'
+  },
+  {
+    id: 'obj-non-markovian-oqs',
+    label: '非马尔可夫开放量子系统 (Non-Markovian OQS)',
+    pdgCode: 'RMP26-QI-NONMARKOV',
+    domainId: 'domain-amo-atomic',
+    coords: { x: -6.3, y: -3.6 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\tau_{\\text{mem}}',
+    type: 'method',
+    specs: {
+      length: '1 - 100 \\text{ nm}',
+      energy: '\\mu\\text{eV} - \\text{meV}',
+      time: '\\tau_{\\text{mem}} \\sim 10^{-9} - 10^{-6} \\text{ s}',
+      lagrangian: '\\dot{\\rho}_S(t) = \\int_0^t K(t-t\') \\rho_S(t\') dt\' \\quad (\\text{Nakajima-Zwanzig})'
+    },
+    annotation: 'RMP 2026 (Xu et al.)：层级运动方程 (HEOM)、Lindblad 赝模、链映射与随机展开的统一扩展态空间框架；超越 Born-Markov 近似的精确模拟。'
+  },
+
+  // --- HEP & Fundamental Physics ---
+  {
+    id: 'obj-xyz-exotic-hadrons',
+    label: 'XYZ 奇特强子态 (Exotic Hadrons at e⁺e⁻)',
+    pdgCode: 'RMP26-HEP-XYZ',
+    domainId: 'domain-hadron-nuclear',
+    coords: { x: -15.2, y: 9.6 },
+    errorBar: { dx: 0.05, dy: 0.05 },
+    symbol: '\\text{X}(3872)',
+    type: 'composite',
+    specs: {
+      length: '\\sim 1 \\text{ fm}',
+      energy: 'M_{X(3872)} = 3871.69 \\pm 0.17 \\text{ MeV}',
+      time: '10^{-21} \\text{ s}',
+      lagrangian: '|X\\rangle = \\alpha |c\\bar{c}\\rangle + \\beta |D^0\\bar{D}^{*0}\\rangle + \\gamma |[cq][\\bar{c}\\bar{q}]\\rangle'
+    },
+    annotation: 'RMP 2026 Colloquium (Wang & Liu)：BESIII/Belle/BABAR 在 e⁺e⁻ 对撞中发现的非标准强子（四夸克、分子态、混杂态），探索色禁闭本质。'
+  },
+  {
+    id: 'obj-susy-hl-lhc',
+    label: '超对称粒子 (SUSY at HL-LHC)',
+    pdgCode: 'RMP25-HEP-SUSY',
+    domainId: 'domain-ew',
+    coords: { x: -19.0, y: 12.5 },
+    errorBar: { dx: 0.3, dy: 0.3 },
+    symbol: '\\tilde{\\chi}^0_1',
+    type: 'fundamental',
+    specs: {
+      length: '< 10^{-19} \\text{ m}',
+      energy: 'm_{\\text{soft}} \\sim 1 - 10 \\text{ TeV (Current Bounds)}',
+      time: '\\text{Stable LSP (DM Candidate)}',
+      lagrangian: '\\mathcal{L}_{\\text{SUSY}} = \\mathcal{L}_{\\text{SM}} + \\tilde{g}\\bar{\\tilde{g}}\\tilde{g} + y\\tilde{q}\\bar{q}\\tilde{\\chi} + \\text{soft breaking}'
+    },
+    annotation: 'RMP 2025：弱标度超对称解决规范等级问题的技术自然性；HL-LHC 强限制下的小等级问题与弦景观统计预期。'
+  },
+  {
+    id: 'obj-conformal-bootstrap',
+    label: '数值共形 Bootstrap (Conformal Bootstrap)',
+    pdgCode: 'RMP24-HEP-BOOTSTRAP',
+    domainId: 'domain-ew',
+    coords: { x: -18.5, y: 11.5 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\Delta_\\sigma',
+    type: 'method',
+    specs: {
+      length: '\\text{Scale Invariant (CFT)}',
+      energy: '\\text{Non-perturbative}',
+      time: '\\text{N/A}',
+      lagrangian: '\\sum_{\\mathcal{O}} \\lambda_{\\sigma\\sigma\\mathcal{O}}^2 \\, F_{\\Delta,\\ell}(u,v) = 0 \\quad (\\text{Crossing Symmetry})'
+    },
+    annotation: 'RMP 2024 (Rychkov & Su)：仅凭交叉对称性、幺正性与解析性约束 CFT 数据；三维 Ising 模型临界指数精度超越蒙特卡洛。'
+  },
+  {
+    id: 'obj-dense-neutrino-gas',
+    label: '致密中微子气体 (Dense Neutrino Gas in CCSNe)',
+    pdgCode: 'RMP24-HEP-NEUTRINO',
+    domainId: 'domain-cosmology',
+    coords: { x: 4.5, y: 7.0 },
+    errorBar: { dx: 0.2, dy: 0.1 },
+    symbol: '\\nu\\nu',
+    type: 'out-of-equilibrium',
+    specs: {
+      length: 'R \\sim 10 - 100 \\text{ km (Supernova Core)}',
+      energy: 'E_\\nu \\sim 10 - 30 \\text{ MeV}',
+      time: '1 - 10 \\text{ s (Cooling)}',
+      lagrangian: 'i\\dot{\\rho}_{\\mathbf{p}} = [H_{\\text{vac}} + H_{\\text{mat}} + \\sqrt{2}G_F \\int (1-\\cos\\theta)\\rho_{\\mathbf{q}} d\\Gamma_q, \\rho_{\\mathbf{p}}]'
+    },
+    annotation: 'RMP 2024 (Volpe et al.)：核心坍缩超新星/致密合并中中微子-中微子相互作用引发集体味振荡；与凝聚态、核物理及量子计算的深层联系。'
+  },
+  {
+    id: 'obj-cgpp',
+    label: '宇宙学引力粒子产生 (Cosmological Gravitational Particle Production)',
+    pdgCode: 'RMP24-COSMO-CGPP',
+    domainId: 'domain-qg-gut',
+    coords: { x: -29.0, y: 23.5 },
+    errorBar: { dx: 0.3, dy: 0.3 },
+    symbol: '\\text{CGPP}',
+    type: 'fundamental',
+    specs: {
+      length: 'H^{-1} \\sim 10^{-26} \\text{ m (Reheating)}',
+      energy: 'H_{\\text{inf}} \\sim 10^{13} \\text{ GeV}',
+      time: '10^{-36} - 10^{-32} \\text{ s}',
+      lagrangian: '\\langle N_k \\rangle = |\\beta_k|^2, \\quad \\ddot{\\chi}_k + \\omega_k^2(\\eta)\\chi_k = 0'
+    },
+    annotation: 'RMP 2024 (Kolb et al.)：膨胀宇宙中纯引力相互作用产生粒子；暗物质、引力波、暗辐射与重子不对称的宇宙学遗迹联系。'
+  },
+  {
+    id: 'obj-exotic-spin-forces',
+    label: '自旋依赖奇异第五力 (Spin-Dependent Exotic Interactions)',
+    pdgCode: 'RMP25-FUND-5THFORCE',
+    domainId: 'domain-amo-atomic',
+    coords: { x: -4.5, y: -3.5 },
+    errorBar: { dx: 0.2, dy: 0.1 },
+    symbol: 'g_s g_p',
+    type: 'probe',
+    specs: {
+      length: '\\lambda \\sim 1 \\text{ \\mu m} - 1 \\text{ m (Compton Range)}',
+      energy: 'm_a \\sim \\mu\\text{eV} - \\text{meV (Axion Mass)}',
+      time: '\\text{Static / Quasi-static}',
+      lagrangian: '\\mathcal{L} \\supset g_s \\bar{\\psi}\\psi \\, a + g_p \\bar{\\psi} i\\gamma_5 \\psi \\, a \\implies V_{sp}(r) \\propto \\frac{e^{-r/\\lambda}}{r}'
+    },
+    annotation: 'RMP 2025：轴子/类轴子与 Z\'/暗光子介导的自旋依赖第五力；原子共磁力计、扭秤、NV 色心与精密光谱的低能前沿搜索。'
+  },
+  {
+    id: 'obj-continuous-gw-ns',
+    label: '连续引力波 (Continuous GW from Neutron Stars)',
+    pdgCode: 'RMP26-ASTRO-CW',
+    domainId: 'domain-cosmology',
+    coords: { x: 4.2, y: -3.8 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: 'h_0^{\\text{CW}}',
+    type: 'astro-object',
+    specs: {
+      length: 'R_{NS} \\approx 12 \\text{ km}',
+      energy: 'f_{\\text{GW}} \\sim 100 - 2000 \\text{ Hz}',
+      time: '> 10^6 \\text{ cycles (Years Integration)}',
+      lagrangian: 'h_0 = \\frac{4\\pi^2 G}{c^4} \\frac{I \\epsilon f^2}{r}'
+    },
+    annotation: 'RMP 2026 Colloquium (Owen)：快速旋转中子星连续引力波；连接电磁天文、核天体物理与凝聚态（壳层弹性），下一代探测器 (CE/ET) 有望首次探测。'
+  },
+
+  // --- Astrophysics & Cosmology ---
+  {
+    id: 'obj-neutron-star-eos',
+    label: '中子星致密物质状态方程 (Neutron Star Dense Matter EOS)',
+    pdgCode: 'RMP25-ASTRO-NSEOS',
+    domainId: 'domain-cosmology',
+    coords: { x: 4.0, y: 8.5 },
+    errorBar: { dx: 0.1, dy: 0.2 },
+    symbol: 'P(\\rho)',
+    type: 'astro-object',
+    specs: {
+      length: 'R \\approx 11 - 13 \\text{ km}',
+      energy: 'E_F \\sim 100 \\text{ MeV} \\quad (\\rho \\sim 2-8 \\rho_{\\text{sat}})',
+      time: '\\text{Static / Merger } \\sim 100 \\text{ s}',
+      lagrangian: 'P(\\rho) = \\rho^2 \\frac{d(E/A)}{d\\rho}, \\quad \\mathcal{L}_{\\chi EFT} + \\text{pQCD}'
+    },
+    annotation: 'RMP 2025：从手征 EFT 核力到微扰 QCD 的多密度状态方程；GW170817 引力波与 NICER 电磁观测联合约束。'
+  },
+  {
+    id: 'obj-sidm-halo',
+    label: '自相互作用暗物质晕 (Self-Interacting Dark Matter)',
+    pdgCode: 'RMP25-ASTRO-SIDM',
+    domainId: 'domain-cosmology',
+    coords: { x: 21.5, y: 3.0 },
+    errorBar: { dx: 0.3, dy: 0.2 },
+    symbol: '\\sigma/m',
+    type: 'astro-object',
+    specs: {
+      length: 'R_{\\text{halo}} \\sim 1 - 100 \\text{ kpc}',
+      energy: 'm_\\chi \\sim \\text{MeV} - \\text{GeV}, \\quad \\sigma/m \\sim 0.1 - 10 \\text{ cm}^2/\\text{g}',
+      time: '\\text{Gyr (Halo Evolution)}',
+      lagrangian: '\\mathcal{L} \\supset \\frac{1}{2}(\\partial\\phi)^2 - \\frac{1}{2}m_\\phi^2\\phi^2 + y\\bar{\\chi}\\chi\\phi'
+    },
+    annotation: 'RMP 2025 (Adhikari et al.)：轻介导子或强动力学暗区中暗物质自散射；解释星系旋转曲线多样性，约束来自卫星星系至星系团多尺度。'
+  },
+  {
+    id: 'obj-solar-pp-fusion',
+    label: '太阳 pp 链核聚变 (Solar pp-Chain Fusion)',
+    pdgCode: 'RMP25-ASTRO-SOLAR',
+    domainId: 'domain-cosmology',
+    coords: { x: 8.8, y: 3.1 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: 'S_{11}',
+    type: 'astro-object',
+    specs: {
+      length: 'R_\\odot = 6.96 \\times 10^8 \\text{ m}',
+      energy: 'k_B T_c \\approx 1.3 \\text{ keV}, \\quad Q_{pp} = 26.73 \\text{ MeV}',
+      time: '\\tau_\\odot \\approx 10^{10} \\text{ yr}',
+      lagrangian: 'S(E) = \\sigma(E) \\cdot E \\cdot e^{2\\pi\\eta}, \\quad \\eta = \\frac{Z_1 Z_2 e^2}{\\hbar v}'
+    },
+    annotation: 'RMP 2025 (Solar Fusion III)：氢燃烧恒星核反应率第三次十年评估；Borexino/SNO+ 太阳中微子通量达百分之几精度。'
+  },
+  {
+    id: 'obj-cosmic-dipole',
+    label: '宇宙偶极异常 (Cosmic Dipole Anomaly)',
+    pdgCode: 'RMP25-COSMO-DIPOLE',
+    domainId: 'domain-cosmology',
+    coords: { x: 25.0, y: -3.5 },
+    errorBar: { dx: 0.2, dy: 0.1 },
+    symbol: '\\mathbf{d}',
+    type: 'astro-object',
+    specs: {
+      length: '\\sim \\text{Gpc (Hubble Scale)}',
+      energy: 'T_{\\text{CMB}} = 2.725 \\text{ K}',
+      time: '13.8 \\text{ Gyr}',
+      lagrangian: '\\frac{\\Delta T}{T} = \\beta \\cos\\theta, \\quad \\beta_{\\text{CMB}} \\neq \\beta_{\\text{quasar/radio}}'
+    },
+    annotation: 'RMP 2025 Colloquium (Secrest)：CMB 偶极与类星体/射电源计数偶极的显著不一致；挑战宇宙学原理（各向同性假设）。'
+  },
+
+  // --- Statistical Mechanics & Complex Systems ---
+  {
+    id: 'obj-macro-stoch-thermo',
+    label: '宏观随机热力学 (Macroscopic Stochastic Thermodynamics)',
+    pdgCode: 'RMP25-STAT-MACROTHERMO',
+    domainId: 'domain-stat-complex',
+    coords: { x: -1.5, y: -1.8 },
+    errorBar: { dx: 0.2, dy: 0.1 },
+    symbol: '\\Phi_{\\text{qp}}',
+    type: 'theory',
+    specs: {
+      length: '1 \\text{ mm} - 1 \\text{ m}',
+      energy: 'k_B T \\sim 25 \\text{ meV}',
+      time: '10^{-3} - 10^{3} \\text{ s}',
+      lagrangian: '\\Phi[\\rho] = \\int_0^1 ds \\int d\\mathbf{r} \\, \\frac{[\\partial_s \\rho]^2}{4\\sigma(\\rho)} \\quad (\\text{Quasi-Potential})'
+    },
+    annotation: 'RMP 2025 (Falasco et al.)：从介观 Markov 跳过程到宏观确定性动力学的大偏差理论；远离平衡时准势替代自由能成为 Lyapunov 函数。'
+  },
+  {
+    id: 'obj-neural-stat-mech',
+    label: '真实神经元网络统计力学 (Statistical Mechanics of Neural Networks)',
+    pdgCode: 'RMP25-STAT-NEURAL',
+    domainId: 'domain-stat-complex',
+    coords: { x: -2.5, y: -1.5 },
+    errorBar: { dx: 0.2, dy: 0.1 },
+    symbol: 'P(\\{\\sigma_i\\})',
+    type: 'out-of-equilibrium',
+    specs: {
+      length: '1 \\text{ mm} - 1 \\text{ cm (Neural Population)}',
+      energy: 'k_B T \\approx 25 \\text{ meV}',
+      time: '10^{-3} - 10^{2} \\text{ s}',
+      lagrangian: 'P(\\{\\sigma\\}) = \\frac{1}{Z} \\exp\\left( \\sum_i h_i \\sigma_i + \\sum_{i<j} J_{ij}\\sigma_i\\sigma_j + \\cdots \\right)'
+    },
+    annotation: 'RMP 2025 (Meshulam et al.)：最大熵方法与现象学重整化群揭示真实神经元网络的定量可重复集体行为；无参数预测与实验精确吻合。'
+  },
+  {
+    id: 'obj-reaction-diffusion-ft',
+    label: '随机反应扩散场论 (Field Theories for Reaction-Diffusion)',
+    pdgCode: 'RMP26-STAT-RDFT',
+    domainId: 'domain-stat-complex',
+    coords: { x: -4.0, y: -1.8 },
+    errorBar: { dx: 0.2, dy: 0.1 },
+    symbol: '|\\Psi\\rangle',
+    type: 'theory',
+    specs: {
+      length: '1 \\text{ \\mu m} - 1 \\text{ mm}',
+      energy: 'k_B T',
+      time: '10^{-3} - 10^{3} \\text{ s}',
+      lagrangian: '\\partial_t |\\Psi\\rangle = -\\hat{H}|\\Psi\\rangle, \\quad \\hat{H} = \\int d^d x \\left[ D(\\nabla a^\\dagger)(\\nabla a) + \\lambda(a^{\\dagger 2} - a^\\dagger)a^2 \\right]'
+    },
+    annotation: 'RMP 2026 (del Razo et al.)：二次量子化 Fock 空间与路径积分统一经典随机反应扩散；连接化学物理、理论生态学与流行病学多尺度模拟。'
+  },
+
+  // --- Quantum Information & Methods ---
+  {
+    id: 'obj-quantum-crypto-beyond-qkd',
+    label: '超越 QKD 的量子密码 (Quantum Cryptography Beyond QKD)',
+    pdgCode: 'RMP25-QI-CRYPTO',
+    domainId: 'domain-amo-atomic',
+    coords: { x: 3.5, y: 0.5 },
+    errorBar: { dx: 0.3, dy: 0.1 },
+    symbol: '\\text{QC}',
+    type: 'method',
+    specs: {
+      length: '1 - 100 \\text{ km (Fiber/Free-Space)}',
+      energy: 'E_\\gamma \\sim 0.8 - 1.5 \\text{ eV}',
+      time: '10^{-9} - 10^{-6} \\text{ s}',
+      lagrangian: '\\text{Security: } \\epsilon_{\\text{sec}} \\leq 2^{-\\lambda_{\\text{QKD}}} + \\text{composable}'
+    },
+    annotation: 'RMP 2025 (Bozzio et al.)：量子加密、匿名通信、数字签名、委托计算等超越密钥分发的量子密码原语；光子技术实现与安全等级分类。'
+  },
+  {
+    id: 'obj-cv-quantum-comm',
+    label: '连续变量量子通信 (CV Quantum Communication)',
+    pdgCode: 'RMP26-QI-CVCOMM',
+    domainId: 'domain-amo-atomic',
+    coords: { x: 4.0, y: 0.3 },
+    errorBar: { dx: 0.2, dy: 0.1 },
+    symbol: '\\hat{x}, \\hat{p}',
+    type: 'method',
+    specs: {
+      length: '1 - 100 \\text{ km}',
+      energy: 'E_\\gamma \\sim 0.8 - 1.5 \\text{ eV}',
+      time: '10^{-9} \\text{ s}',
+      lagrangian: 'W(\\alpha) = \\frac{1}{\\pi^2} \\int \\chi(\\beta) e^{\\alpha\\beta^* - \\alpha^*\\beta} d^2\\beta \\quad (\\text{Wigner Function})'
+    },
+    annotation: 'RMP 2026 (Usenko)：多光子量子态制备、操控与相干探测的连续变量方法；相空间量子光学使量子通信高效、可用、可及。'
+  },
+  {
+    id: 'obj-qg-lab-tests',
+    label: '量子引力实验室检验 (Quantum Gravity Lab Tests)',
+    pdgCode: 'RMP25-QG-LABTEST',
+    domainId: 'domain-qg-gut',
+    coords: { x: -5.0, y: -4.2 },
+    errorBar: { dx: 0.2, dy: 0.1 },
+    symbol: 'm_{\\text{QG}}',
+    type: 'probe',
+    specs: {
+      length: '1 \\text{ \\mu m} - 1 \\text{ mm (Massive Quantum System)}',
+      energy: 'E \\sim \\text{neV} - \\mu\\text{eV}',
+      time: '1 - 100 \\text{ s}',
+      lagrangian: 'H = \\frac{p^2}{2m} + m\\Phi(\\mathbf{r}) + H_{\\text{int}}^{\\text{grav}} \\quad (\\text{Gravity-mediated Entanglement})'
+    },
+    annotation: 'RMP 2025 (Bose et al.)：大质量量子系统作为量子力学与引力的接口；引力诱导退相干、波函数坍缩检验与引力介导纠缠。'
+  },
+  {
+    id: 'obj-muonic-lamb-shift',
+    label: 'μ 子原子 Lamb 位移 (Muonic Atom Lamb Shift)',
+    pdgCode: 'RMP24-AMO-MUONIC',
+    domainId: 'domain-amo-atomic',
+    coords: { x: -12.7, y: 3.5 },
+    errorBar: { dx: 0.05, dy: 0.05 },
+    symbol: '\\Delta E_L^{\\mu}',
+    type: 'bound-state',
+    specs: {
+      length: 'a_\\mu = a_0 / 207 \\approx 256 \\text{ fm}',
+      energy: '\\Delta E_L \\sim 0.2 - 2 \\text{ keV}',
+      time: '10^{-15} \\text{ s}',
+      lagrangian: '\\Delta E_L = \\Delta E_{\\text{SE}} + \\Delta E_{\\text{VP}} + \\Delta E_{\\text{recoil}} + \\Delta E_{\\text{NS}}'
+    },
+    annotation: 'RMP 2024 (Pachucki)：μ 子氢/氘/氦 Lamb 位移精密理论；质子电荷半径谜题 (Proton Radius Puzzle) 的最终解决与 CODATA 常数更新。'
+  },
+  {
+    id: 'obj-lar-tpc',
+    label: '液氩时间投影室 (Liquid Argon TPC Detectors)',
+    pdgCode: 'RMP24-HEP-LARTPC',
+    domainId: 'domain-ew',
+    coords: { x: 0.5, y: 10.0 },
+    errorBar: { dx: 0.2, dy: 0.2 },
+    symbol: '\\text{LArTPC}',
+    type: 'probe',
+    specs: {
+      length: 'L_{\\text{drift}} \\sim 1 - 10 \\text{ m}',
+      energy: 'E_\\nu \\sim 0.1 - 100 \\text{ GeV}',
+      time: '\\text{ms (Drift Time)}',
+      lagrangian: 'N_e = \\frac{E_{\\text{dep}}}{W_i}, \\quad W_i^{\\text{Ar}} = 23.6 \\text{ eV}'
+    },
+    annotation: 'RMP 2024 (Bonivento et al.)：DUNE/ProtoDUNE 液氩 TPC 科学与技术；中微子振荡、超新星中微子与核子衰变搜索的下一代探测器。'
+  },
+  {
+    id: 'obj-rb-turbulence',
+    label: '终极 Rayleigh-Bénard 湍流 (Ultimate RB Turbulence)',
+    pdgCode: 'RMP24-STAT-RBTURB',
+    domainId: 'domain-stat-complex',
+    coords: { x: -1.0, y: -2.0 },
+    errorBar: { dx: 0.2, dy: 0.1 },
+    symbol: '\\text{Ra}',
+    type: 'out-of-equilibrium',
+    specs: {
+      length: 'H \\sim 1 \\text{ cm} - 1 \\text{ m (Cell Height)}',
+      energy: 'k_B T',
+      time: '1 - 10^{3} \\text{ s}',
+      lagrangian: '\\text{Nu} \\sim \\text{Ra}^{1/2} \\quad (\\text{Kraichnan Ultimate Regime})'
+    },
+    annotation: 'RMP 2024 (Krug et al.)：扩展自相似标度分析揭示温度结构函数；从经典到终极 (Kraichnan) 湍流区域的转变。'
+  }
+];
+
+// --- RMP 2024–2026 新增研究/理论/方法节点 ---
+export const ACADEMIC_RESEARCH_NODES_RMP_2024_2026: ResearchRoute[] = [
+  {
+    id: 'node-rmp-kitaev-topological-qc',
+    title: 'Kitaev 自旋液体与拓扑量子计算 (Kitaev QSL → Topological QC)',
+    domainId: 'domain-condensed-matter',
+    type: 'frontier',
+    coords: { x: -8.5, y: -2.8 },
+    legs: ['obj-kitaev-qsl-rucl3', 'obj-spin-liquid-anyon', 'obj-majorana-wire'],
+    formula: 'H_K \\xrightarrow{B \\neq 0} \\text{Chiral CSL}: \\quad \\nu = \\frac{1}{2} \\quad (\\text{Non-Abelian Anyons})',
+    abstract: 'RMP 2025：α-RuCl₃ 中 Kitaev 自旋分数化实验证据；磁场诱导手征自旋液体含非阿贝尔任意子，与拓扑超导/偶分母 FQH 态深层联系。'
+  },
+  {
+    id: 'node-rmp-skyrmion-quantum',
+    title: '量子斯格明子与自旋电子学 (Quantum Skyrmions & Spintronics)',
+    domainId: 'domain-condensed-matter',
+    type: 'frontier',
+    coords: { x: -7.0, y: -3.0 },
+    legs: ['obj-magnetic-skyrmion', 'obj-2d-vdw-magnet', 'obj-spin-orbit-sc'],
+    formula: 'N_{\\text{sk}} \\in \\mathbb{Z}, \\quad \\hat{H}_{\\text{hel}} |n\\rangle = E_n |n\\rangle \\quad (\\text{Quantized Helicity})',
+    abstract: 'RMP 2025 Colloquium：从经典拓扑纹理到量子化螺旋度与宏观量子隧穿；混合架构工程拓扑超导序，量子操作与传感新范式。'
+  },
+  {
+    id: 'node-rmp-kagome-frustration',
+    title: '笼目阻挫拓扑关联 (Kagome: Frustration × Topology × Correlation)',
+    domainId: 'domain-condensed-matter',
+    type: 'frontier',
+    coords: { x: -9.5, y: -2.5 },
+    legs: ['obj-kagome-metal', 'obj-strongly-correlated', 'obj-tb-graphene'],
+    formula: '\\text{Flat Band} + \\text{Dirac} + \\text{van Hove} \\implies \\text{CDW} + \\text{SC} + \\text{Chiral Flux}',
+    abstract: 'RMP 2026：AV₃Sb₅ 笼目金属中平带、Dirac 锥与 van Hove 奇点共存；电荷密度波、非常规超导与手征反常序的交织相图。'
+  },
+  {
+    id: 'node-rmp-2d-magnet-engineering',
+    title: '二维磁体量子功能工程 (2D Magnet Quantum Engineering)',
+    domainId: 'domain-condensed-matter',
+    type: 'frontier',
+    coords: { x: -8.8, y: -2.8 },
+    legs: ['obj-2d-vdw-magnet', 'obj-tb-graphene', 'obj-moire-heterostructures'],
+    formula: 'T_c^{\\text{2D}} > 0 \\quad (\\text{Mermin-Wagner Evaded via Anisotropy})',
+    abstract: 'RMP 2026：原子层磁体突破 Mermin-Wagner 限制；Floquet 工程态、光致亚稳磁相、磁激子与自旋电子学量子功能平台。'
+  },
+  {
+    id: 'node-rmp-bcs-bec-unified',
+    title: 'BCS-BEC 渡越统一框架 (Unified BCS-BEC Crossover)',
+    domainId: 'domain-condensed-matter',
+    type: 'theory',
+    coords: { x: -8.0, y: -1.8 },
+    legs: ['obj-bcs-bec-crossover', 'obj-ybco', 'obj-fermi-hubbard-gas'],
+    formula: '\\frac{1}{k_F a_s}: \\quad -\\infty \\text{ (BCS)} \\longleftrightarrow 0 \\text{ (Unitary)} \\longleftrightarrow +\\infty \\text{ (BEC)}',
+    abstract: 'RMP 2024：天然与人工超导平台中 BCS-BEC 渡越的统一描述；铁基、镍基、魔角石墨烯与异质结近邻化体系的配对机制。'
+  },
+  {
+    id: 'node-rmp-photo-mott-control',
+    title: '光控 Mott 非平衡态 (Photo-induced Mott Nonequilibrium)',
+    domainId: 'domain-condensed-matter',
+    type: 'frontier',
+    coords: { x: -9.0, y: 0.5 },
+    legs: ['obj-photo-doped-mott', 'obj-strongly-correlated', 'obj-non-fermi-liquid'],
+    formula: '\\tau_{\\text{thermal}} \\gg \\tau_{\\text{obs}} \\implies \\text{Metastable Non-thermal Orders}',
+    abstract: 'RMP 2025：大 Mott 能隙保护下的亚稳光致相；非热自旋/轨道序、η 配对与激子序的理论工具与实验验证。'
+  },
+  {
+    id: 'node-rmp-driven-universality',
+    title: '驱动开放量子物质普适性 (Universality in Driven Open Quantum Matter)',
+    domainId: 'domain-stat-complex',
+    type: 'theory',
+    coords: { x: -4.0, y: -4.5 },
+    legs: ['obj-driven-open-quantum', 'obj-dual-unitary-circuit', 'obj-rydberg-atom-array'],
+    formula: '\\text{Lindblad-Keldysh}: \\quad S_{\\text{eff}} = \\int \\bar{\\phi}(D^{-1}_K)\\phi + \\lambda(\\bar{\\phi}\\phi)^2',
+    abstract: 'RMP 2025：光驱量子材料、冷原子与 NISQ 器件中非平衡稳态的普适分类；对称性、纯度与标度论证统一框架。'
+  },
+  {
+    id: 'node-rmp-spacetime-duality',
+    title: '时空对偶精确可解动力学 (Space-Time Duality & Exact Dynamics)',
+    domainId: 'domain-stat-complex',
+    type: 'theory',
+    coords: { x: -5.0, y: -4.5 },
+    legs: ['obj-dual-unitary-circuit', 'obj-driven-open-quantum', 'obj-rydberg-atom-array'],
+    formula: '\\text{Tr}(U^\\dagger U)_{\\text{space}} = \\text{Tr}(U^\\dagger U)_{\\text{time}} \\implies \\text{Exact } \\lambda_L = 2\\pi k_BT/\\hbar',
+    abstract: 'RMP 2026：对偶酉线路中时空互换对称性；首次解析量化量子混沌、热化、扰码与纠缠动力学的最小精确模型。'
+  },
+  {
+    id: 'node-rmp-neutrino-collective',
+    title: '致密中微子集体味动力学 (Collective Neutrino Flavor Dynamics)',
+    domainId: 'domain-cosmology',
+    type: 'frontier',
+    coords: { x: 5.0, y: 7.5 },
+    legs: ['obj-dense-neutrino-gas', 'obj-neutron-star-eos', 'obj-binary-neutron-star'],
+    formula: 'i\\dot{\\rho} = [H_{\\nu\\nu}, \\rho], \\quad H_{\\nu\\nu} \\propto G_F n_\\nu \\implies \\text{Fast Flavor Conversion}',
+    abstract: 'RMP 2024：超新星/合并中中微子-中微子非线性耦合引发快速味转换；与凝聚态多体、核物理及量子计算的交叉联系。'
+  },
+  {
+    id: 'node-rmp-multimessenger-ns',
+    title: '中子星多信使物理 (Multi-messenger Neutron Star Physics)',
+    domainId: 'domain-cosmology',
+    type: 'frontier',
+    coords: { x: 4.5, y: 8.0 },
+    legs: ['obj-neutron-star-eos', 'obj-continuous-gw-ns', 'obj-binary-neutron-star', 'obj-solar-pp-fusion'],
+    formula: '\\Lambda_{\\text{tidal}} = \\frac{2}{3}k_2 \\left(\\frac{Rc^2}{GM}\\right)^5 \\quad (\\text{GW + EM + Nuclear})',
+    abstract: 'RMP 2025/2026：引力波 (LIGO/Virgo/KAGRA)、电磁 (NICER) 与核实验联合约束致密物质 EOS；连续 GW 与 r-过程核合成。'
+  },
+  {
+    id: 'node-rmp-5th-force-search',
+    title: '第五力与暗区低能搜索 (Fifth Force & Dark Sector Low-Energy Search)',
+    domainId: 'domain-amo-atomic',
+    type: 'method',
+    coords: { x: -4.0, y: -3.8 },
+    legs: ['obj-exotic-spin-forces', 'obj-precision-atomic-clock', 'obj-entangled-photons'],
+    formula: 'V_{sp}(r) = \\frac{g_s g_p}{8\\pi m} \\left( \\frac{1}{\\lambda r} + \\frac{1}{r^2} \\right) e^{-r/\\lambda} (\\hat{\\sigma} \\cdot \\hat{r})',
+    abstract: 'RMP 2025：轴子/暗光子介导自旋依赖势的完整参数化；原子共磁力计、NV 色心、扭秤与精密光谱的系统搜索方法论。'
+  },
+  {
+    id: 'node-rmp-qg-massive-quantum',
+    title: '大质量量子系统引力检验 (Massive Quantum Systems × Gravity)',
+    domainId: 'domain-qg-gut',
+    type: 'frontier',
+    coords: { x: -5.5, y: -4.5 },
+    legs: ['obj-qg-lab-tests', 'obj-ion-coulomb-crystal', 'obj-rydberg-atom-array'],
+    formula: '\\Delta\\phi_{\\text{grav}} = \\frac{G m_1 m_2 t}{\\hbar d} \\implies \\text{Entanglement Witness}',
+    abstract: 'RMP 2025：基态冷却与量子控制使大质量系统进入引力可探测量子态；引力介导纠缠作为量子引力低能判据。'
+  },
+  {
+    id: 'node-rmp-conformal-bootstrap-3d',
+    title: '共形 Bootstrap 非微扰 CFT (Conformal Bootstrap for 3D CFTs)',
+    domainId: 'domain-ew',
+    type: 'method',
+    coords: { x: -18.0, y: 11.8 },
+    legs: ['obj-conformal-bootstrap', 'obj-qgp', 'obj-planck'],
+    formula: '\\Delta_\\sigma = 0.5181489(10), \\quad \\Delta_\\epsilon = 1.412625(18) \\quad (\\text{3D Ising})',
+    abstract: 'RMP 2024：半定规划松弛与导航算法将三维 Ising 临界指数推至超越蒙特卡洛精度；向 QCD 共形窗口与引力对偶推广。'
+  },
+  {
+    id: 'node-rmp-non-markovian-unified',
+    title: '非马尔可夫动力学统一框架 (Unified Non-Markovian Simulation)',
+    domainId: 'domain-amo-atomic',
+    type: 'method',
+    coords: { x: -7.0, y: -3.5 },
+    legs: ['obj-non-markovian-oqs', 'obj-driven-open-quantum', 'obj-transmon-qubit'],
+    formula: '\\hat{H}_{\\text{ext}} = H_S + \\sum_k \\omega_k b_k^\\dagger b_k + \\sum_k (g_k b_k^\\dagger S + \\text{h.c.})',
+    abstract: 'RMP 2026：HEOM、赝模、链映射与随机展开在扩展态空间中的统一；量子技术时代超越 Born-Markov 的精确开放系统模拟。'
+  },
+  {
+    id: 'node-rmp-sidm-structure',
+    title: '自相互作用暗物质结构形成 (SIDM Structure Formation)',
+    domainId: 'domain-cosmology',
+    type: 'frontier',
+    coords: { x: 22.0, y: 3.5 },
+    legs: ['obj-sidm-halo', 'obj-galaxy-cosmic-structure', 'obj-primordial-blackhole'],
+    formula: '\\frac{\\sigma}{m} \\sim 1 \\text{ cm}^2/\\text{g} \\implies \\rho_{\\text{core}} \\text{ (vs. NFW Cusp)}',
+    abstract: 'RMP 2025：暗物质自散射在卫星星系至星系团多尺度的能量-动量输运；解决核-尖问题与旋转曲线多样性。'
+  },
+  {
+    id: 'node-rmp-stoch-thermo-macro',
+    title: '宏观非平衡热力学 (Macroscopic Nonequilibrium Thermodynamics)',
+    domainId: 'domain-stat-complex',
+    type: 'theory',
+    coords: { x: -1.0, y: -2.2 },
+    legs: ['obj-macro-stoch-thermo', 'obj-active-cell', 'obj-colloidal-hard-spheres'],
+    formula: '\\Phi[\\rho] \\xrightarrow{\\text{eq.}} F[\\rho], \\quad \\Phi[\\rho] \\xrightarrow{\\text{neq.}} \\text{Lyapunov Function}',
+    abstract: 'RMP 2025：大偏差理论构建宏观涨落理论；远离平衡时准势替代自由能，约束吸引子间稀有涨落跃迁率。'
+  },
+  {
+    id: 'node-rmp-neural-criticality',
+    title: '神经元网络临界性与重整化 (Neural Criticality & RG)',
+    domainId: 'domain-stat-complex',
+    type: 'frontier',
+    coords: { x: -2.0, y: -1.8 },
+    legs: ['obj-neural-stat-mech', 'obj-active-cell', 'obj-spin-glass'],
+    formula: 'P(\\{\\sigma\\}) \\propto e^{-H_{\\text{maxent}}}, \\quad \\text{RG}: \\quad \\frac{dJ}{d\\ell} = \\beta(J)',
+    abstract: 'RMP 2025：最大熵模型与现象学 RG 揭示真实神经网络的无参数普适预测；连接自旋玻璃、临界现象与生物信息处理。'
+  },
+  {
+    id: 'node-rmp-solar-neutrino-precision',
+    title: '太阳中微子精密核物理 (Solar Neutrino Precision Nuclear Physics)',
+    domainId: 'domain-cosmology',
+    type: 'method',
+    coords: { x: 9.0, y: 3.5 },
+    legs: ['obj-solar-pp-fusion', 'obj-electron-neutrino', 'obj-dense-neutrino-gas'],
+    formula: '\\Phi_{^7\\text{Be}} = (5.00 \\pm 0.13) \\times 10^9 \\text{ cm}^{-2}\\text{s}^{-1} \\quad (\\text{Borexino})',
+    abstract: 'RMP 2025 (Solar Fusion III)：pp 链与 CNO 循环核反应 S 因子第三次十年评估；太阳中微子通量达百分之几精度，约束恒星不透明度与金属丰度。'
+  }
+];
+
+// --- RMP 2024–2026 新增对偶/等价关系 ---
+export const ACADEMIC_RELATIONS_RMP_2024_2026: EquivalenceRelation[] = [
+  {
+    id: 'rel-kitaev-majorana',
+    type: 'duality',
+    source: 'obj-kitaev-qsl-rucl3',
+    target: 'obj-majorana-wire',
+    label: 'Kitaev QSL ↔ Topological Superconductor (Majorana Correspondence)',
+    equation: 'H_K \\xrightarrow{\\text{Jordan-Wigner}} \\sum i J c_{2j-1} c_{2j} \\equiv H_{\\text{Kitaev chain}}',
+    description: 'RMP 2025：Kitaev 蜂窝模型的自旋分数化 Majorana 费米子与一维拓扑超导 Majorana 零能模的精确数学对应；非阿贝尔编织统计共享。'
+  },
+  {
+    id: 'rel-bcs-bec-unitary',
+    type: 'rg-flow',
+    source: 'obj-bcs-bec-crossover',
+    target: 'obj-fermi-hubbard-gas',
+    label: 'BCS-BEC Crossover: Condensed Matter ↔ Cold Atoms',
+    equation: '\\frac{1}{k_F a_s}: -\\infty \\to +\\infty \\quad \\Longleftrightarrow \\quad \\text{CuO}_2 \\text{ / FeSe / Magic-Angle} \\leftrightarrow \\text{Feshbach } ^{6}\\text{Li}',
+    description: 'RMP 2024：超导 BCS-BEC 渡越在凝聚态（铜氧化物、铁基、魔角）与超冷原子（Feshbach 共振）两大平台间的普适标度律对应。'
+  },
+  {
+    id: 'rel-dual-unitary-eth',
+    type: 'model-correspondence',
+    source: 'obj-dual-unitary-circuit',
+    target: 'obj-driven-open-quantum',
+    label: 'Dual-Unitary Exact Dynamics ↔ Driven-Dissipative Universality',
+    equation: '\\lambda_L^{\\text{DU}} = 2\\pi k_BT/\\hbar \\quad \\Longleftrightarrow \\quad \\text{Lindblad-Keldysh Fixed Points}',
+    description: 'RMP 2025/2026：对偶酉线路精确可解的混沌/热化标度与驱动耗散量子物质 Lindblad-Keldysh 场论普适不动点的深层结构对应。'
+  },
+  {
+    id: 'rel-neutrino-condensed',
+    type: 'model-correspondence',
+    source: 'obj-dense-neutrino-gas',
+    target: 'obj-strongly-correlated',
+    label: 'Dense Neutrino Gas ↔ Condensed Matter Many-Body',
+    equation: 'H_{\\nu\\nu} \\sim G_F n_\\nu \\, \\mathbf{S}_i \\cdot \\mathbf{S}_j \\quad \\Longleftrightarrow \\quad H_{\\text{Heisenberg/BCS}}',
+    description: 'RMP 2024：致密中微子气体味同位旋哈密顿量与凝聚态自旋/BCS 多体模型的数学同构；集体振荡对应超导能隙方程。'
+  },
+  {
+    id: 'rel-spacetime-duality-ising',
+    type: 'duality',
+    source: 'obj-dual-unitary-circuit',
+    target: 'obj-spin-glass',
+    label: 'Space-Time Duality ↔ Disordered Spin Dynamics',
+    equation: 'Z_{\\text{space}}[U] = Z_{\\text{time}}[U^T] \\quad \\Longleftrightarrow \\quad \\text{Aging / Memory in SG}',
+    description: 'RMP 2025/2026：时空对偶下精确可解的关联函数与自旋玻璃中温度混沌、记忆效应的标度理论联系。'
+  }
+];
+
+export const ACADEMIC_OBJECTS: PhysicsNode[] = [
   ...BASE_OBJECTS,
   ...ACADEMIC_OBJECTS_GPT_EXTENDED,
   ...ACADEMIC_OBJECTS_NEW,
   ...ACADEMIC_OBJECTS_FAMOUS_LABS,
-  ...QUANTUM_HARDWARE_ROUTES_OBJECTS
+  ...QUANTUM_HARDWARE_ROUTES_OBJECTS,
+  ...ACADEMIC_OBJECTS_RMP_2024_2026
 ];
-export const ACADEMIC_RESEARCH_NODES = [
+export const ACADEMIC_RESEARCH_NODES: ResearchRoute[] = [
   ...ACADEMIC_RESEARCH_NODES_GPT_EXTENDED,
   ...ACADEMIC_THEORIES_NEW,
   ...ACADEMIC_METHODS_NEW,
   ...ACADEMIC_FRONTIER_NODES_HIGH_POTENTIAL,
-  ...QUANTUM_HARDWARE_ROUTES_NODES
+  ...QUANTUM_HARDWARE_ROUTES_NODES,
+  ...ACADEMIC_RESEARCH_NODES_RMP_2024_2026
 ];
 
 export const ACADEMIC_RELATIONS = [
@@ -2113,7 +2944,8 @@ export const ACADEMIC_RELATIONS = [
     label: 'Operator Isomorphism: Relativistic Dirac to Solid-State Moire Band',
     equation: 'H_D = c \\boldsymbol{\\alpha}\\cdot\\mathbf{p} + \\beta m c^2 \\iff H_{\\text{moire}} = v_F (\\sigma_x p_x + \\sigma_y p_y)',
     description: '单电子高能狄拉克相对论波动方程，在二维晶体莫尔势场中形式完全同构地形变为描述有效能带平坦化的低能极值哈密顿量。'
-  }
+  },
+  ...ACADEMIC_RELATIONS_RMP_2024_2026
 ];
 
 // --- 3D Canvas Compatibility Exports & Conversions ---

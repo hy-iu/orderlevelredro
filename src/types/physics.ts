@@ -157,6 +157,13 @@ export interface QuantumHardwareRoute {
   [key: string]: any;
 }
 
+export interface CanvasTransform {
+  scaleX: number;
+  scaleY: number;
+  offsetX: number;
+  offsetY: number;
+}
+
 export interface ViewportState {
   scale: number;
   zoom?: number;

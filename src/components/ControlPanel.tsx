@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Sliders, Maximize2, Zap, Target, PanelLeftClose, PanelLeft, RotateCcw } from 'lucide-react';
+import { Eye, EyeOff, Sliders, Maximize2, Zap, Target, PanelLeftClose, PanelLeft, RotateCcw, MoveHorizontal, MoveVertical } from 'lucide-react';
 import DualRangeSlider from './DualRangeSlider';
 
 export interface LayerVisibility {
@@ -21,6 +21,9 @@ interface ControlPanelProps {
   setEnergyRange: (range: [number, number]) => void;
   onFitViewToSelection: () => void;
   onResetScales?: () => void;
+  scaleX: number;
+  scaleY: number;
+  onZoomAxis: (axis: 'x' | 'y', scale: number) => void;
 }
 
 export const ControlPanel: React.FC<ControlPanelProps> = ({
@@ -31,9 +34,18 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   energyRange,
   setEnergyRange,
   onFitViewToSelection,
-  onResetScales
+  onResetScales,
+  scaleX,
+  scaleY,
+  onZoomAxis
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  // Logarithmic mapping for the zoom sliders: slider position p ∈ [0,100]
+  // ↔ zoom ∈ [0.5, 30], so low zooms (the most-used range) get fine control.
+  const ZOOM_MIN = 0.5, ZOOM_MAX = 30;
+  const pToZoom = (p: number) => ZOOM_MIN * Math.pow(ZOOM_MAX / ZOOM_MIN, p / 100);
+  const zoomToP = (z: number) => Math.round(100 * Math.log(z / ZOOM_MIN) / Math.log(ZOOM_MAX / ZOOM_MIN));
 
   const toggleLayer = (layerKey: keyof LayerVisibility) => {
     setLayerVisibility(prev => ({ ...prev, [layerKey]: !prev[layerKey] }));
@@ -198,6 +210,62 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
             onChange={setEnergyRange}
             unit="eV"
             accentColor="#db2777"
+          />
+        </div>
+      </div>
+
+      {/* Per-Axis Zoom Sliders (independent X / Y) */}
+      <div className="border-t border-slate-200 pt-2.5 space-y-3">
+        <div className="flex items-center justify-between text-[11px] font-bold text-slate-700">
+          <span className="flex items-center gap-1">
+            <Sliders className="w-3 h-3 text-slate-600" /> 分轴缩放 (Per-Axis Zoom)
+          </span>
+          <button
+            onClick={() => { onZoomAxis('x', 1); onZoomAxis('y', 1); }}
+            className="p-1 rounded text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+            title="重置缩放至 1× (Reset Zoom)"
+          >
+            <RotateCcw className="w-3 h-3" />
+          </button>
+        </div>
+
+        {/* X-axis zoom */}
+        <div>
+          <div className="flex items-center justify-between text-[11px] mb-0.5">
+            <span className="flex items-center gap-1 font-bold text-cyan-800">
+              <MoveHorizontal className="w-3 h-3" /> 横轴 L
+            </span>
+            <span className="font-mono text-slate-600 tabular-nums">{scaleX.toFixed(2)}×</span>
+          </div>
+          <input
+            type="range"
+            min={0}
+            max={100}
+            step={1}
+            value={zoomToP(scaleX)}
+            onChange={e => onZoomAxis('x', pToZoom(Number(e.target.value)))}
+            className="w-full h-1.5 cursor-pointer accent-cyan-700"
+            title="横轴(长度标度)独立缩放 · Ctrl+滚轮=双轴 / Shift+Ctrl+滚轮=仅横轴"
+          />
+        </div>
+
+        {/* Y-axis zoom */}
+        <div>
+          <div className="flex items-center justify-between text-[11px] mb-0.5">
+            <span className="flex items-center gap-1 font-bold text-pink-800">
+              <MoveVertical className="w-3 h-3" /> 纵轴 E
+            </span>
+            <span className="font-mono text-slate-600 tabular-nums">{scaleY.toFixed(2)}×</span>
+          </div>
+          <input
+            type="range"
+            min={0}
+            max={100}
+            step={1}
+            value={zoomToP(scaleY)}
+            onChange={e => onZoomAxis('y', pToZoom(Number(e.target.value)))}
+            className="w-full h-1.5 cursor-pointer accent-pink-700"
+            title="纵轴(能量标度)独立缩放 · Alt+Ctrl+滚轮=仅纵轴"
           />
         </div>
       </div>
