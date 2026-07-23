@@ -560,10 +560,11 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
 
             ctx.strokeStyle = isRelHovered || isRelSelected ? strokeColor : strokeColor + 'bb';
             ctx.lineWidth = isRelHovered || isRelSelected ? 2.5 : 1.5;
-            // RG flows (running couplings) and dualities (equivalences) read as dashed;
-            // model-correspondences stay solid. Distinct dash patterns keep them apart.
-            if (rel.type === 'rg-flow') ctx.setLineDash([7, 4]);
-            else if (rel.type === 'duality') ctx.setLineDash([2, 3]);
+            // All three relation families read as dashed, each with a distinct
+            // pattern so flow / equivalence / correspondence stay tell-apart.
+            if (rel.type === 'rg-flow') ctx.setLineDash([7, 4]);            // long dashes
+            else if (rel.type === 'duality') ctx.setLineDash([2, 3]);        // dots
+            else if (rel.type === 'model-correspondence') ctx.setLineDash([6, 3, 1, 3]); // dash-dot
             else ctx.setLineDash([]);
             ctx.beginPath();
 
