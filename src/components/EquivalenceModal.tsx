@@ -131,33 +131,33 @@ export const EquivalenceModal: React.FC<EquivalenceModalProps> = ({ isOpen, onCl
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/65 backdrop-blur-sm p-4 font-serif">
-      <div className="w-full max-w-5xl max-h-[90vh] bg-white border border-slate-300 rounded-xl p-6 flex flex-col justify-between shadow-2xl text-slate-900">
+      <div className="w-full max-w-5xl max-h-[90vh] bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl p-6 flex flex-col justify-between shadow-2xl text-slate-900 dark:text-slate-100">
         {/* Modal Header */}
-        <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-600 pb-3 mb-4">
           <div>
-            <span className="text-[10px] font-mono uppercase text-slate-500 font-bold tracking-wider">
+            <span className="text-[10px] font-mono uppercase text-slate-500 dark:text-slate-400 font-bold tracking-wider">
               Appendix: Mathematical Physics & Code Verification
             </span>
-            <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
               附录：相互作用 2D 热场计算依据与算符同构矩阵
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-all"
+            className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700 transition-all"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Top Primary Tabs */}
-        <div className="flex items-center gap-3 border-b border-slate-200 pb-3 mb-4">
+        <div className="flex items-center gap-3 border-b border-slate-200 dark:border-slate-600 pb-3 mb-4">
           <button
             onClick={() => setTab('heatmaps')}
             className={`px-4 py-2 rounded-lg text-xs font-bold font-serif flex items-center gap-2 transition-all ${
               tab === 'heatmaps'
-                ? 'bg-slate-900 text-white shadow'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
+                ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow'
+                : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 border border-slate-200 dark:border-slate-600'
             }`}
           >
             <Cpu className="w-4 h-4 text-amber-400" />
@@ -168,8 +168,8 @@ export const EquivalenceModal: React.FC<EquivalenceModalProps> = ({ isOpen, onCl
             onClick={() => setTab('operators')}
             className={`px-4 py-2 rounded-lg text-xs font-bold font-serif flex items-center gap-2 transition-all ${
               tab === 'operators'
-                ? 'bg-slate-900 text-white shadow'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
+                ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow'
+                : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 border border-slate-200 dark:border-slate-600'
             }`}
           >
             <FileText className="w-4 h-4 text-blue-400" />
@@ -179,29 +179,29 @@ export const EquivalenceModal: React.FC<EquivalenceModalProps> = ({ isOpen, onCl
 
         {/* Tab 1: 2D Heatmap Physics Calculations & Python Script */}
         {tab === 'heatmaps' && (
-          <div className="flex-1 overflow-y-auto pr-2 space-y-5 text-xs text-slate-700">
+          <div className="flex-1 overflow-y-auto pr-2 space-y-5 text-xs text-slate-700 dark:text-slate-300">
             {/* Top Derivation Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 bg-amber-50/60 border border-amber-200/80 rounded-lg space-y-2">
-                <h4 className="font-bold text-amber-900 flex items-center gap-1.5 text-sm">
+              <div className="p-4 bg-amber-50/60 dark:bg-amber-900/20 border border-amber-200/80 dark:border-amber-700/50 rounded-lg space-y-2">
+                <h4 className="font-bold text-amber-900 dark:text-amber-300 flex items-center gap-1.5 text-sm">
                   1. 引力宏观无屏蔽累积相加律 (Gravity Accumulation)
                 </h4>
-                <p className="leading-relaxed text-slate-700">
+                <p className="leading-relaxed text-slate-700 dark:text-slate-300">
                   微观单粒子引力极弱，但由于<strong>不存在负质量</strong>，质量只能无上限相加。在宏观/天体标度（<InlineMath math="L > 1\text{ mm} \implies x > -3" />），引力摆脱微观压制，在宇宙学尺度展现绝对主导能场。
                 </p>
-                <div className="p-2 bg-white rounded border border-amber-200">
+                <div className="p-2 bg-white dark:bg-slate-700 rounded border border-amber-200 dark:border-amber-700/50">
                   <BlockMath math={"I_{\\text{grav}}(x, y) = \\max\\left( \\alpha_G e^{-0.15|x+y+6.7|}, \, 0.85 \\cdot \\frac{x+3}{20} e^{-0.02(y-2)^2} \\right)"} />
                 </div>
               </div>
 
-              <div className="p-4 bg-sky-50/60 border border-sky-200/80 rounded-lg space-y-2">
-                <h4 className="font-bold text-sky-900 flex items-center gap-1.5 text-sm">
+              <div className="p-4 bg-sky-50/60 dark:bg-sky-900/20 border border-sky-200/80 dark:border-sky-700/50 rounded-lg space-y-2">
+                <h4 className="font-bold text-sky-900 dark:text-sky-300 flex items-center gap-1.5 text-sm">
                   2. 电磁作用介观主导与正负电荷中性屏蔽 (EM Screening)
                 </h4>
-                <p className="leading-relaxed text-slate-700">
+                <p className="leading-relaxed text-slate-700 dark:text-slate-300">
                   在介观与原子/化学键标度（<InlineMath math="x \in [-11, -3]" />），偶极极化与电磁力强剧；在宏观米级标度（<InlineMath math="x > 0" />），由于物质普遍呈现<strong>电中性（Debye Screening）</strong>，库仑长程力被有效遮蔽。
                 </p>
-                <div className="p-2 bg-white rounded border border-sky-200">
+                <div className="p-2 bg-white dark:bg-slate-700 rounded border border-sky-200 dark:border-sky-700/50">
                   <BlockMath math={"I_{\\text{EM}}(x, y) = \\alpha_{\\text{EM}}(y) e^{-0.04(x+7)^2 - 0.05(y-1)^2} \\cdot e^{-0.3 \\max(0, x)}"} />
                 </div>
               </div>
@@ -221,13 +221,13 @@ export const EquivalenceModal: React.FC<EquivalenceModalProps> = ({ isOpen, onCl
                 </pre>
               </div>
 
-              <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg flex flex-col justify-between">
-                <div className="flex items-center justify-between border-b border-slate-200 pb-2 mb-2 font-bold text-slate-800">
+              <div className="p-4 bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-lg flex flex-col justify-between">
+                <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-600 pb-2 mb-2 font-bold text-slate-800 dark:text-slate-200">
                   <span className="flex items-center gap-1.5">
                     <ImageIcon className="w-4 h-4 text-purple-600" /> Python 绘制的相空间全图 (interaction_heatmaps.png)
                   </span>
                 </div>
-                <div className="flex-1 flex items-center justify-center bg-white p-2 border border-slate-200 rounded overflow-hidden">
+                <div className="flex-1 flex items-center justify-center bg-white dark:bg-slate-800 p-2 border border-slate-200 dark:border-slate-600 rounded overflow-hidden">
                   {!imgError ? (
                     <img
                       src="/interaction_heatmaps.png"
@@ -241,7 +241,7 @@ export const EquivalenceModal: React.FC<EquivalenceModalProps> = ({ isOpen, onCl
                     </div>
                   )}
                 </div>
-                <p className="text-[10px] text-slate-500 font-mono mt-2 text-center">
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 font-mono mt-2 text-center">
                   Python 脚本实时模拟输出：已严格校准 QCD 渐进自由、EW 质量截断、EM 屏蔽与引力宏观累积
                 </p>
               </div>
@@ -260,8 +260,8 @@ export const EquivalenceModal: React.FC<EquivalenceModalProps> = ({ isOpen, onCl
                   onClick={() => setActiveCase(c)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-serif transition-all ${
                     currentCase?.id === c.id
-                      ? 'bg-slate-900 text-white font-bold'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
+                      ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold'
+                      : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 border border-slate-200 dark:border-slate-600'
                   }`}
                 >
                   {c.title ? c.title.split(' ').slice(0, 2).join(' ') : ''}
@@ -272,10 +272,10 @@ export const EquivalenceModal: React.FC<EquivalenceModalProps> = ({ isOpen, onCl
             {/* Active Case Details */}
             {currentCase && (
               <>
-                <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                  <h3 className="text-sm font-bold text-slate-900 mb-1">{currentCase.title}</h3>
-                  <p className="text-xs text-slate-600 mb-2">{currentCase.subtitle}</p>
-                  <div className="p-2 bg-white text-slate-900 border border-slate-300 rounded">
+                <div className="p-3 bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-lg">
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-1">{currentCase.title}</h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 mb-2">{currentCase.subtitle}</p>
+                  <div className="p-2 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-600 rounded">
                     <div className="text-[10px] font-mono text-slate-400 mb-1 text-center">基元算符方程</div>
                     {currentCase.baseEquation && <BlockMath math={currentCase.baseEquation} />}
                   </div>
@@ -283,16 +283,16 @@ export const EquivalenceModal: React.FC<EquivalenceModalProps> = ({ isOpen, onCl
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   {currentCase.scales?.map((s, idx) => (
-                    <div key={idx} className="p-3 bg-slate-50 border border-slate-200 rounded-lg flex flex-col justify-between text-xs">
+                    <div key={idx} className="p-3 bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-lg flex flex-col justify-between text-xs">
                       <div>
-                        <span className="text-[10px] font-mono font-bold text-slate-600 block mb-1">
+                        <span className="text-[10px] font-mono font-bold text-slate-600 dark:text-slate-400 block mb-1">
                           {s.scaleTitle}
                         </span>
-                        <div className="p-2 bg-white text-slate-900 border border-slate-200 rounded mb-2 overflow-x-auto">
+                        <div className="p-2 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-600 rounded mb-2 overflow-x-auto">
                           {s.form && <BlockMath math={s.form} />}
                         </div>
                       </div>
-                      <p className="text-slate-700 text-[11px] leading-relaxed">
+                      <p className="text-slate-700 dark:text-slate-300 text-[11px] leading-relaxed">
                         {s.physics}
                       </p>
                     </div>
@@ -304,11 +304,11 @@ export const EquivalenceModal: React.FC<EquivalenceModalProps> = ({ isOpen, onCl
         )}
 
         {/* Modal Footer */}
-        <div className="border-t border-slate-200 pt-3 mt-4 flex items-center justify-between text-xs text-slate-500 font-mono">
+        <div className="border-t border-slate-200 dark:border-slate-600 pt-3 mt-4 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-mono">
           <span>Physical Review Multiscale Scale-Space Formalism</span>
           <button
             onClick={onClose}
-            className="px-4 py-1.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-all font-serif"
+            className="px-4 py-1.5 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-lg hover:bg-slate-800 dark:hover:bg-slate-200 transition-all font-serif"
           >
             关闭回到主相图
           </button>
