@@ -22,6 +22,7 @@ interface Canvas2DProps {
   transform: CanvasTransform;
   setTransform: React.Dispatch<React.SetStateAction<CanvasTransform>>;
   onViewportChange: (size: { w: number; h: number }) => void;
+  theme?: 'light' | 'dark';
 }
 
 interface BoxSelection {
@@ -48,6 +49,68 @@ const parseBilingualTitle = (title: string) => {
   return { zh: title, en: '' };
 };
 
+/**
+ * Elegant dark-mode color adapter.
+ * In light mode returns the color unchanged.
+ * In dark mode, flips the HSL lightness (L → 1-L) so that dark-on-light
+ * palette colours become the matching bright-on-dark version while
+ * preserving hue and saturation exactly.
+ * Supports #rgb, #rrggbb, and #rrggbbaa hex strings.
+ */
+const adaptColor = (hex: string, isDark: boolean): string => {
+  if (!isDark) return hex;
+  // Strip optional alpha suffix
+  let alpha = '';
+  let core = hex;
+  if (core.length === 9 || core.length === 5) {
+    alpha = core.slice(-2);
+    core = core.slice(0, -2);
+  }
+  let r: number, g: number, b: number;
+  if (core.length === 4) {
+    r = parseInt(core[1] + core[1], 16);
+    g = parseInt(core[2] + core[2], 16);
+    b = parseInt(core[3] + core[3], 16);
+  } else {
+    r = parseInt(core.slice(1, 3), 16);
+    g = parseInt(core.slice(3, 5), 16);
+    b = parseInt(core.slice(5, 7), 16);
+  }
+  if (isNaN(r) || isNaN(g) || isNaN(b)) return hex;
+  // RGB → HSL
+  const rn = r / 255, gn = g / 255, bn = b / 255;
+  const max = Math.max(rn, gn, bn), min = Math.min(rn, gn, bn);
+  const l = (max + min) / 2;
+  const d = max - min;
+  let h = 0, s = 0;
+  if (d !== 0) {
+    s = d / (1 - Math.abs(2 * l - 1));
+    if (max === rn) h = ((gn - bn) / d + 6) % 6;
+    else if (max === gn) h = (bn - rn) / d + 2;
+    else h = (rn - gn) / d + 4;
+    h /= 6;
+  }
+  // Shift lightness up so all data colors land in the bright range [0.65, 0.88]
+  // (+0.38 shift) regardless of their original L — avoids the dead-zone around L≈0.5
+  // where a simple flip (1-L) produces no visible change.
+  const lDark = Math.min(0.88, Math.max(0.65, l + 0.38));
+  // HSL → RGB
+  const c = (1 - Math.abs(2 * lDark - 1)) * s;
+  const x = c * (1 - Math.abs((h * 6) % 2 - 1));
+  const m = lDark - c / 2;
+  let ro = 0, go = 0, bo = 0;
+  const hh = h * 6;
+  if (hh < 1) { ro = c; go = x; }
+  else if (hh < 2) { ro = x; go = c; }
+  else if (hh < 3) { go = c; bo = x; }
+  else if (hh < 4) { go = x; bo = c; }
+  else if (hh < 5) { ro = x; bo = c; }
+  else { ro = c; bo = x; }
+  const toHex = (v: number) => Math.round((v + m) * 255).toString(16).padStart(2, '0');
+  const out = `#${toHex(ro)}${toHex(go)}${toHex(bo)}`;
+  return alpha ? out + alpha : out;
+};
+
 export const Canvas2D: React.FC<Canvas2DProps> = ({
   activeDomain,
   layerVisibility,
@@ -58,7 +121,8 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
   fitTrigger,
   transform,
   setTransform,
-  onViewportChange
+  onViewportChange,
+  theme = 'light'
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -174,12 +238,31 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
       const w = canvas.width / window.devicePixelRatio;
       const h = canvas.height / window.devicePixelRatio;
 
+      const isDark = theme === 'dark';
+      // Theme-aware color palette
+      const C = {
+        bg: isDark ? '#0f172a' : '#ffffff',
+        gridMinor: isDark ? '#1e293b' : '#f1f5f9',
+        gridMajor: isDark ? '#334155' : '#e2e8f0',
+        gridLabel: isDark ? '#94a3b8' : '#64748b',
+        axis: isDark ? '#e2e8f0' : '#0f172a',
+        axisLabel: isDark ? '#e2e8f0' : '#0f172a',
+        quantumBound: isDark ? '#475569' : '#cbd5e1',
+        quantumBoundLabel: isDark ? '#64748b' : '#94a3b8',
+        textHalo: isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+        objStroke: isDark ? '#1e293b' : '#ffffff',
+        gaugeBosonFill: isDark ? '#1e293b' : '#ffffff',
+        katexLabel: isDark ? '#e2e8f0' : '#0f172a',
+        nodeConnInactive: isDark ? '#47556966' : '#94a3b866',
+        errorBar: isDark ? '#94a3b8' : '#64748b',
+      };
+
       ctx.save();
       ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
       ctx.clearRect(0, 0, w, h);
 
       // --- Paper Background ---
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = C.bg;
       ctx.fillRect(0, 0, w, h);
 
       // --- Adaptive Grid: subdivisions densify as each axis is zoomed in ---
@@ -200,7 +283,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
 
       // Minor vertical lines (spatial) — light, unlabelled
       if (minorX * ppdX >= 16) {
-        ctx.strokeStyle = '#f1f5f9';
+        ctx.strokeStyle = C.gridMinor;
         const ratioX = Math.round(majorX / minorX);
         for (let i = Math.ceil(-36 / minorX); i * minorX <= 27; i++) {
           if (i % ratioX === 0) continue;
@@ -212,7 +295,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
         }
       }
       // Major vertical lines + labels
-      ctx.strokeStyle = '#e2e8f0';
+      ctx.strokeStyle = C.gridMajor;
       for (let i = Math.ceil(-36 / majorX); i * majorX <= 27; i++) {
         const logL = i * majorX;
         const sP = toScreenCoords(getWorldCoords(logL, 0, w, h).x, 0);
@@ -221,7 +304,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
         ctx.lineTo(sP.x, h - 45);
         ctx.stroke();
         if (sP.x > 40 && sP.x < w - 30) {
-          ctx.fillStyle = '#64748b';
+          ctx.fillStyle = C.gridLabel;
           ctx.font = '11px "STIX Two Text", "Times New Roman", serif';
           ctx.textAlign = 'center';
           ctx.fillText(`10^${logL} m`, sP.x, h - 30);
@@ -230,7 +313,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
 
       // Minor horizontal lines (energy) — light, unlabelled
       if (minorY * ppdY >= 16) {
-        ctx.strokeStyle = '#f1f5f9';
+        ctx.strokeStyle = C.gridMinor;
         const ratioY = Math.round(majorY / minorY);
         for (let i = Math.ceil(-5 / minorY); i * minorY <= 29; i++) {
           if (i % ratioY === 0) continue;
@@ -242,7 +325,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
         }
       }
       // Major horizontal lines + labels
-      ctx.strokeStyle = '#e2e8f0';
+      ctx.strokeStyle = C.gridMajor;
       for (let i = Math.ceil(-5 / majorY); i * majorY <= 29; i++) {
         const logE = i * majorY;
         const sP = toScreenCoords(0, getWorldCoords(0, logE, w, h).y);
@@ -251,7 +334,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
         ctx.lineTo(w - 20, sP.y);
         ctx.stroke();
         if (sP.y > 25 && sP.y < h - 50) {
-          ctx.fillStyle = '#64748b';
+          ctx.fillStyle = C.gridLabel;
           ctx.font = '11px "STIX Two Text", "Times New Roman", serif';
           ctx.textAlign = 'right';
           const unitStr = logE >= 9 ? `10^${logE - 9} GeV` : logE >= 6 ? `10^${logE - 6} MeV` : logE >= 3 ? `10^${logE - 3} keV` : `10^${logE} eV`;
@@ -260,7 +343,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
       }
 
       // --- Main Axes Lines ---
-      ctx.strokeStyle = '#0f172a';
+      ctx.strokeStyle = C.axis;
       ctx.lineWidth = 1.8;
       ctx.beginPath();
       ctx.moveTo(60, h - 45);
@@ -269,8 +352,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
       ctx.lineTo(60, 20);
       ctx.stroke();
 
-      ctx.fillStyle = '#0f172a';
-      ctx.font = 'bold 12px "STIX Two Text", "Times New Roman", serif';
+      ctx.fillStyle = C.axisLabel;
       ctx.textAlign = 'center';
       ctx.fillText('Spatial Length Scale log₁₀(L / m) →', w / 2, h - 10);
 
@@ -285,7 +367,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
       // i.e. a slope -1 line  y = -x - 6.7  passing through the Planck point,
       // the QCD point (-15, 8.3) and every particle's Compton wavelength.
       const HBARC_LOG = -6.7;
-      ctx.strokeStyle = '#cbd5e1';
+      ctx.strokeStyle = C.quantumBound;
       ctx.setLineDash([4, 4]);
       ctx.lineWidth = 1.2;
       ctx.beginPath();
@@ -302,8 +384,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
       // between the QG and electroweak domains, offset just below the line.
       const wLbl = getWorldCoords(-23, HBARC_LOG - (-23), w, h);
       const sLbl = toScreenCoords(wLbl.x, wLbl.y);
-      ctx.fillStyle = '#94a3b8';
-      ctx.font = 'italic 11px "STIX Two Text", serif';
+      ctx.fillStyle = C.quantumBoundLabel;
       ctx.fillText('Relativistic Quantum Bound: E · L ~ ℏc', sLbl.x + 12, sLbl.y + 16);
 
       // --- 2D Fundamental Interaction Field Heatmaps (Exact QFT / QED / QCD / EW Physics Buffer) ---
@@ -396,47 +477,49 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
           const bandWidth = Math.abs(sEnd.x - sStart.x);
 
           if (force.id === 'force-gravity') {
+            const gravLine = adaptColor('#b45309', isDark);
             const grad = ctx.createLinearGradient(0, sStart.y - 8, 0, sStart.y + 8);
-            grad.addColorStop(0, '#d9770600');
-            grad.addColorStop(0.5, '#d9770635');
-            grad.addColorStop(1, '#d9770600');
+            grad.addColorStop(0, adaptColor('#d97706', isDark) + '00');
+            grad.addColorStop(0.5, adaptColor('#d97706', isDark) + '35');
+            grad.addColorStop(1, adaptColor('#d97706', isDark) + '00');
 
             ctx.fillStyle = grad;
             ctx.fillRect(sStart.x, sStart.y - 8, bandWidth, 16);
 
-            ctx.strokeStyle = '#b45309';
+            ctx.strokeStyle = gravLine;
             ctx.lineWidth = 1.2;
             ctx.beginPath();
             ctx.moveTo(sStart.x, sStart.y);
             ctx.lineTo(sEnd.x, sEnd.y);
             ctx.stroke();
 
-            ctx.fillStyle = '#b45309';
+            ctx.fillStyle = gravLine;
             ctx.font = '600 11px "Inter", system-ui, sans-serif';
             ctx.textAlign = 'left';
             ctx.fillText('引力 (Gravity / GR)', sStart.x + 8, sStart.y - 6);
           } else if (force.id === 'force-em') {
+            const emLine = adaptColor('#0284c7', isDark);
             const grad = ctx.createLinearGradient(0, sStart.y - 7, 0, sStart.y + 7);
-            grad.addColorStop(0, '#0284c700');
-            grad.addColorStop(0.5, '#0284c740');
-            grad.addColorStop(1, '#0284c700');
+            grad.addColorStop(0, adaptColor('#0284c7', isDark) + '00');
+            grad.addColorStop(0.5, adaptColor('#0284c7', isDark) + '40');
+            grad.addColorStop(1, adaptColor('#0284c7', isDark) + '00');
 
             ctx.fillStyle = grad;
             ctx.fillRect(sStart.x, sStart.y - 7, bandWidth, 14);
 
-            ctx.strokeStyle = '#0284c7';
+            ctx.strokeStyle = emLine;
             ctx.lineWidth = 1.5;
             ctx.beginPath();
             ctx.moveTo(sStart.x, sStart.y);
             ctx.lineTo(sEnd.x, sEnd.y);
             ctx.stroke();
 
-            ctx.fillStyle = '#0369a1';
+            ctx.fillStyle = adaptColor('#0369a1', isDark);
             ctx.font = '600 11px "Inter", system-ui, sans-serif';
             ctx.textAlign = 'left';
             ctx.fillText('电磁 (EM / QED)', sStart.x + 8, sStart.y - 6);
           } else if (force.id === 'force-strong') {
-            const rgbColors = ['#ef4444', '#10b981', '#3b82f6'];
+            const rgbColors = ['#ef4444', '#10b981', '#3b82f6'].map(c => adaptColor(c, isDark));
             const offsets = [-3.5, 0, 3.5];
 
             rgbColors.forEach((color, idx) => {
@@ -457,7 +540,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
               ctx.stroke();
             });
 
-            ctx.strokeStyle = '#dc2626';
+            ctx.strokeStyle = adaptColor('#dc2626', isDark);
             ctx.lineWidth = 1.8;
             ctx.setLineDash([3, 2]);
             ctx.beginPath();
@@ -466,7 +549,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
             ctx.stroke();
             ctx.setLineDash([]);
 
-            ctx.strokeStyle = '#c2410c99';
+            ctx.strokeStyle = adaptColor('#c2410c', isDark) + '99';
             ctx.lineWidth = 1.2;
             ctx.setLineDash([2, 2]);
             ctx.beginPath();
@@ -475,12 +558,13 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
             ctx.stroke();
             ctx.setLineDash([]);
 
-            ctx.fillStyle = '#dc2626';
+            ctx.fillStyle = adaptColor('#dc2626', isDark);
             ctx.font = '600 11px "Inter", system-ui, sans-serif';
             ctx.textAlign = 'left';
             ctx.fillText('强相互作用 (Strong / QCD)', sStart.x + 4, sStart.y - 10);
           } else if (force.id === 'force-weak') {
-            ctx.strokeStyle = '#9333ea';
+            const weakLine = adaptColor('#9333ea', isDark);
+            ctx.strokeStyle = weakLine;
             ctx.lineWidth = 1.6;
             ctx.beginPath();
 
@@ -496,14 +580,14 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
             }
             ctx.stroke();
 
-            ctx.strokeStyle = '#9333ea';
+            ctx.strokeStyle = weakLine;
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.moveTo(sEnd.x, sEnd.y - 8);
             ctx.lineTo(sEnd.x, sEnd.y + 8);
             ctx.stroke();
 
-            ctx.fillStyle = '#7e22ce';
+            ctx.fillStyle = adaptColor('#7e22ce', isDark);
             ctx.font = '600 11px "Inter", system-ui, sans-serif';
             ctx.textAlign = 'left';
             ctx.fillText('弱相互作用 (Weak / EW)', sStart.x + 4, sStart.y - 10);
@@ -524,15 +608,16 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
           const rectW = Math.abs(sMax.x - sMin.x);
           const rectH = Math.abs(sMax.y - sMin.y);
 
-          ctx.fillStyle = d.color + '0d';
-          ctx.strokeStyle = d.color + '40';
+          const domainColor = adaptColor(d.color, isDark);
+          ctx.fillStyle = domainColor + '0d';
+          ctx.strokeStyle = domainColor + '40';
           ctx.lineWidth = 1;
           ctx.setLineDash([3, 3]);
           ctx.fillRect(sMin.x, sMin.y, rectW, rectH);
           ctx.strokeRect(sMin.x, sMin.y, rectW, rectH);
           ctx.setLineDash([]);
 
-          ctx.fillStyle = d.color;
+          ctx.fillStyle = domainColor;
           ctx.font = 'bold 11px "STIX Two Text", serif';
           ctx.textAlign = 'left';
           ctx.fillText(`${d.code}: ${d.name.split(' ')[1]}`, sMin.x + 8, sMin.y + 16);
@@ -557,6 +642,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
             let strokeColor = '#dc2626';
             if (rel.type === 'duality') strokeColor = '#7c3aed';
             if (rel.type === 'model-correspondence') strokeColor = '#0284c7';
+            strokeColor = adaptColor(strokeColor, isDark);
 
             ctx.strokeStyle = isRelHovered || isRelSelected ? strokeColor : strokeColor + 'bb';
             ctx.lineWidth = isRelHovered || isRelSelected ? 2.5 : 1.5;
@@ -635,6 +721,11 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
             connectionColor = '#3b82f6';
           }
 
+          // Adapt node palette for dark background visibility
+          mainColor = adaptColor(mainColor, isDark);
+          subColor = adaptColor(subColor, isDark);
+          connectionColor = adaptColor(connectionColor, isDark);
+
           // Multi-Leg Curved Connections
           if (node.legs && Array.isArray(node.legs)) {
             node.legs.forEach((legId: string) => {
@@ -647,7 +738,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
                 const midY = (sNode.y + sObj.y) / 2 - 12;
 
                 const isLegActive = isNodeHovered || isNodeSelected || legId === hoveredObjId || legId === selectedObjId;
-                ctx.strokeStyle = isLegActive ? connectionColor : '#94a3b866';
+                ctx.strokeStyle = isLegActive ? connectionColor : C.nodeConnInactive;
                 ctx.lineWidth = isLegActive ? 2.0 : 1.0;
                 ctx.beginPath();
                 ctx.moveTo(sNode.x, sNode.y);
@@ -665,7 +756,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
           ctx.textBaseline = 'middle';
           ctx.lineJoin = 'round';
 
-          ctx.strokeStyle = 'rgba(255, 255, 255, 0.95)';
+          ctx.strokeStyle = C.textHalo;
           ctx.lineWidth = 3.5;
 
           ctx.font = nodeActive
@@ -713,7 +804,8 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
           const isPhaseOrAstro = obj.type === 'phase' || obj.type === 'astro-object' || obj.type === 'out-of-equilibrium' || obj.type === 'probe' || obj.type === 'quantum-material';
 
           const radius = isObjHovered || isObjSelected ? 7 : 5;
-          const mainColor = isObjSelected ? '#dc2626' : isObjHovered ? '#2563eb' : (isGaugeBoson ? '#9333ea' : isScalarBoson ? '#0284c7' : '#1e3a8a');
+          const baseColor = isObjSelected ? '#dc2626' : isObjHovered ? '#2563eb' : (isGaugeBoson ? '#9333ea' : isScalarBoson ? '#0284c7' : '#1e3a8a');
+          const mainColor = adaptColor(baseColor, isDark);
 
           // Draw PDG Decay Width / Uncertainty Error Bars
           if (obj.errorBar) {
@@ -724,7 +816,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
             const ebX = obj.errorBar.dx * (plotW / 63) * transform.scaleX;
             const ebY = obj.errorBar.dy * (plotH / 34) * transform.scaleY;
 
-            ctx.strokeStyle = isObjHovered || isObjSelected ? '#dc2626' : '#64748b';
+            ctx.strokeStyle = isObjHovered || isObjSelected ? '#dc2626' : C.errorBar;
             ctx.lineWidth = isObjHovered || isObjSelected ? 1.6 : 1.2;
             const rGap = radius + 2;
 
@@ -766,7 +858,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
           }
 
           if (isGaugeBoson) {
-            ctx.fillStyle = '#ffffff';
+            ctx.fillStyle = C.gaugeBosonFill;
             ctx.strokeStyle = mainColor;
             ctx.lineWidth = 2.2;
             ctx.beginPath();
@@ -781,7 +873,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
             ctx.stroke();
 
             ctx.fillStyle = mainColor;
-            ctx.strokeStyle = '#ffffff';
+            ctx.strokeStyle = C.objStroke;
             ctx.lineWidth = 1.8;
             ctx.beginPath();
             ctx.arc(sObj.x, sObj.y, radius, 0, Math.PI * 2);
@@ -797,7 +889,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
             ctx.setLineDash([]);
 
             ctx.fillStyle = mainColor;
-            ctx.strokeStyle = '#ffffff';
+            ctx.strokeStyle = C.objStroke;
             ctx.lineWidth = 1.8;
             ctx.beginPath();
             ctx.arc(sObj.x, sObj.y, radius, 0, Math.PI * 2);
@@ -806,7 +898,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
           } else if (isPhaseOrAstro) {
             const side = (radius + 1) * 2;
             ctx.fillStyle = mainColor;
-            ctx.strokeStyle = '#ffffff';
+            ctx.strokeStyle = C.objStroke;
             ctx.lineWidth = 1.8;
             ctx.beginPath();
             if ((ctx as any).roundRect) {
@@ -818,7 +910,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
             ctx.stroke();
           } else {
             ctx.fillStyle = mainColor;
-            ctx.strokeStyle = '#ffffff';
+            ctx.strokeStyle = C.objStroke;
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.arc(sObj.x, sObj.y, radius, 0, Math.PI * 2);
@@ -826,7 +918,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
             ctx.stroke();
           }
 
-          const katexSprite = getKatexSprite(obj.symbol || obj.label || '', isObjSelected ? '#dc2626' : isObjHovered ? '#2563eb' : '#0f172a', 15);
+          const katexSprite = getKatexSprite(obj.symbol || obj.label || '', isObjSelected ? adaptColor('#dc2626', isDark) : isObjHovered ? adaptColor('#2563eb', isDark) : C.katexLabel, 15);
 
           // Fixed diagonal offset to the upper-right so the label clears the
           // error-bar cross (horizontal arm along y = sObj.y, vertical along x = sObj.x).
@@ -855,7 +947,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
         const bh = Math.abs(boxSelection.endY - boxSelection.startY);
 
         ctx.fillStyle = 'rgba(2, 132, 199, 0.15)';
-        ctx.strokeStyle = '#0284c7';
+        ctx.strokeStyle = adaptColor('#0284c7', isDark);
         ctx.lineWidth = 1.5;
         ctx.setLineDash([4, 3]);
 
@@ -881,7 +973,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [transform, activeDomain, layerVisibility, selectedItem, hoveredItem, spatialRange, energyRange, boxSelection, getWorldCoords, toScreenCoords, onViewportChange]);
+  }, [transform, activeDomain, layerVisibility, selectedItem, hoveredItem, spatialRange, energyRange, boxSelection, getWorldCoords, toScreenCoords, onViewportChange, theme]);
 
   // --- Mouse & Touch Gestures Handling ---
 
@@ -1113,7 +1205,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
-      className={`relative w-full h-full bg-white overflow-hidden select-none touch-none ${isBoxZoomMode ? 'cursor-crosshair' : 'cursor-grab active:cursor-grabbing'
+      className={`relative w-full h-full bg-white dark:bg-slate-900 overflow-hidden select-none touch-none ${isBoxZoomMode ? 'cursor-crosshair' : 'cursor-grab active:cursor-grabbing'
         }`}
     >
       <canvas
@@ -1134,13 +1226,13 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
       )}
 
       {/* Right Academic Toolbar */}
-      <div className="absolute top-16 right-6 z-20 flex flex-col gap-1.5 bg-white/95 backdrop-blur border border-slate-300 rounded shadow-md p-1.5 font-serif text-xs">
+      <div className="absolute top-16 right-6 z-20 flex flex-col gap-1.5 bg-white/95 dark:bg-slate-800/95 backdrop-blur border border-slate-300 dark:border-slate-600 rounded shadow-md p-1.5 font-serif text-xs">
         <button
           onClick={zoomIn}
           title="放大视野 (Zoom In)"
-          className="p-2 rounded hover:bg-slate-100 text-slate-800 transition-colors flex items-center justify-center group relative"
+          className="p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 transition-colors flex items-center justify-center group relative"
         >
-          <ZoomIn className="w-4 h-4 text-slate-700" />
+          <ZoomIn className="w-4 h-4 text-slate-700 dark:text-slate-300" />
           <span className="absolute right-full mr-2 hidden group-hover:block whitespace-nowrap bg-slate-900 text-white text-[10px] px-2 py-1 rounded shadow">
             放大视野 (+50%)
           </span>
@@ -1149,22 +1241,22 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
         <button
           onClick={zoomOut}
           title="缩小视野 (Zoom Out)"
-          className="p-2 rounded hover:bg-slate-100 text-slate-800 transition-colors flex items-center justify-center group relative"
+          className="p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 transition-colors flex items-center justify-center group relative"
         >
-          <ZoomOut className="w-4 h-4 text-slate-700" />
+          <ZoomOut className="w-4 h-4 text-slate-700 dark:text-slate-300" />
           <span className="absolute right-full mr-2 hidden group-hover:block whitespace-nowrap bg-slate-900 text-white text-[10px] px-2 py-1 rounded shadow">
             缩小视野 (-33%)
           </span>
         </button>
 
-        <div className="w-full h-px bg-slate-200" />
+        <div className="w-full h-px bg-slate-200 dark:bg-slate-600" />
 
         <button
           onClick={fitViewToSelection}
           title="将视野放大或平移以完全对齐左侧面板选定的标度区间"
-          className="p-2 rounded hover:bg-slate-100 text-slate-800 transition-colors flex items-center justify-center group relative"
+          className="p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 transition-colors flex items-center justify-center group relative"
         >
-          <Target className="w-4 h-4 text-cyan-700" />
+          <Target className="w-4 h-4 text-cyan-700 dark:text-cyan-400" />
           <span className="absolute right-full mr-2 hidden group-hover:block whitespace-nowrap bg-slate-900 text-white text-[10px] px-2 py-1 rounded shadow">
             将视野对齐至当前选定标度
           </span>
@@ -1173,22 +1265,22 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
         <button
           onClick={resetFullScale}
           title="全视角 (Reset Full Viewport)"
-          className="p-2 rounded hover:bg-slate-100 text-slate-800 transition-colors flex items-center justify-center group relative"
+          className="p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 transition-colors flex items-center justify-center group relative"
         >
-          <RefreshCw className="w-4 h-4 text-slate-700" />
+          <RefreshCw className="w-4 h-4 text-slate-700 dark:text-slate-300" />
           <span className="absolute right-full mr-2 hidden group-hover:block whitespace-nowrap bg-slate-900 text-white text-[10px] px-2 py-1 rounded shadow">
             全视角
           </span>
         </button>
 
-        <div className="w-full h-px bg-slate-200" />
+        <div className="w-full h-px bg-slate-200 dark:bg-slate-600" />
 
         <button
           onClick={() => setIsBoxZoomMode(!isBoxZoomMode)}
           title="进入 Matplotlib 式框选模式（在相图拖拽矩形直接放大指定视域，不改变过滤器标度）"
           className={`p-2 rounded transition-all flex items-center justify-center group relative ${isBoxZoomMode
             ? 'bg-cyan-600 text-white shadow-inner'
-            : 'hover:bg-slate-100 text-slate-800'
+            : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200'
             }`}
         >
           <Crop className="w-4 h-4" />
@@ -1202,9 +1294,9 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
       {hoveredItem && !isBoxZoomMode && (
         <div
           style={{ left: tooltipPos.x + 14, top: tooltipPos.y + 14 }}
-          className="fixed z-50 bg-white/95 text-slate-900 backdrop-blur p-3 rounded-lg shadow-xl pointer-events-none text-xs font-serif border border-slate-300 max-w-sm animate-fade-in"
+          className="fixed z-50 bg-white/95 dark:bg-slate-800/95 text-slate-900 dark:text-slate-100 backdrop-blur p-3 rounded-lg shadow-xl pointer-events-none text-xs font-serif border border-slate-300 dark:border-slate-600 max-w-sm animate-fade-in"
         >
-          <div className="flex items-center justify-between font-bold text-slate-900 mb-1 border-b border-slate-200 pb-1">
+          <div className="flex items-center justify-between font-bold text-slate-900 dark:text-slate-100 mb-1 border-b border-slate-200 dark:border-slate-600 pb-1">
             <span className="flex items-center gap-1.5">
               {hoveredItem.type === 'theory' && (
                 <span className="px-1.5 py-0.2 bg-purple-100 text-purple-800 border border-purple-300 rounded text-[9px] font-mono font-bold">
@@ -1224,15 +1316,15 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
               <span>{hoveredItem.label || hoveredItem.title}</span>
             </span>
             {hoveredItem.pdgCode && (
-              <span className="font-mono text-[9px] bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded border border-slate-300">
+              <span className="font-mono text-[9px] bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded border border-slate-300 dark:border-slate-600">
                 {hoveredItem.pdgCode}
               </span>
             )}
           </div>
-          <div className="text-[11px] text-slate-700 leading-snug my-1">
+          <div className="text-[11px] text-slate-700 dark:text-slate-300 leading-snug my-1">
             {hoveredItem.annotation || hoveredItem.abstract || hoveredItem.description}
           </div>
-          <div className="text-[10px] text-slate-400 font-mono mt-1.5 border-t border-slate-200 pt-1 flex justify-between">
+          <div className="text-[10px] text-slate-400 dark:text-slate-500 font-mono mt-1.5 border-t border-slate-200 dark:border-slate-600 pt-1 flex justify-between">
             <span>点击查看算符与规格</span>
             <span>Physical Review Spec</span>
           </div>
@@ -1240,12 +1332,12 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
       )}
 
       {/* Academic Figure Caption Footer & Particle Legend */}
-      <div className="absolute bottom-4 left-6 right-6 pointer-events-none flex flex-col md:flex-row items-start md:items-center justify-between border-t border-slate-300 pt-2 text-[11px] text-slate-600 font-serif gap-2">
+      <div className="absolute bottom-4 left-6 right-6 pointer-events-none flex flex-col md:flex-row items-start md:items-center justify-between border-t border-slate-300 dark:border-slate-600 pt-2 text-[11px] text-slate-600 dark:text-slate-400 font-serif gap-2">
         <div className="flex items-center gap-4 flex-wrap">
           <div>
             <span className="font-bold">Figure 1.</span> PDG Academic Map & Legend:
           </div>
-          <div className="flex items-center gap-3 font-sans text-[10px] text-slate-700 flex-wrap">
+          <div className="flex items-center gap-3 font-sans text-[10px] text-slate-700 dark:text-slate-300 flex-wrap">
             <span className="flex items-center gap-1">
               <span className="text-purple-600 font-bold text-xs">○</span> 规范玻色子
             </span>
@@ -1258,20 +1350,20 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
             <span className="flex items-center gap-1">
               <span className="text-emerald-700 font-bold text-xs">■</span> 物态/材料/天体
             </span>
-            <span className="flex items-center gap-1 px-1.5 py-0.2 rounded bg-purple-50 text-purple-700 border border-purple-200 font-mono font-bold">
+            <span className="flex items-center gap-1 px-1.5 py-0.2 rounded bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-700 font-mono font-bold">
               [理论] 具体理论
             </span>
-            <span className="flex items-center gap-1 px-1.5 py-0.2 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono font-bold">
+            <span className="flex items-center gap-1 px-1.5 py-0.2 rounded bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700 font-mono font-bold">
               [方法] 研究方法
             </span>
-            <span className="flex items-center gap-1 px-1.5 py-0.2 rounded bg-sky-50 text-sky-700 border border-sky-200 font-mono font-bold">
+            <span className="flex items-center gap-1 px-1.5 py-0.2 rounded bg-sky-50 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-700 font-mono font-bold">
               [课题] 研究课题
             </span>
           </div>
         </div>
 
-        <div className="font-mono text-[10px] text-slate-500">
-          Zoom X {transform.scaleX.toFixed(2)}× · Y {transform.scaleY.toFixed(2)}× | Physical Review Light Theme
+        <div className="font-mono text-[10px] text-slate-500 dark:text-slate-400">
+          Zoom X {transform.scaleX.toFixed(2)}× · Y {transform.scaleY.toFixed(2)}× | Physical Review {theme === 'dark' ? 'Dark' : 'Light'} Theme
         </div>
       </div>
     </div>
