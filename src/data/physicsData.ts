@@ -2886,13 +2886,1134 @@ export const ACADEMIC_RELATIONS_RMP_2024_2026: EquivalenceRelation[] = [
   }
 ];
 
+
+// ============================================================================
+// 扩展批次 II：更具体的研究对象（具体材料 / 命名实验 / 特定相与准粒子）
+// ============================================================================
+export const ACADEMIC_OBJECTS_EXTENDED: PhysicsNode[] = [
+  // --- 具体量子材料 (Specific Quantum Materials) ---
+  {
+    id: 'obj-herbertsmithite',
+    label: 'Herbertsmithite 笼目自旋液体 (ZnCu₃(OH)₆Cl₂)',
+    pdgCode: 'EXT-CM-HERBERT',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -9.2, y: -1.75 },
+    errorBar: { dx: 0.08, dy: 0.08 },
+    symbol: '\\ce{ZnCu3(OH)6Cl2}',
+    type: 'quantum-material',
+    specs: {
+      length: 'a \\approx 0.6 \\text{ nm (Kagome Cu plane)}',
+      energy: 'J \\sim 17 \\text{ meV} \\approx 197 \\text{ K}',
+      time: '10^{-12} \\text{ s}',
+      lagrangian: 'H = J \\sum_{\\langle ij \\rangle} \\mathbf{S}_i \\cdot \\mathbf{S}_j \\quad (S=\\tfrac{1}{2}\\text{ Kagome AFM})'
+    },
+    annotation: '无杂质笼目自旋-1/2 反铁磁体的标杆候选；中子散射观测到宽连续谱，证据指向 Z₂ 或 U(1) 量子自旋液体。'
+  },
+  {
+    id: 'obj-na2iro3',
+    label: '蜂窝状铱酸盐 (Na₂IrO₃ Kitaev Candidate)',
+    pdgCode: 'EXT-CM-NA2IRO3',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -9.35, y: -2.15 },
+    errorBar: { dx: 0.06, dy: 0.06 },
+    symbol: '\\ce{Na2IrO3}',
+    type: 'quantum-material',
+    specs: {
+      length: 'a \\approx 0.52 \\text{ nm (Honeycomb)}',
+      energy: 'J_K \\sim 4 - 12 \\text{ meV}, \\quad T_N \\approx 15 \\text{ K}',
+      time: '10^{-12} \\text{ s}',
+      lagrangian: 'H = \\sum_{\\gamma} K S_i^\\gamma S_j^\\gamma + \\Gamma (S_i^\\alpha S_j^\\beta + \\cdots)'
+    },
+    annotation: '强自旋轨道耦合 5d 铱酸盐，Kitaev 键方向相互作用的早期实证平台；与 α-RuCl₃ 互为参照。'
+  },
+  {
+    id: 'obj-nickelate-sc',
+    label: '无限层镍基超导体 (Infinite-Layer Nickelate)',
+    pdgCode: 'EXT-CM-NICKELATE',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -9.4, y: -2.55 },
+    errorBar: { dx: 0.06, dy: 0.06 },
+    symbol: '\\ce{Nd0.8Sr0.2NiO2}',
+    type: 'quantum-material',
+    specs: {
+      length: 'a \\approx 0.39 \\text{ nm}',
+      energy: 'T_c \\sim 9 - 15 \\text{ K}, \\quad \\Delta \\sim \\text{meV}',
+      time: '10^{-12} \\text{ s}',
+      lagrangian: 'H \\sim \\text{Ni-}3d_{x^2-y^2} + \\text{rare-earth } 5d \\text{ hybridization}'
+    },
+    annotation: '2019 年发现的类铜氧化物无限层镍酸盐超导体；单轨道 vs 多轨道、自旋-1/2 vs 自旋-1 配对机制之争。'
+  },
+  {
+    id: 'obj-sr2ruo4',
+    label: '手征 p 波超导体候选 (Sr₂RuO₄)',
+    pdgCode: 'EXT-CM-SR2RUO4',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -8.95, y: -2.65 },
+    errorBar: { dx: 0.06, dy: 0.06 },
+    symbol: '\\ce{Sr2RuO4}',
+    type: 'quantum-material',
+    specs: {
+      length: '\\xi \\sim 66 \\text{ nm}',
+      energy: 'T_c \\approx 1.5 \\text{ K}',
+      time: '10^{-11} \\text{ s}',
+      lagrangian: '\\Delta(\\mathbf{k}) \\propto k_x \\pm i k_y \\quad (\\text{Chiral } p\\text{-wave?})'
+    },
+    annotation: '二十余年手征 p 波（自旋三重态）超导标杆候选；近年 NMR/超声实验对序参量对称性提出严峻挑战。'
+  },
+  {
+    id: 'obj-fese-te',
+    label: '铁基拓扑超导体 (Fe(Te,Se) Majorana Platform)',
+    pdgCode: 'EXT-CM-FESETE',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -8.85, y: -2.78 },
+    errorBar: { dx: 0.06, dy: 0.06 },
+    symbol: '\\ce{FeTe0.55Se0.45}',
+    type: 'quantum-material',
+    specs: {
+      length: '\\xi \\sim 2 \\text{ nm}',
+      energy: 'T_c \\approx 14 \\text{ K}, \\quad \\Delta_{\\text{top}} \\sim 1 \\text{ meV}',
+      time: '10^{-12} \\text{ s}',
+      lagrangian: 'H_{\\text{surf}} = v_F (\\boldsymbol{\\sigma}\\times\\mathbf{k})\\cdot\\hat{z} + \\Delta \\tau_x \\quad (\\text{TSS+SC})'
+    },
+    annotation: 'STM 在涡旋芯观测到零能马约拉纳束缚态的本征拓扑超导体；无需外场、单一材料实现拓扑量子计算候选。'
+  },
+  {
+    id: 'obj-inas-al-wire',
+    label: 'InAs/Al 半导体-超导纳米线 (Majorana Nanowire)',
+    pdgCode: 'EXT-CM-INASAL',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -7.7, y: -3.15 },
+    errorBar: { dx: 0.08, dy: 0.08 },
+    symbol: '\\ce{InAs}/\\ce{Al}',
+    type: 'quantum-material',
+    specs: {
+      length: 'L \\sim 1 - 3 \\text{ \\mu m}, \\quad d \\sim 100 \\text{ nm}',
+      energy: 'E_M \\sim 0.1 - 0.3 \\text{ meV (Majorana Splitting)}',
+      time: '10^{-9} \\text{ s}',
+      lagrangian: 'H = \\left( \\frac{p^2}{2m} - \\mu \\right)\\tau_z + \\alpha p \\sigma_y \\tau_z + V_Z \\sigma_x + \\Delta \\tau_x'
+    },
+    annotation: 'Oreg-Lutchyn-von Oppen 方案：强 Rashba 自旋轨道纳米线近邻 s 波超导 + 塞曼场，端点涌现马约拉纳零能模。'
+  },
+  {
+    id: 'obj-mnbite',
+    label: '轴子绝缘体 (MnBi₂Te₄ Axion Insulator)',
+    pdgCode: 'EXT-CM-MNBITE',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -8.75, y: -0.55 },
+    errorBar: { dx: 0.06, dy: 0.06 },
+    symbol: '\\ce{MnBi2Te4}',
+    type: 'quantum-material',
+    specs: {
+      length: 'd_{\\text{SL}} \\approx 1.4 \\text{ nm (Septuple Layer)}',
+      energy: 'E_{\\text{gap}} \\sim 50 \\text{ meV}, \\quad T_N \\approx 24 \\text{ K}',
+      time: '10^{-12} \\text{ s}',
+      lagrangian: '\\mathcal{L}_\\theta = \\frac{\\theta e^2}{2\\pi h} \\mathbf{E}\\cdot\\mathbf{B}, \\quad \\theta = \\pi \\pmod{2\\pi}'
+    },
+    annotation: '本征磁性拓扑绝缘体；奇数层实现轴子绝缘体态（θ=π 拓扑磁电效应），偶数层为量子反常霍尔绝缘体。'
+  },
+  {
+    id: 'obj-bi2se3',
+    label: '三维拓扑绝缘体 (Bi₂Se₃ 3D TI)',
+    pdgCode: 'EXT-CM-BI2SE3',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -8.9, y: -0.35 },
+    errorBar: { dx: 0.06, dy: 0.06 },
+    symbol: '\\ce{Bi2Se3}',
+    type: 'quantum-material',
+    specs: {
+      length: '\\lambda_{\\text{TF}} \\sim 2 \\text{ nm}',
+      energy: 'E_{\\text{gap}} \\approx 300 \\text{ meV}',
+      time: '10^{-13} \\text{ s}',
+      lagrangian: 'H_{\\text{surf}} = v_F (\\sigma_x k_y - \\sigma_y k_x) \\quad (\\text{Single Dirac Cone})'
+    },
+    annotation: 'Hasan/Kane 预言、ARPES 证实的大体能隙三维强拓扑绝缘体；表面单狄拉克锥螺旋无耗散态。'
+  },
+  {
+    id: 'obj-wte2-weyl',
+    label: '第二类外尔半金属 (WTe₂ Type-II Weyl)',
+    pdgCode: 'EXT-CM-WTE2',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -9.05, y: -0.78 },
+    errorBar: { dx: 0.06, dy: 0.06 },
+    symbol: '\\ce{WTe2}',
+    type: 'quantum-material',
+    specs: {
+      length: 'a \\approx 0.35 \\text{ nm}',
+      energy: 'E_{\\text{Weyl}} \\sim 50 \\text{ meV above } E_F',
+      time: '10^{-13} \\text{ s}',
+      lagrangian: 'H_{\\text{Weyl}} = \\pm v_F \\boldsymbol{\\sigma}\\cdot\\mathbf{k} + \\text{tilted cone } (\\text{Type-II})'
+    },
+    annotation: '倾斜外尔锥突破洛伦兹不变性的第二类外尔半金属；巨大磁阻、手征反常输运与二维单层量子自旋霍尔相。'
+  },
+  {
+    id: 'obj-cd3as2-dirac',
+    label: '三维狄拉克半金属 (Cd₃As₂ Dirac Semimetal)',
+    pdgCode: 'EXT-CM-CD3AS2',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -9.15, y: -0.62 },
+    errorBar: { dx: 0.06, dy: 0.06 },
+    symbol: '\\ce{Cd3As2}',
+    type: 'quantum-material',
+    specs: {
+      length: '\\ell_B \\sim 10 - 100 \\text{ nm (Mean Free Path)}',
+      energy: 'E_D \\sim 1 \\text{ eV (Dirac Node)}',
+      time: '10^{-13} \\text{ s}',
+      lagrangian: 'H_D = v_\\perp (k_x \\sigma_x + k_y \\sigma_y) + v_z k_z \\sigma_z \\tau_z'
+    },
+    annotation: '受晶体对称性保护的三维体狄拉克节点；超高迁移率与手征反常负磁阻的输运实验平台。'
+  },
+  {
+    id: 'obj-co3sn2s2',
+    label: '磁性外尔半金属 (Co₃Sn₂S₂ Magnetic Weyl)',
+    pdgCode: 'EXT-CM-CO3SN2S2',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -9.0, y: -0.95 },
+    errorBar: { dx: 0.06, dy: 0.06 },
+    symbol: '\\ce{Co3Sn2S2}',
+    type: 'quantum-material',
+    specs: {
+      length: 'a \\approx 0.41 \\text{ nm}',
+      energy: 'T_c \\approx 177 \\text{ K}, \\quad E_{\\text{Weyl}} \\sim 60 \\text{ meV}',
+      time: '10^{-13} \\text{ s}',
+      lagrangian: 'H = H_{\\text{Weyl}} + M \\sigma_z \\quad (\\text{Time-Reversal Broken Weyl})'
+    },
+    annotation: '铁磁序破缺时间反演对称性产生的磁性外尔半金属；巨大反常霍尔效应与手征反常的直接关联。'
+  },
+  {
+    id: 'obj-lao-sto',
+    label: 'LaAlO₃/SrTiO₃ 界面二维电子气 (2DEG Interface)',
+    pdgCode: 'EXT-CM-LAOSTO',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -8.65, y: -1.05 },
+    errorBar: { dx: 0.06, dy: 0.06 },
+    symbol: '\\ce{LaAlO3}/\\ce{SrTiO3}',
+    type: 'quantum-material',
+    specs: {
+      length: 'd_{\\text{2DEG}} \\sim 5 - 10 \\text{ nm}',
+      energy: 'T_c \\sim 0.2 - 0.3 \\text{ K}, \\quad n_s \\sim 10^{13} \\text{ cm}^{-2}',
+      time: '10^{-12} \\text{ s}',
+      lagrangian: '\\text{Polar Catastrophe} \\to 0.5 \\, e^-/\\text{u.c.} \\quad (\\text{Interface Reconstruction})'
+    },
+    annotation: '两种带绝缘体界面涌现的高迁移率二维电子气；栅可调超导、铁磁与自旋轨道耦合共存。'
+  },
+  {
+    id: 'obj-fqh-52',
+    label: 'ν=5/2 分数量子霍尔态 (Non-Abelian Pfaffian)',
+    pdgCode: 'EXT-CM-FQH52',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -8.25, y: -2.65 },
+    errorBar: { dx: 0.06, dy: 0.06 },
+    symbol: '\\nu = \\tfrac{5}{2}',
+    type: 'phase',
+    specs: {
+      length: '\\ell_B = \\sqrt{\\hbar/eB} \\sim 10 \\text{ nm}',
+      energy: '\\Delta_{5/2} \\sim 0.5 \\text{ K} \\sim 40 \\text{ \\mu eV}',
+      time: '10^{-10} \\text{ s}',
+      lagrangian: '\\Psi_{\\text{MR}} = \\text{Pf}\\!\\left( \\frac{1}{z_i - z_j} \\right) \\prod_{i<j}(z_i-z_j)^2 e^{-\\sum |z|^2/4\\ell_B^2}'
+    },
+    annotation: '偶分母分数量子霍尔态，Moore-Read Pfaffian 波函数承载伊辛非阿贝尔任意子；拓扑量子计算核心候选。'
+  },
+  {
+    id: 'obj-fe3gete2',
+    label: 'Fe₃GeTe₂ 二维巡游铁磁体 (2D vdW Ferromagnet)',
+    pdgCode: 'EXT-CM-FE3GETE2',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -9.1, y: -2.42 },
+    errorBar: { dx: 0.06, dy: 0.06 },
+    symbol: '\\ce{Fe3GeTe2}',
+    type: 'quantum-material',
+    specs: {
+      length: 'd_{\\text{mono}} \\approx 0.8 \\text{ nm}',
+      energy: 'T_c \\sim 220 \\text{ K (bulk)} \\to 130 \\text{ K (few-layer)}',
+      time: '10^{-12} \\text{ s}',
+      lagrangian: 'H = -\\sum J_{ij}\\mathbf{S}_i\\cdot\\mathbf{S}_j - K\\sum (S_i^z)^2 + \\text{RKKY (itinerant)}'
+    },
+    annotation: '高居里温度、栅压与离子液体可调的二维巡游铁磁金属；范德华自旋电子学器件的核心材料。'
+  },
+  {
+    id: 'obj-bscco',
+    label: 'BSCCO 铜氧化物 (Bi₂Sr₂CaCu₂O₈₊δ)',
+    pdgCode: 'EXT-CM-BSCCO',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -9.3, y: -1.55 },
+    errorBar: { dx: 0.06, dy: 0.06 },
+    symbol: '\\ce{Bi2Sr2CaCu2O8}',
+    type: 'quantum-material',
+    specs: {
+      length: 'a \\approx 0.38 \\text{ nm}, \\quad \\xi_{ab} \\sim 1 \\text{ nm}',
+      energy: 'T_c^{\\max} \\approx 95 \\text{ K}, \\quad \\Delta_{\\text{PG}} \\sim 40 \\text{ meV}',
+      time: '10^{-13} \\text{ s}',
+      lagrangian: '\\Delta(\\mathbf{k}) = \\frac{\\Delta_0}{2}(\\cos k_x - \\cos k_y) \\quad (d_{x^2-y^2})'
+    },
+    annotation: '可解理出原子平整表面的双层铜氧化物；STM 实空间成像伪能隙、电荷序与 d 波配对纳米不均匀性。'
+  },
+
+  // --- 冷原子 / AMO 具体体系 ---
+  {
+    id: 'obj-dipolar-gas',
+    label: '偶极量子气体 (Dipolar Dy/Er Gases)',
+    pdgCode: 'EXT-AMO-DIPOLAR',
+    domainId: 'domain-amo-atomic',
+    coords: { x: -6.8, y: -3.9 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\ce{Dy}, \\ce{Er}',
+    type: 'bound-state',
+    specs: {
+      length: 'a_{\\text{dd}} \\sim 100 \\text{ nm (Dipolar Length)}',
+      energy: '\\mu \\sim 10 \\mu_B, \\quad T \\sim 10 \\text{ nK}',
+      time: '1 - 10 \\text{ s}',
+      lagrangian: 'V_{\\text{dd}}(\\mathbf{r}) = \\frac{\\mu_0 \\mu^2}{4\\pi} \\frac{1 - 3\\cos^2\\theta}{r^3}'
+    },
+    annotation: '镝/铒大磁矩原子的长程各向异性偶极相互作用；实现量子液滴、超固态（supersolid）与偶极多体相。'
+  },
+  {
+    id: 'obj-bec-87rb',
+    label: '⁸⁷Rb 玻色-爱因斯坦凝聚 (Rubidium BEC)',
+    pdgCode: 'EXT-AMO-BEC87RB',
+    domainId: 'domain-amo-atomic',
+    coords: { x: -7.2, y: -3.7 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\ce{^{87}Rb}',
+    type: 'bound-state',
+    specs: {
+      length: '\\xi_{\\text{heal}} \\sim 0.1 - 1 \\text{ \\mu m}',
+      energy: 'T_c \\sim 100 \\text{ nK}, \\quad \\mu \\sim \\text{nK}',
+      time: '1 - 60 \\text{ s}',
+      lagrangian: 'i\\hbar\\partial_t\\psi = \\left( -\\frac{\\hbar^2\\nabla^2}{2m} + V + g|\\psi|^2 \\right)\\psi \\quad (\\text{GPE})'
+    },
+    annotation: '1995 年 Cornell/Wieman 首次实现的碱金属 BEC；Gross-Pitaevskii 平均场、涡旋晶格与超流性的基准体系。'
+  },
+  {
+    id: 'obj-levitated-np',
+    label: '悬浮纳米颗粒光力学 (Levitated Optomechanics)',
+    pdgCode: 'EXT-AMO-LEVITATED',
+    domainId: 'domain-amo-atomic',
+    coords: { x: -6.0, y: -4.3 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: 'm_{\\text{np}}',
+    type: 'probe',
+    specs: {
+      length: 'r \\sim 50 - 200 \\text{ nm (Silica NP)}',
+      energy: 'E_{\\text{ZPF}} \\sim \\text{zeV}, \\quad T_{\\text{cm}} \\to \\mu\\text{K}',
+      time: '1 - 100 \\text{ s}',
+      lagrangian: 'H = \\frac{p^2}{2m} + \\frac{1}{2}m\\Omega^2 x^2 + H_{\\text{opt}} \\quad (\\text{Macroscopic QM})'
+    },
+    annotation: '光/电/磁悬浮的介电纳米颗粒质心运动冷却至量子基态；探索宏观量子叠加、引力退相干与超弱力传感。'
+  },
+  {
+    id: 'obj-rydberg-molecule',
+    label: '里德伯分子 (Rydberg Macrodimers)',
+    pdgCode: 'EXT-AMO-RYDMOL',
+    domainId: 'domain-amo-atomic',
+    coords: { x: -7.3, y: -2.45 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\text{Ryd}_2',
+    type: 'bound-state',
+    specs: {
+      length: 'R_{\\text{bond}} \\sim 0.1 - 1 \\text{ \\mu m}',
+      energy: 'D_e \\sim \\text{MHz} - \\text{GHz}',
+      time: '1 - 100 \\text{ \\mu s}',
+      lagrangian: 'V(R) \\sim -\\frac{C_6(R)}{R^6} \\quad (\\text{Trilobite / Butterfly})'
+    },
+    annotation: '里德伯电子与基态原子低能散射形成的微米尺度巨型分子（三叶虫/蝴蝶态）；超长程化学键的极端范例。'
+  },
+
+  // --- 高能 / 核物理具体对象 ---
+  {
+    id: 'obj-bottomonium',
+    label: '底夸克偶素 (Bottomonium Υ Family)',
+    pdgCode: 'EXT-HEP-BOTTOMONIUM',
+    domainId: 'domain-hadron-nuclear',
+    coords: { x: -15.4, y: 9.98 },
+    errorBar: { dx: 0.02, dy: 0.02 },
+    symbol: '\\Upsilon(1S)',
+    type: 'composite',
+    specs: {
+      length: 'r \\sim 0.2 \\text{ fm}',
+      energy: 'M_{\\Upsilon(1S)} = 9460.30 \\pm 0.26 \\text{ MeV}',
+      time: '1.2 \\times 10^{-20} \\text{ s}',
+      lagrangian: 'V_{b\\bar{b}}(r) = -\\frac{4}{3}\\frac{\\alpha_s}{r} + \\sigma r \\quad (\\text{Cornell Potential})'
+    },
+    annotation: 'b b̄ 重夸克偶素谱，Cornell 势（库仑+线性禁闭）的精密检验；QGP 中顺序熔解作温度探针。'
+  },
+  {
+    id: 'obj-tetraquark-zc',
+    label: '带电粲四夸克态 (Z_c(3900) Tetraquark)',
+    pdgCode: 'EXT-HEP-ZC3900',
+    domainId: 'domain-hadron-nuclear',
+    coords: { x: -15.3, y: 9.55 },
+    errorBar: { dx: 0.02, dy: 0.02 },
+    symbol: 'Z_c(3900)',
+    type: 'composite',
+    specs: {
+      length: '\\sim 1 \\text{ fm}',
+      energy: 'M = 3883.9 \\pm 1.5 \\text{ MeV}',
+      time: '10^{-22} \\text{ s}',
+      lagrangian: '|Z_c\\rangle = |c\\bar{c} u\\bar{d}\\rangle \\quad (\\text{Manifestly Exotic, Charged})'
+    },
+    annotation: 'BESIII/Belle 发现的带电粲偶素类结构，必含 c c̄ u d̄ 四夸克成分；确证超出 q q̄/qqq 的奇特强子。'
+  },
+  {
+    id: 'obj-pentaquark',
+    label: '隐粲五夸克态 (P_c Pentaquarks)',
+    pdgCode: 'EXT-HEP-PENTAQUARK',
+    domainId: 'domain-hadron-nuclear',
+    coords: { x: -15.25, y: 9.72 },
+    errorBar: { dx: 0.02, dy: 0.02 },
+    symbol: 'P_c(4450)',
+    type: 'composite',
+    specs: {
+      length: '\\sim 1 \\text{ fm}',
+      energy: 'M_{P_c(4457)} = 4457.3 \\pm 0.6 \\text{ MeV}',
+      time: '10^{-22} \\text{ s}',
+      lagrangian: '|P_c\\rangle = |uud\\, c\\bar{c}\\rangle \\quad (\\Sigma_c \\bar{D}^* \\text{ Molecule?})'
+    },
+    annotation: 'LHCb 在 Λ_b 衰变中发现的隐粲五夸克态；紧致五夸克 vs 强子分子（Σ_c D̄⁽*⁾）结构之争。'
+  },
+  {
+    id: 'obj-antihydrogen',
+    label: '反氢原子 (Antihydrogen CPT Tests)',
+    pdgCode: 'EXT-HEP-ANTIH',
+    domainId: 'domain-amo-atomic',
+    coords: { x: -10.3, y: 1.0 },
+    errorBar: { dx: 0.05, dy: 0.05 },
+    symbol: '\\bar{\\text{H}}',
+    type: 'bound-state',
+    specs: {
+      length: 'a_0 = 0.529 \\text{ \\AA}',
+      energy: '1S-2S: \\Delta\\nu/\\nu < 2 \\times 10^{-12}',
+      time: '> 1000 \\text{ s (Trapped)}',
+      lagrangian: '\\nu_{1S-2S}^{\\bar{H}} \\stackrel{?}{=} \\nu_{1S-2S}^{H} \\quad (\\text{CPT / WEP})'
+    },
+    annotation: 'CERN ALPHA/ATRAP 磁阱囚禁反氢；1S-2S 光谱与引力下落实验精密检验 CPT 对称性与弱等效原理。'
+  },
+  {
+    id: 'obj-positronium',
+    label: '电子偶素 (Positronium Precision)',
+    pdgCode: 'EXT-HEP-POSITRONIUM',
+    domainId: 'domain-amo-atomic',
+    coords: { x: -10.4, y: 1.2 },
+    errorBar: { dx: 0.05, dy: 0.05 },
+    symbol: '\\text{Ps}',
+    type: 'bound-state',
+    specs: {
+      length: 'a_{\\text{Ps}} = 2 a_0 \\approx 1.06 \\text{ \\AA}',
+      energy: '\\text{hfs} \\, \\Delta\\nu = 203.389 \\text{ GHz}',
+      time: '\\tau_{\\text{o-Ps}} = 142 \\text{ ns}',
+      lagrangian: 'H_{\\text{hfs}} = \\frac{7}{12}\\alpha^4 m_e c^2 \\, \\boldsymbol{\\sigma}_1\\cdot\\boldsymbol{\\sigma}_2 + \\mathcal{O}(\\alpha^5)'
+    },
+    annotation: '纯轻子 e⁺e⁻ 束缚态，无核结构污染；超精细分裂与湮没率精密检验束缚态 QED 高阶辐射修正。'
+  },
+  {
+    id: 'obj-electron-edm',
+    label: '电子电偶极矩 (Electron EDM / ACME)',
+    pdgCode: 'EXT-HEP-EEDM',
+    domainId: 'domain-ew',
+    coords: { x: -12.5, y: 5.5 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: 'd_e',
+    type: 'probe',
+    specs: {
+      length: '\\text{ThO / HfF}^+ \\text{ molecule}',
+      energy: '|d_e| < 4.1 \\times 10^{-30} \\, e\\cdot\\text{cm}',
+      time: '\\tau_{\\text{coh}} \\sim \\text{ms}',
+      lagrangian: 'H_{\\text{EDM}} = -d_e \\, \\boldsymbol{\\sigma}\\cdot\\mathbf{E}_{\\text{eff}} \\quad (\\text{T, CP Violation})'
+    },
+    annotation: 'ACME/JILA 极性分子内禀电子 EDM 上限；对 TeV 标度新物理 CP 破坏相（重子生成所需）极灵敏。'
+  },
+  {
+    id: 'obj-neutron-edm',
+    label: '中子电偶极矩 (Neutron EDM)',
+    pdgCode: 'EXT-HEP-NEDM',
+    domainId: 'domain-hadron-nuclear',
+    coords: { x: -15.15, y: 8.85 },
+    errorBar: { dx: 0.05, dy: 0.05 },
+    symbol: 'd_n',
+    type: 'probe',
+    specs: {
+      length: '\\text{UCN Storage Bottle}',
+      energy: '|d_n| < 1.8 \\times 10^{-26} \\, e\\cdot\\text{cm}',
+      time: '\\tau_{\\text{UCN}} \\sim 100 \\text{ s}',
+      lagrangian: '\\Delta\\nu = \\frac{2 d_n E}{h} \\pm \\frac{2 \\mu_n B}{h} \\quad (\\text{Ramsey UCN})'
+    },
+    annotation: '超冷中子 Ramsey 磁共振测量中子 EDM；约束 QCD θ 角（强 CP 问题）与超对称 CP 相位。'
+  },
+  {
+    id: 'obj-hypernucleus',
+    label: '超核与奇异核物质 (Hypernuclei)',
+    pdgCode: 'EXT-HEP-HYPERNUC',
+    domainId: 'domain-hadron-nuclear',
+    coords: { x: -14.9, y: 8.55 },
+    errorBar: { dx: 0.05, dy: 0.05 },
+    symbol: '{}^A_\\Lambda Z',
+    type: 'composite',
+    specs: {
+      length: 'R \\sim 2 - 5 \\text{ fm}',
+      energy: 'B_\\Lambda \\sim 1 - 30 \\text{ MeV}',
+      time: '\\tau_\\Lambda \\sim 2 \\times 10^{-10} \\text{ s}',
+      lagrangian: 'V_{YN} = V_{\\Lambda N} + V_{\\Sigma N} \\quad (\\text{Strangeness } S=-1)'
+    },
+    annotation: '含 Λ/Σ 超子的奇异原子核；J-PARC/JLab 谱学约束超子-核子相互作用，外推至中子星超子物质。'
+  },
+
+  // --- 天体 / 宇宙学具体对象 ---
+  {
+    id: 'obj-frb',
+    label: '快速射电暴 (Fast Radio Bursts)',
+    pdgCode: 'EXT-ASTRO-FRB',
+    domainId: 'domain-cosmology',
+    coords: { x: 8.0, y: -3.0 },
+    errorBar: { dx: 0.3, dy: 0.2 },
+    symbol: '\\text{FRB}',
+    type: 'astro-object',
+    specs: {
+      length: '\\text{Source} \\sim \\text{km} - \\text{AU}',
+      energy: 'E_{\\text{radio}} \\sim 10^{38} - 10^{40} \\text{ erg}',
+      time: '\\Delta t \\sim \\text{ms}',
+      lagrangian: '\\text{DM} = \\int n_e \\, dl \\quad (\\text{Dispersive Delay})'
+    },
+    annotation: '毫秒级宇宙学射电瞬变；色散测量重子分布，磁星引擎与致密天体并合起源，部分呈周期重复。'
+  },
+  {
+    id: 'obj-magnetar',
+    label: '磁星 (Magnetars)',
+    pdgCode: 'EXT-ASTRO-MAGNETAR',
+    domainId: 'domain-cosmology',
+    coords: { x: 4.3, y: 8.8 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\text{Magnetar}',
+    type: 'astro-object',
+    specs: {
+      length: 'R \\approx 10 \\text{ km}',
+      energy: 'B \\sim 10^{14} - 10^{15} \\text{ G}',
+      time: '\\tau_{\\text{flare}} \\sim 0.1 \\text{ s}',
+      lagrangian: 'E_B = \\frac{B^2}{8\\pi} \\cdot \\frac{4\\pi R^3}{3} \\sim 10^{47} \\text{ erg}'
+    },
+    annotation: '超强磁场中子星；磁能驱动巨耀发与 X 射线暴，SGR 1935+2154 射电暴确证磁星-FRB 联系。'
+  },
+  {
+    id: 'obj-nanograv-sgwb',
+    label: '纳赫兹随机引力波背景 (NANOGrav SGWB)',
+    pdgCode: 'EXT-ASTRO-NANOGRAV',
+    domainId: 'domain-cosmology',
+    coords: { x: 12.5, y: -4.2 },
+    errorBar: { dx: 0.3, dy: 0.2 },
+    symbol: 'h_c^{\\text{PTA}}',
+    type: 'astro-object',
+    specs: {
+      length: '\\lambda_{\\text{GW}} \\sim \\text{ly}',
+      energy: 'f_{\\text{GW}} \\sim \\text{nHz}',
+      time: 'T_{\\text{obs}} \\sim 15 \\text{ yr}',
+      lagrangian: 'h_c(f) = A_{\\text{GWB}} \\left( \\frac{f}{f_{\\text{yr}}} \\right)^{-2/3} \\quad (\\text{SMBH Binary})'
+    },
+    annotation: 'NANOGrav/EPTA/PPTA/CPTA 脉冲星计时阵列 2023 年证据；超大质量黑洞双星背景或宇宙学相变/宇宙弦。'
+  },
+  {
+    id: 'obj-lisa',
+    label: 'LISA 空间引力波天文台 (Space GW Detector)',
+    pdgCode: 'EXT-ASTRO-LISA',
+    domainId: 'domain-cosmology',
+    coords: { x: 9.5, y: -4.0 },
+    errorBar: { dx: 0.2, dy: 0.2 },
+    symbol: '\\text{LISA}',
+    type: 'probe',
+    specs: {
+      length: 'L_{\\text{arm}} = 2.5 \\times 10^6 \\text{ km}',
+      energy: 'f \\sim 0.1 \\text{ mHz} - 0.1 \\text{ Hz}',
+      time: 'T_{\\text{mission}} \\sim 4 - 10 \\text{ yr}',
+      lagrangian: 'h \\sim 10^{-20} \\quad (\\text{Laser Interferometry in Space})'
+    },
+    annotation: 'ESA/NASA 2030s 百万公里臂激光干涉空间阵列；毫赫兹频段超大质量黑洞并合、极端质量比旋进与验证源。'
+  },
+  {
+    id: 'obj-21cm',
+    label: '21 厘米宇宙学 (21-cm Cosmology / EDGES)',
+    pdgCode: 'EXT-ASTRO-21CM',
+    domainId: 'domain-cosmology',
+    coords: { x: 24.0, y: -3.8 },
+    errorBar: { dx: 0.3, dy: 0.2 },
+    symbol: '21\\text{cm}',
+    type: 'astro-object',
+    specs: {
+      length: '\\lambda = 21.1 \\text{ cm} \\to (1+z)\\lambda',
+      energy: 'h\\nu = 5.9 \\text{ \\mu eV}',
+      time: 'z \\sim 6 - 30 \\text{ (Cosmic Dawn / EoR)}',
+      lagrangian: 'T_b \\propto \\left( 1 - \\frac{T_\\gamma}{T_s} \\right) \\quad (\\text{Spin Temperature})'
+    },
+    annotation: '中性氢超精细 21cm 线红移测绘宇宙黎明与再电离；EDGES 异常吸收或暗示暗物质-重子相互作用。'
+  },
+  {
+    id: 'obj-cosmic-string',
+    label: '宇宙弦与拓扑缺陷 (Cosmic Strings & Defects)',
+    pdgCode: 'EXT-ASTRO-COSMICSTRING',
+    domainId: 'domain-cosmology',
+    coords: { x: 20.0, y: 10.0 },
+    errorBar: { dx: 0.3, dy: 0.3 },
+    symbol: 'G\\mu/c^2',
+    type: 'fundamental',
+    specs: {
+      length: '\\text{Network} \\sim \\text{Hubble}',
+      energy: 'G\\mu/c^2 < 10^{-7} \\text{ (PTA/CMB Bound)}',
+      time: '\\text{Scaling Solution}',
+      lagrangian: '\\Gamma_{\\text{GW}} \\propto (G\\mu)^2 \\sum_n n^{-q} \\quad (\\text{Cusp/Kink Bursts})'
+    },
+    annotation: '对称性破缺相变产生的一维拓扑缺陷；NANOGrav 随机引力波背景的候选起源之一，CMB 与透镜约束张力。'
+  },
+
+  // --- 统计 / 复杂系统具体对象 ---
+  {
+    id: 'obj-kpz-growth',
+    label: 'KPZ 界面生长 (Kardar-Parisi-Zhang Growth)',
+    pdgCode: 'EXT-STAT-KPZ',
+    domainId: 'domain-stat-complex',
+    coords: { x: -3.0, y: -2.2 },
+    errorBar: { dx: 0.2, dy: 0.1 },
+    symbol: 'h(x,t)',
+    type: 'out-of-equilibrium',
+    specs: {
+      length: '\\xi \\sim t^{1/z}, \\quad z = 3/2 \\text{ (1D)}',
+      energy: 'k_B T',
+      time: '1 - 10^{3} \\text{ s}',
+      lagrangian: '\\partial_t h = \\nu\\nabla^2 h + \\frac{\\lambda}{2}(\\nabla h)^2 + \\eta(x,t)'
+    },
+    annotation: '非平衡界面生长普适类；1+1 维精确可解（Tracy-Widom 涨落），液晶、细菌菌落与火焰前沿实验验证。'
+  },
+  {
+    id: 'obj-active-nematic',
+    label: '活性向列与拓扑缺陷 (Active Nematics)',
+    pdgCode: 'EXT-STAT-ACTIVENEM',
+    domainId: 'domain-stat-complex',
+    coords: { x: -4.2, y: -2.8 },
+    errorBar: { dx: 0.15, dy: 0.1 },
+    symbol: '\\pm\\tfrac{1}{2}',
+    type: 'out-of-equilibrium',
+    specs: {
+      length: '\\ell_a \\sim 10 - 100 \\text{ \\mu m (Active Length)}',
+      energy: '\\zeta \\Delta\\mu \\sim k_B T',
+      time: '1 - 10^{3} \\text{ s}',
+      lagrangian: '\\sigma_{ij}^{\\text{active}} = -\\zeta \\Delta\\mu \\, Q_{ij} \\quad (\\pm\\tfrac{1}{2} \\text{ Defect Dynamics})'
+    },
+    annotation: '微管/分子马达或细胞单层中的活性向列相；±1/2 拓扑缺陷自驱动、产生与湮灭的活性湍流。'
+  },
+  {
+    id: 'obj-mbl',
+    label: '多体局域化 (Many-Body Localization)',
+    pdgCode: 'EXT-STAT-MBL',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -8.3, y: -1.95 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\text{MBL}',
+    type: 'phase',
+    specs: {
+      length: '\\xi_{\\text{loc}} \\sim 1 - 10 \\text{ sites}',
+      energy: 'W \\sim J \\text{ (Disorder Strength)}',
+      time: 't \\to \\infty \\text{ (No Thermalization)}',
+      lagrangian: 'H = -J\\sum c_i^\\dagger c_{i+1} + \\sum h_i n_i, \\quad h_i \\in [-W,W]'
+    },
+    annotation: '强无序下相互作用量子系统违反 ETH、拒绝热化；涌现 l-比特局域积分运动量与对数慢纠缠增长。'
+  },
+  {
+    id: 'obj-floquet-timecrystal',
+    label: '离散时间晶体 (Discrete Time Crystal)',
+    pdgCode: 'EXT-STAT-DTC',
+    domainId: 'domain-stat-complex',
+    coords: { x: -5.8, y: -3.5 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\text{DTC}',
+    type: 'phase',
+    specs: {
+      length: '1 - 10 \\text{ \\mu m (Spin Chain)}',
+      energy: '\\text{neV} - \\mu\\text{eV}',
+      time: 'nT, \\quad \\text{Period } 2T \\text{ (Subharmonic)}',
+      lagrangian: 'U(T) = e^{-iH_{\\text{int}}} e^{-i(\\pi-\\epsilon)\\sum X_i} \\implies \\langle Z(t)\\rangle \\sim \\cos(\\pi t/T)'
+    },
+    annotation: '周期驱动多体系统中时间平移对称性自发破缺为倍周期响应；离子阱/金刚石 NV/Rydberg 阵列实验实现。'
+  },
+  {
+    id: 'obj-otoc-scrambling',
+    label: '量子扰码与 OTOC (Out-of-Time-Order Correlator)',
+    pdgCode: 'EXT-QI-OTOC',
+    domainId: 'domain-stat-complex',
+    coords: { x: -5.2, y: -3.6 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: 'C(t)',
+    type: 'out-of-equilibrium',
+    specs: {
+      length: '1 - 10 \\text{ \\mu m}',
+      energy: '\\text{neV} - \\mu\\text{eV}',
+      time: 't_* = \\frac{\\hbar}{2\\pi k_B T}\\ln N \\text{ (Scrambling Time)}',
+      lagrangian: 'C(t) = -\\langle [W(t), V(0)]^2 \\rangle \\sim e^{\\lambda_L t}, \\quad \\lambda_L \\leq 2\\pi k_BT/\\hbar'
+    },
+    annotation: '非时序关联函数量化量子信息扰码与混沌；里雅普诺夫指数饱和 Maldacena-Shenker-Stanford 混沌上限。'
+  },
+  {
+    id: 'obj-tensor-network',
+    label: '张量网络态 (Tensor Network States)',
+    pdgCode: 'EXT-QI-TENSORNET',
+    domainId: 'domain-condensed-matter',
+    coords: { x: -6.2, y: -0.75 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\text{MPS/PEPS}',
+    type: 'method',
+    specs: {
+      length: '\\text{Bond Dim } \\chi \\sim 10^2 - 10^4',
+      energy: '\\text{Variational Ground State}',
+      time: '\\text{Classical Simulation}',
+      lagrangian: '|\\Psi\\rangle = \\sum A^{[1]}_{s_1} A^{[2]}_{s_2} \\cdots A^{[N]}_{s_N} |s_1\\cdots s_N\\rangle'
+    },
+    annotation: 'MPS/PEPS/MERA 以纠缠面积律压缩指数 Hilbert 空间；DMRG 基态、实时演化与全息时空涌现的桥梁。'
+  },
+
+  // --- 具体实验探针 / 方法对象 ---
+  {
+    id: 'obj-arpes',
+    label: '角分辨光电子能谱 (ARPES)',
+    pdgCode: 'EXT-PROBE-ARPES',
+    domainId: 'domain-amo-atomic',
+    coords: { x: -8.6, y: 0.8 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\text{ARPES}',
+    type: 'probe',
+    specs: {
+      length: '\\lambda_{\\text{probe}} \\sim 0.1 - 1 \\text{ nm}',
+      energy: 'h\\nu \\sim 6 - 1000 \\text{ eV}, \\quad \\Delta E \\sim 1 \\text{ meV}',
+      time: '\\text{fs (tr-ARPES)}',
+      lagrangian: 'E_{\\text{kin}} = h\\nu - \\phi - E_B, \\quad \\mathbf{k}_\\parallel = \\frac{\\sqrt{2mE_{\\text{kin}}}}{\\hbar}\\sin\\theta'
+    },
+    annotation: '光电效应直接测绘动量分辨能带与谱函数 A(k,ω)；拓扑表面态、d 波能隙与费米面的标准探针。'
+  },
+  {
+    id: 'obj-stm',
+    label: '扫描隧道显微/谱 (STM/STS)',
+    pdgCode: 'EXT-PROBE-STM',
+    domainId: 'domain-amo-atomic',
+    coords: { x: -9.0, y: 0.0 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\text{STM}',
+    type: 'probe',
+    specs: {
+      length: '\\text{Resolution} \\sim 0.01 \\text{ nm}',
+      energy: 'eV_{\\text{bias}} \\sim \\text{meV} - \\text{eV}',
+      time: '10^{-3} \\text{ s/pixel}',
+      lagrangian: 'I \\propto \\rho_s(E_F) e^{-2\\kappa d}, \\quad \\kappa = \\sqrt{2m\\phi}/\\hbar'
+    },
+    annotation: '量子隧穿实空间原子成像与 dI/dV 局域态密度谱；涡旋马约拉纳零能模、电荷序与准粒子干涉的直接观测。'
+  },
+  {
+    id: 'obj-rixs',
+    label: '共振非弹性 X 射线散射 (RIXS)',
+    pdgCode: 'EXT-PROBE-RIXS',
+    domainId: 'domain-amo-atomic',
+    coords: { x: -8.8, y: 1.0 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\text{RIXS}',
+    type: 'probe',
+    specs: {
+      length: '\\lambda \\sim 0.1 - 1 \\text{ nm}',
+      energy: '\\Delta E \\sim 10 - 30 \\text{ meV (UHR)}',
+      time: '\\text{Synchrotron / FEL}',
+      lagrangian: 'I \\propto \\sum_f |\\langle f|T|i\\rangle|^2 \\delta(E_i - E_f - \\hbar\\omega)'
+    },
+    annotation: '动量分辨磁振子、轨道激发与 dd 激发谱学；铜氧化物磁振子色散与 Kitaev 材料分数化连续谱探测。'
+  },
+  {
+    id: 'obj-musr',
+    label: 'μ 子自旋旋转/弛豫 (μSR)',
+    pdgCode: 'EXT-PROBE-MUSR',
+    domainId: 'domain-amo-atomic',
+    coords: { x: -8.4, y: -0.2 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\mu\\text{SR}',
+    type: 'probe',
+    specs: {
+      length: '\\text{Implant Depth} \\sim 0.1 \\text{ \\mu m}',
+      energy: 'E_\\mu \\sim 4 \\text{ MeV}',
+      time: '\\tau_\\mu = 2.2 \\text{ \\mu s}',
+      lagrangian: 'P_z(t) = \\langle \\boldsymbol{\\sigma}_\\mu(t)\\rangle \\quad (\\text{Local } B \\text{ Field Probe})'
+    },
+    annotation: '植入自旋极化 μ 子作微观磁强计；零场/纵场弛豫探测自旋液体持续涨落、磁有序与超导穿透深度。'
+  },
+  {
+    id: 'obj-quantum-gas-microscope',
+    label: '量子气体显微镜 (Quantum Gas Microscope)',
+    pdgCode: 'EXT-PROBE-QGM',
+    domainId: 'domain-amo-atomic',
+    coords: { x: -7.6, y: -1.2 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\text{QGM}',
+    type: 'probe',
+    specs: {
+      length: '\\text{Site-Resolved} \\sim 500 \\text{ nm}',
+      energy: 'U/t \\sim 1 - 20',
+      time: '1 - 10 \\text{ s}',
+      lagrangian: '\\text{Fluorescence} \\to \\text{Single-Site } n_i \\text{ Snapshot}'
+    },
+    annotation: 'Bakr/Greiner/Bloch 单格点分辨荧光成像冷原子；直接观测反铁磁关联、掺杂动力学与纠缠熵测量。'
+  },
+  {
+    id: 'obj-neutron-scattering',
+    label: '非弹性中子散射 (Inelastic Neutron Scattering)',
+    pdgCode: 'EXT-PROBE-INS',
+    domainId: 'domain-amo-atomic',
+    coords: { x: -8.5, y: -0.4 },
+    errorBar: { dx: 0.1, dy: 0.1 },
+    symbol: '\\text{INS}',
+    type: 'probe',
+    specs: {
+      length: '\\lambda_n \\sim 0.1 - 1 \\text{ nm}',
+      energy: '\\Delta E \\sim 0.01 - 100 \\text{ meV}',
+      time: '\\text{Spallation / Reactor Source}',
+      lagrangian: '\\frac{d^2\\sigma}{d\\Omega dE} \\propto S(\\mathbf{Q}, \\omega) \\quad (\\text{Dynamic Structure Factor})'
+    },
+    annotation: '动量-能量分辨磁激发谱学；自旋液体宽连续谱（自旋分数化）、磁振子与声子色散的标准体探针。'
+  }
+];
+
+
+// ============================================================================
+// 扩展批次 II：更具体的前沿课题 (frontier) 与实验/计算方法 (method)
+// ============================================================================
+export const ACADEMIC_RESEARCH_NODES_EXTENDED: ResearchRoute[] = [
+  // --- 凝聚态 / 量子材料前沿课题 ---
+  {
+    id: 'node-ext-fracton',
+    title: '分形子拓扑序 (Fracton Topological Order)',
+    domainId: 'domain-condensed-matter',
+    type: 'frontier',
+    coords: { x: -8.6, y: -2.9 },
+    legs: ['obj-topological-order-string', 'obj-kagome-metal'],
+    formula: '\\text{Immobility: } H_{\\text{X-cube}} = -\\sum A_c - \\sum B_v, \\quad \\text{subsystem symmetries}',
+    abstract: '点状激发受运动约束（不可移动/亚维子）的新型拓扑序；与弹性理论、量子纠错码（Haah 码）和玻璃化动力学深层联系。'
+  },
+  {
+    id: 'node-ext-axion-insulator',
+    title: '轴子绝缘体与拓扑磁电效应 (Axion Electrodynamics in MnBi₂Te₄)',
+    domainId: 'domain-condensed-matter',
+    type: 'frontier',
+    coords: { x: -8.7, y: -0.7 },
+    legs: ['obj-mnbite', 'obj-bi2se3'],
+    formula: '\\mathcal{L}_\\theta = \\frac{\\theta e^2}{2\\pi h}\\mathbf{E}\\cdot\\mathbf{B}, \\quad \\theta=\\pi \\pmod{2\\pi}',
+    abstract: '磁性拓扑绝缘体奇数层实现 θ=π 轴子绝缘体态；量子化拓扑磁电效应、半整数量子霍尔与暗物质轴子探测平台。'
+  },
+  {
+    id: 'node-ext-weyl-transport',
+    title: '外尔/狄拉克半金属反常输运 (Anomalous Transport in Weyl/Dirac SM)',
+    domainId: 'domain-condensed-matter',
+    type: 'frontier',
+    coords: { x: -9.0, y: -0.85 },
+    legs: ['obj-wte2-weyl', 'obj-cd3as2-dirac', 'obj-co3sn2s2'],
+    formula: '\\sigma_{xy}^{\\text{chiral}} \\propto \\frac{e^2}{h}\\frac{\\mu_5}{2\\pi} \\quad (\\text{Chiral Anomaly } \\mathbf{E}\\cdot\\mathbf{B})',
+    abstract: '手征反常负磁阻、费米弧表面态与巨大反常霍尔效应；拓扑能带几何（贝里曲率）输运响应的系统研究。'
+  },
+  {
+    id: 'node-ext-nickelate',
+    title: '镍基超导配对机制 (Nickelate Superconductivity Mechanism)',
+    domainId: 'domain-condensed-matter',
+    type: 'frontier',
+    coords: { x: -9.35, y: -2.45 },
+    legs: ['obj-nickelate-sc', 'obj-ybco'],
+    formula: 'H \\sim d_{x^2-y^2} \\text{ single-band vs } d\\text{-}p \\text{ charge-transfer}',
+    abstract: '无限层镍酸盐与铜氧化物等电子却性质迥异；稀土 5d 杂化、自旋-1 vs 自旋-1/2 与 Hund 耦合对配对的影响。'
+  },
+  {
+    id: 'node-ext-majorana-platforms',
+    title: '马约拉纳平台交叉验证 (Cross-Platform Majorana Search)',
+    domainId: 'domain-condensed-matter',
+    type: 'frontier',
+    coords: { x: -8.0, y: -3.0 },
+    legs: ['obj-inas-al-wire', 'obj-fese-te', 'obj-fqh-52'],
+    formula: '\\gamma = \\gamma^\\dagger, \\quad \\{\\gamma_i, \\gamma_j\\} = 2\\delta_{ij} \\quad (\\text{Ising Anyons})',
+    abstract: '半导体纳米线、铁基拓扑超导体涡旋与 ν=5/2 分数量子霍尔三大平台的马约拉纳零能模甄别与编织实验。'
+  },
+  {
+    id: 'node-ext-nonabelian-fqh',
+    title: '非阿贝尔分数量子霍尔 (Non-Abelian FQH / ν=5/2)',
+    domainId: 'domain-condensed-matter',
+    type: 'frontier',
+    coords: { x: -8.3, y: -2.75 },
+    legs: ['obj-fqh-52', 'obj-anyon-statistics'],
+    formula: '\\text{Pfaffian vs Anti-Pfaffian vs PH-Pfaffian} \\quad (\\text{Thermal Hall } \\kappa_{xy})',
+    abstract: '偶分母 FQH 态的拓扑序甄别；热霍尔电导量子化测量区分 Pfaffian/反 Pfaffian，伊辛任意子编织。'
+  },
+  {
+    id: 'node-ext-dipolar-quantum',
+    title: '偶极量子物质与超固态 (Dipolar Quantum Matter & Supersolidity)',
+    domainId: 'domain-amo-atomic',
+    type: 'frontier',
+    coords: { x: -6.9, y: -3.8 },
+    legs: ['obj-dipolar-gas', 'obj-bec-87rb'],
+    formula: '\\text{Supersolid: } \\rho(\\mathbf{r}) = \\rho_0 + \\delta\\rho\\cos(\\mathbf{Q}\\cdot\\mathbf{r}) \\text{ + phase coherence}',
+    abstract: '镝/铒长程偶极相互作用实现量子液滴晶格与超固态（同时破缺 U(1) 与平移对称）；Roton 软化与量子相变。'
+  },
+  {
+    id: 'node-ext-quantum-chaos',
+    title: '量子混沌、扰码与全息 (Quantum Chaos, Scrambling & Holography)',
+    domainId: 'domain-stat-complex',
+    type: 'theory',
+    coords: { x: -5.0, y: -4.0 },
+    legs: ['obj-otoc-scrambling', 'obj-dual-unitary-circuit', 'obj-blackhole-m87'],
+    formula: '\\lambda_L \\leq \\frac{2\\pi k_B T}{\\hbar}, \\quad t_* \\sim \\frac{\\hbar}{2\\pi k_BT}\\ln S',
+    abstract: 'OTOC 与里雅普诺夫指数量化量子信息扰码；SYK/黑洞快扰码与可解线路的精确刻画，连接凝聚态与量子引力。'
+  },
+  {
+    id: 'node-ext-mbl-ergodicity',
+    title: '多体局域化与遍历性破缺 (MBL & Ergodicity Breaking)',
+    domainId: 'domain-condensed-matter',
+    type: 'theory',
+    coords: { x: -8.2, y: -1.85 },
+    legs: ['obj-mbl', 'obj-strongly-correlated'],
+    formula: 'S(t) \\sim \\ln t \\text{ (MBL)} \\quad \\text{vs} \\quad S(t) \\sim t \\text{ (ETH)}',
+    abstract: '强无序相互作用系统拒绝热化的机制、l-比特涌现与稳定性；与量子信息保护、时间晶体和热化边界的联系。'
+  },
+  {
+    id: 'node-ext-time-crystal',
+    title: '离散时间晶体 (Discrete Time Crystals)',
+    domainId: 'domain-stat-complex',
+    type: 'frontier',
+    coords: { x: -5.7, y: -3.6 },
+    legs: ['obj-floquet-timecrystal', 'obj-rydberg-atom-array'],
+    formula: '\\langle O(nT)\\rangle \\text{ period } = mT, \\quad m>1 \\quad (\\text{Rigid Subharmonic})',
+    abstract: '周期驱动系统中时间平移对称性自发破缺；离子阱、NV 色心与 Rydberg 阵列的倍周期刚性响应与预热化平台。'
+  },
+
+  // --- 天体 / 宇宙学前沿课题 ---
+  {
+    id: 'node-ext-nanograv',
+    title: '纳赫兹引力波背景起源 (Origin of Nanohertz SGWB)',
+    domainId: 'domain-cosmology',
+    type: 'frontier',
+    coords: { x: 12.0, y: -4.0 },
+    legs: ['obj-nanograv-sgwb', 'obj-sgra-blackhole', 'obj-cosmic-string'],
+    formula: '\\Omega_{\\text{GW}}(f) \\propto f^{2/3} \\text{ (SMBH)} \\quad \\text{vs} \\quad \\text{phase transition / strings}',
+    abstract: 'PTA 随机引力波背景的天体物理（超大质量黑洞双星）与宇宙学（一阶相变、宇宙弦）起源甄别。'
+  },
+  {
+    id: 'node-ext-21cm',
+    title: '21 厘米宇宙黎明 (21-cm Cosmic Dawn & EoR)',
+    domainId: 'domain-cosmology',
+    type: 'frontier',
+    coords: { x: 24.5, y: -3.6 },
+    legs: ['obj-21cm', 'obj-cmb'],
+    formula: 'T_b(z) \\approx 27 x_{\\text{HI}}(1+\\delta)\\left(1-\\frac{T_\\gamma}{T_s}\\right)\\left(\\frac{1+z}{10}\\right)^{1/2} \\text{ mK}',
+    abstract: '中性氢 21cm 层析成像第一代恒星与再电离；EDGES 异常吸收、SKA/HERA 与暗物质-重子散射解释。'
+  },
+  {
+    id: 'node-ext-frb-magnetar',
+    title: '快速射电暴与磁星引擎 (FRB & Magnetar Engines)',
+    domainId: 'domain-cosmology',
+    type: 'frontier',
+    coords: { x: 6.0, y: -2.8 },
+    legs: ['obj-frb', 'obj-magnetar', 'obj-neutron-star-eos'],
+    formula: 'L_{\\text{FRB}} \\sim 10^{42} \\text{ erg/s} \\quad (\\text{Coherent Curvature / Reconnection})',
+    abstract: '毫秒射电暴的相干辐射机制（曲率辐射/磁重联）；磁星耀发确证、重复暴周期性与宇宙学探针应用。'
+  },
+  {
+    id: 'node-ext-cosmic-strings',
+    title: '宇宙弦与早期宇宙拓扑缺陷 (Cosmic Strings & Topological Defects)',
+    domainId: 'domain-cosmology',
+    type: 'theory',
+    coords: { x: 20.5, y: 10.5 },
+    legs: ['obj-cosmic-string', 'obj-cmb', 'obj-nanograv-sgwb'],
+    formula: '\\Omega_{\\text{GW}} \\propto (G\\mu)^2 \\quad (\\text{Cusp/Kink Network Scaling})',
+    abstract: '对称性破缺产生的宇宙弦网络引力波辐射；NANOGrav 背景候选解释与 CMB/微透镜/脉冲星多信使约束。'
+  },
+
+  // --- 基础物理 / 对称性前沿课题 ---
+  {
+    id: 'node-ext-antinucleon-cpt',
+    title: '反物质与 CPT/引力检验 (Antimatter CPT & Gravity Tests)',
+    domainId: 'domain-amo-atomic',
+    type: 'frontier',
+    coords: { x: -10.2, y: 1.3 },
+    legs: ['obj-antihydrogen', 'obj-positronium'],
+    formula: '\\frac{\\nu^{\\bar{H}} - \\nu^{H}}{\\nu} \\stackrel{?}{=} 0, \\quad \\bar{g} \\stackrel{?}{=} g',
+    abstract: '反氢 1S-2S 光谱、兰姆位移与自由落体（ALPHA-g/GBAR）；CPT 定理与弱等效原理的最严格轻子-反物质检验。'
+  },
+  {
+    id: 'node-ext-edm-cpv',
+    title: '电偶极矩与新 CP 破坏 (EDM Searches & Baryogenesis)',
+    domainId: 'domain-ew',
+    type: 'frontier',
+    coords: { x: -13.5, y: 6.5 },
+    legs: ['obj-electron-edm', 'obj-neutron-edm'],
+    formula: '\\eta_{\\text{baryon}} \\sim 10^{-10} \\implies \\text{New CP phases} \\to d_{e,n} \\neq 0',
+    abstract: '电子/中子/原子 EDM 对重子生成所需新 CP 破坏相的极灵敏探针；约束超对称、左右对称与轴子模型。'
+  },
+  {
+    id: 'node-ext-exotic-hadron',
+    title: '奇特强子谱学 (Exotic Hadron Spectroscopy XYZ/Pc)',
+    domainId: 'domain-hadron-nuclear',
+    type: 'frontier',
+    coords: { x: -15.2, y: 9.65 },
+    legs: ['obj-xyz-exotic-hadrons', 'obj-tetraquark-zc', 'obj-pentaquark'],
+    formula: '|T_{cc}^+\\rangle = |cc\\bar{u}\\bar{d}\\rangle, \\quad |P_c\\rangle = |uud c\\bar{c}\\rangle',
+    abstract: 'BESIII/LHCb/Belle II 四夸克、五夸克与混杂态系统谱学；紧致多夸克 vs 强子分子结构与色禁闭机制。'
+  },
+
+  // --- 统计 / 复杂系统前沿课题 ---
+  {
+    id: 'node-ext-active-topological',
+    title: '活性物质拓扑缺陷动力学 (Topological Defects in Active Matter)',
+    domainId: 'domain-stat-complex',
+    type: 'frontier',
+    coords: { x: -4.0, y: -2.9 },
+    legs: ['obj-active-nematic', 'obj-chiral-active-fluid'],
+    formula: 'v_i^{\\text{defect}} \\propto \\zeta \\, \\epsilon_{ij} n_j \\quad (\\pm\\tfrac{1}{2} \\text{ Self-Propulsion})',
+    abstract: '活性向列中 ±1/2 拓扑缺陷的自驱动、统计与湮灭；细胞单层形态发生、细菌湍流与活性软物质设计。'
+  },
+  {
+    id: 'node-ext-kpz',
+    title: 'KPZ 普适类与精确可解非平衡 (KPZ Universality & Exact Solutions)',
+    domainId: 'domain-stat-complex',
+    type: 'theory',
+    coords: { x: -2.8, y: -2.3 },
+    legs: ['obj-kpz-growth', 'obj-rb-turbulence'],
+    formula: 'W \\sim t^{1/3} \\chi, \\quad \\chi \\sim \\text{Tracy-Widom GUE} \\quad (1+1\\text{D})',
+    abstract: 'KPZ 方程 1+1 维精确可解与 Tracy-Widom 普适涨落；液晶、单分子生长实验验证与高维/曲面推广。'
+  },
+
+  // --- 具体实验与计算方法 (Methods) ---
+  {
+    id: 'node-method-arpes-band',
+    title: 'ARPES 能带与谱函数测绘 (ARPES Band Mapping)',
+    domainId: 'domain-amo-atomic',
+    type: 'method',
+    coords: { x: -8.5, y: 0.9 },
+    legs: ['obj-arpes', 'obj-tb-graphene', 'obj-bscco'],
+    formula: 'I(\\mathbf{k},\\omega) \\propto |M|^2 A(\\mathbf{k},\\omega) f(\\omega)',
+    abstract: '角分辨光电子能谱直接测绘动量分辨谱函数；狄拉克锥、d 波能隙、费米弧与平带的动量空间标准探针。'
+  },
+  {
+    id: 'node-method-trarpes',
+    title: '时间分辨 ARPES (tr-ARPES Nonequilibrium Dynamics)',
+    domainId: 'domain-amo-atomic',
+    type: 'method',
+    coords: { x: -8.4, y: 1.1 },
+    legs: ['obj-arpes', 'obj-photo-doped-mott'],
+    formula: '\\Delta t \\sim 10 - 100 \\text{ fs pump-probe} \\to A(\\mathbf{k},\\omega,t)',
+    abstract: '飞秒泵浦-探测跟踪光致非平衡态的瞬时能带与序参量；Mott 绝缘体光诱导相变与 Floquet 能带工程观测。'
+  },
+  {
+    id: 'node-method-stm-sts',
+    title: 'STM/STS 实空间谱学 (Real-Space Spectroscopy)',
+    domainId: 'domain-amo-atomic',
+    type: 'method',
+    coords: { x: -8.9, y: 0.1 },
+    legs: ['obj-stm', 'obj-bscco', 'obj-fese-te'],
+    formula: '\\frac{dI}{dV}(\\mathbf{r}, V) \\propto \\rho(\\mathbf{r}, eV)',
+    abstract: '原子分辨局域态密度成像；铜氧化物纳米不均匀性、Fe(Se,Te) 涡旋马约拉纳零能模与准粒子干涉。'
+  },
+  {
+    id: 'node-method-rixs-magnon',
+    title: 'RIXS 磁激发谱学 (RIXS Magnon & Orbital Spectroscopy)',
+    domainId: 'domain-amo-atomic',
+    type: 'method',
+    coords: { x: -8.7, y: 1.1 },
+    legs: ['obj-rixs', 'obj-kitaev-qsl-rucl3'],
+    formula: 'S(\\mathbf{Q},\\omega) \\text{ via resonant } d\\text{-}d / \\text{magnon channels}',
+    abstract: '超高分辨 RIXS 动量分辨磁振子与轨道激发；铜氧化物磁振子色散、Kitaev 材料分数化连续谱。'
+  },
+  {
+    id: 'node-method-musr-local',
+    title: 'μSR 局域磁性探针 (μSR Local Magnetism Probe)',
+    domainId: 'domain-amo-atomic',
+    type: 'method',
+    coords: { x: -8.3, y: -0.1 },
+    legs: ['obj-musr', 'obj-kitaev-qsl-rucl3', 'obj-spin-glass'],
+    formula: '\\lambda(T) \\propto \\text{Spin Fluctuation Rate} \\quad (\\text{Zero-Field Relaxation})',
+    abstract: '植入 μ 子零场/纵场弛豫探测自旋液体持续涨落（无磁有序至 mK）、自旋玻璃冻结与超导穿透深度。'
+  },
+  {
+    id: 'node-method-ins-magnetism',
+    title: '非弹性中子散射 (INS Magnetic Excitations)',
+    domainId: 'domain-amo-atomic',
+    type: 'method',
+    coords: { x: -8.4, y: -0.3 },
+    legs: ['obj-neutron-scattering', 'obj-kitaev-qsl-rucl3', 'obj-herbertsmithite'],
+    formula: 'S(\\mathbf{Q},\\omega) = \\sum_{\\alpha\\beta}(\\delta_{\\alpha\\beta}-\\hat{Q}_\\alpha\\hat{Q}_\\beta)S^{\\alpha\\beta}(\\mathbf{Q},\\omega)',
+    abstract: '动量-能量分辨动态结构因子；Herbertsmithite/α-RuCl₃ 自旋分数化宽连续谱与磁振子色散标准体探针。'
+  },
+  {
+    id: 'node-method-qgm-single-site',
+    title: '量子气体显微术 (Quantum Gas Microscopy)',
+    domainId: 'domain-amo-atomic',
+    type: 'method',
+    coords: { x: -7.5, y: -1.1 },
+    legs: ['obj-quantum-gas-microscope', 'obj-fermi-hubbard-gas'],
+    formula: '\\text{Snapshot } \\{n_i\\} \\to C(\\mathbf{r}) = \\langle n_i n_{i+\\mathbf{r}}\\rangle',
+    abstract: '单格点分辨冷原子荧光成像；直接测量反铁磁关联函数、掺杂空穴动力学与 Rényi 纠缠熵。'
+  },
+  {
+    id: 'node-method-dmrg-tn',
+    title: '张量网络与 DMRG (Tensor Networks & DMRG)',
+    domainId: 'domain-condensed-matter',
+    type: 'method',
+    coords: { x: -6.4, y: -0.9 },
+    legs: ['obj-tensor-network', 'obj-strongly-correlated'],
+    formula: '|\\Psi_{\\text{MPS}}\\rangle = \\sum \\text{Tr}[A^{s_1}\\cdots A^{s_N}]|s_1\\cdots s_N\\rangle, \\quad \\chi\\text{-truncation}',
+    abstract: '矩阵乘积态/PEPS 变分压缩指数 Hilbert 空间；一维基态近精确、二维自旋液体甄别与纠缠熵计算。'
+  },
+  {
+    id: 'node-method-qmc-sign',
+    title: '量子蒙特卡洛与符号问题 (Quantum Monte Carlo & Sign Problem)',
+    domainId: 'domain-condensed-matter',
+    type: 'method',
+    coords: { x: -6.2, y: -1.1 },
+    legs: ['obj-tensor-network', 'obj-fermi-hubbard-gas'],
+    formula: '\\langle O\\rangle = \\frac{\\sum_c w_c O_c}{\\sum_c w_c}, \\quad w_c \\in \\mathbb{C} \\to \\text{sign problem}',
+    abstract: '路径积分/行列式 QMC 无偏求解多体系统；符号问题-free 模型设计、临界指数与有限温度相图。'
+  },
+  {
+    id: 'node-method-ml-quantum',
+    title: '机器学习量子多体 (ML for Quantum Many-Body)',
+    domainId: 'domain-stat-complex',
+    type: 'method',
+    coords: { x: -3.5, y: -1.6 },
+    legs: ['obj-neural-stat-mech', 'obj-tensor-network'],
+    formula: '\\Psi_\\theta(\\{s_i\\}) = \\text{RBM}/\\text{NN}, \\quad \\min_\\theta \\langle H\\rangle_\\theta',
+    abstract: '神经量子态（RBM/Transformer）变分求解多体基态与动力学；相变识别、符号问题缓解与实验态重建。'
+  },
+  {
+    id: 'node-method-gw-analysis',
+    title: '引力波数据分析与匹配滤波 (GW Data Analysis & Matched Filtering)',
+    domainId: 'domain-cosmology',
+    type: 'method',
+    coords: { x: 13.0, y: 4.0 },
+    legs: ['obj-gw150914-blackhole', 'obj-continuous-gw-ns'],
+    formula: '\\text{SNR} = \\max_t \\frac{(s|h)}{\\sqrt{(h|h)}}, \\quad (a|b) = 4\\text{Re}\\int \\frac{\\tilde{a}^*\\tilde{b}}{S_n(f)}df',
+    abstract: '匹配滤波、贝叶斯参数估计与随机背景互相关；从噪声中提取致密并合、连续波与随机引力波背景。'
+  },
+  {
+    id: 'node-method-functional-rg',
+    title: '泛函重整化群 (Functional Renormalization Group)',
+    domainId: 'domain-condensed-matter',
+    type: 'method',
+    coords: { x: -7.0, y: 0.0 },
+    legs: ['obj-strongly-correlated', 'obj-conformal-bootstrap'],
+    formula: '\\partial_k \\Gamma_k = \\frac{1}{2}\\text{STr}\\left[ \\frac{\\partial_k R_k}{\\Gamma_k^{(2)} + R_k} \\right] \\quad (\\text{Wetterich})',
+    abstract: 'Wetterich 方程连续积分涨落模；从微观作用量到宏观有效势的非微扰流，临界现象与费米子系统。'
+  },
+  {
+    id: 'node-method-holographic-cmt',
+    title: '全息 AdS/CMT 方法 (Holographic Condensed Matter)',
+    domainId: 'domain-condensed-matter',
+    type: 'method',
+    coords: { x: -7.8, y: -1.5 },
+    legs: ['obj-qgp', 'obj-non-fermi-liquid'],
+    formula: 'G^R(\\omega,\\mathbf{k}) = \\lim_{r\\to\\infty} r^{2\\Delta-d}\\frac{\\phi_{-}}{\\phi_{+}} \\quad (\\text{AdS Black Hole})',
+    abstract: '引力对偶计算强关联电子输运：奇异金属线性电阻、霍尔角与超导凝聚；η/s 普适下限与 Planckian 耗散。'
+  }
+];
+
+
 export const ACADEMIC_OBJECTS: PhysicsNode[] = [
   ...BASE_OBJECTS,
   ...ACADEMIC_OBJECTS_GPT_EXTENDED,
   ...ACADEMIC_OBJECTS_NEW,
   ...ACADEMIC_OBJECTS_FAMOUS_LABS,
   ...QUANTUM_HARDWARE_ROUTES_OBJECTS,
-  ...ACADEMIC_OBJECTS_RMP_2024_2026
+  ...ACADEMIC_OBJECTS_RMP_2024_2026,
+  ...ACADEMIC_OBJECTS_EXTENDED
 ];
 export const ACADEMIC_RESEARCH_NODES: ResearchRoute[] = [
   ...ACADEMIC_RESEARCH_NODES_GPT_EXTENDED,
@@ -2900,7 +4021,8 @@ export const ACADEMIC_RESEARCH_NODES: ResearchRoute[] = [
   ...ACADEMIC_METHODS_NEW,
   ...ACADEMIC_FRONTIER_NODES_HIGH_POTENTIAL,
   ...QUANTUM_HARDWARE_ROUTES_NODES,
-  ...ACADEMIC_RESEARCH_NODES_RMP_2024_2026
+  ...ACADEMIC_RESEARCH_NODES_RMP_2024_2026,
+  ...ACADEMIC_RESEARCH_NODES_EXTENDED
 ];
 
 export const ACADEMIC_RELATIONS = [
