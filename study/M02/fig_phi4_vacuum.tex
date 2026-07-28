@@ -1,0 +1,68 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{ctex}
+\usepackage{amsmath,amssymb}
+\usepackage{tikz}
+\usepackage{tikz-feynman}
+\tikzfeynmanset{compat=1.1.0}
+
+\begin{document}
+\begin{tikzpicture}
+
+\node[font=\Large\bfseries] at (7, 0) {$\phi^4$ 二阶真空图的三种拓扑};
+
+% ===== 8-shape: 4 internal lines =====
+\begin{feynman}
+  \vertex (v1a) at (0, -3);
+  \vertex (v2a) at (3, -3);
+  \diagram* {
+    (v1a) -- [bend left=80, edge label=$G_F$] (v2a),
+    (v1a) -- [bend left=30] (v2a),
+    (v1a) -- [bend right=30] (v2a),
+    (v1a) -- [bend right=80, edge label'=$G_F$] (v2a),
+  };
+  \filldraw[black] (v1a) circle (2.5pt);
+  \filldraw[black] (v2a) circle (2.5pt);
+\end{feynman}
+\node[font=\small] at (1.5, -4.5) {4 条内线};
+\node[font=\small, red] at (1.5, -5.0) {对称因子 $1/48$};
+
+% ===== Figure-8: 2 internal + self-loops =====
+\begin{feynman}
+  \vertex (v1b) at (5.5, -3);
+  \vertex (v2b) at (8.5, -3);
+  \diagram* {
+    (v1b) -- [bend left=30, edge label=$G_F$] (v2b),
+    (v1b) -- [bend right=30, edge label'=$G_F$] (v2b),
+    (v1b) -- [loop, min distance=15mm, looseness=8, edge label=$G_F(0)$] (v1b),
+    (v2b) -- [loop, min distance=15mm, looseness=8, edge label=$G_F(0)$] (v2b),
+  };
+  \filldraw[black] (v1b) circle (2.5pt);
+  \filldraw[black] (v2b) circle (2.5pt);
+\end{feynman}
+\node[font=\small] at (7, -4.5) {2 条内线 + 自环};
+\node[font=\small, red] at (7, -5.0) {对称因子 $1/16$};
+
+% ===== Disconnected: two separate bubbles =====
+\begin{feynman}
+  \vertex (v1c) at (11, -3);
+  \vertex (v2c) at (14, -3);
+  \diagram* {
+    (v1c) -- [bend left=60, edge label=$G_F$] (v1c),
+    (v2c) -- [bend left=60, edge label=$G_F$] (v2c),
+  };
+  \filldraw[black] (v1c) circle (2.5pt);
+  \filldraw[black] (v2c) circle (2.5pt);
+\end{feynman}
+\node[font=\small] at (12.5, -4.5) {0 条内线（断开图）};
+\node[font=\small, red] at (12.5, -5.0) {在 $\ln Z$ 中消失};
+
+% ===== Classification summary =====
+\node[font=\small, text width=14cm, align=left] at (7, -6.5) {%
+  \textbf{分类}（按 $x_1$-$x_2$ 连线数）：\\[3pt]
+  $\bullet$ 4 条连线：两顶点间 4 条传播子 = ``8字形''\\
+  $\bullet$ 2 条连线 + 2 自环：两顶点间 2 条 + 各自 tadpole = ``日字形''\\
+  $\bullet$ 0 条连线：两个独立真空泡 = 断开图 $\Rightarrow$ 被连通图求和 $\ln Z$ 排除
+};
+
+\end{tikzpicture}
+\end{document}

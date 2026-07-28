@@ -97,31 +97,31 @@ export const DualRangeSlider: React.FC<DualRangeSliderProps> = ({
   return (
     <div className="w-full space-y-1.5 select-none font-serif text-xs">
       {/* Values Readout & Textbox Inputs */}
-      <div className="flex items-center justify-between gap-2 text-slate-800 dark:text-slate-200">
+      <div className="flex items-center justify-between gap-2 text-slate-800">
         <div className="flex items-center gap-1">
-          <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">Min:</span>
+          <span className="text-[10px] text-slate-500 font-mono">Min:</span>
           <input
             type="number"
             min={minLimit}
             max={maxVal}
             value={minVal}
             onChange={handleMinInput}
-            className="w-12 px-1 py-0.5 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 font-mono text-[11px] focus:outline-none focus:border-cyan-600"
+            className="w-12 px-1 py-0.5 border border-slate-300 rounded bg-white text-slate-900 font-mono text-[11px] focus:outline-none focus:border-cyan-600"
           />
-          <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">10^{minVal}{unit}</span>
+          <span className="text-[10px] text-slate-500 font-mono">10^{minVal}{unit}</span>
         </div>
 
         <div className="flex items-center gap-1 justify-end">
-          <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">Max:</span>
+          <span className="text-[10px] text-slate-500 font-mono">Max:</span>
           <input
             type="number"
             min={minVal}
             max={maxLimit}
             value={maxVal}
             onChange={handleMaxInput}
-            className="w-12 px-1 py-0.5 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 font-mono text-[11px] focus:outline-none focus:border-cyan-600"
+            className="w-12 px-1 py-0.5 border border-slate-300 rounded bg-white text-slate-900 font-mono text-[11px] focus:outline-none focus:border-cyan-600"
           />
-          <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">10^{maxVal}{unit}</span>
+          <span className="text-[10px] text-slate-500 font-mono">10^{maxVal}{unit}</span>
         </div>
       </div>
 
@@ -132,7 +132,7 @@ export const DualRangeSlider: React.FC<DualRangeSliderProps> = ({
         className="relative w-full h-5 flex items-center cursor-pointer touch-none"
       >
         {/* Dimmed Background Track (两边暗) */}
-        <div className="absolute w-full h-2 bg-slate-200 dark:bg-slate-600 rounded-full overflow-hidden">
+        <div className="absolute w-full h-2 bg-slate-200 rounded-full overflow-hidden">
           {/* Highlighted Selected Middle Bar (中间亮) */}
           <div
             className="h-full rounded-full"
@@ -147,7 +147,7 @@ export const DualRangeSlider: React.FC<DualRangeSliderProps> = ({
 
         {/* Custom Visual Min Thumb (左手柄) */}
         <div
-          className="absolute w-4 h-4 bg-white dark:bg-slate-200 border-2 rounded-full shadow-md transform -translate-x-1/2 cursor-grab active:cursor-grabbing hover:scale-110 transition-transform"
+          className="absolute w-4 h-4 bg-white border-2 rounded-full shadow-md transform -translate-x-1/2 cursor-grab active:cursor-grabbing hover:scale-110 transition-transform"
           style={{
             left: `${minPercent}%`,
             borderColor: accentColor,
@@ -157,7 +157,7 @@ export const DualRangeSlider: React.FC<DualRangeSliderProps> = ({
 
         {/* Custom Visual Max Thumb (右手柄) */}
         <div
-          className="absolute w-4 h-4 bg-white dark:bg-slate-200 border-2 rounded-full shadow-md transform -translate-x-1/2 cursor-grab active:cursor-grabbing hover:scale-110 transition-transform"
+          className="absolute w-4 h-4 bg-white border-2 rounded-full shadow-md transform -translate-x-1/2 cursor-grab active:cursor-grabbing hover:scale-110 transition-transform"
           style={{
             left: `${maxPercent}%`,
             borderColor: accentColor,

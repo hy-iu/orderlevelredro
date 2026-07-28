@@ -7,10 +7,8 @@ import EquivalenceModal from './components/EquivalenceModal';
 import ParticleManagerModal from './components/ParticleManagerModal';
 import { ACADEMIC_OBJECTS, ACADEMIC_RESEARCH_NODES } from './data/physicsData';
 import { CanvasTransform } from './types/physics';
-import { useTheme } from './hooks/useTheme';
 
 export function App() {
-  const { theme, toggleTheme } = useTheme();
   const [activeDomain, setActiveDomain] = useState('all');
 
   const [layerVisibility, setLayerVisibility] = useState<LayerVisibility>({
@@ -83,15 +81,13 @@ export function App() {
   };
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden bg-white dark:bg-slate-900 select-none">
+    <div className="relative w-screen h-screen overflow-hidden bg-white select-none">
       {/* Top Academic Journal Header */}
       <Header
         activeDomain={activeDomain}
         setActiveDomain={setActiveDomain}
         onOpenEquivalenceModal={() => setIsEquivalenceOpen(true)}
         onOpenParticleManager={() => setIsParticleManagerOpen(true)}
-        theme={theme}
-        onToggleTheme={toggleTheme}
       />
 
       {/* Control Panel with Unified Button Styles */}
@@ -122,7 +118,6 @@ export function App() {
           transform={transform}
           setTransform={setTransform}
           onViewportChange={handleViewportChange}
-          theme={theme}
         />
       </main>
 

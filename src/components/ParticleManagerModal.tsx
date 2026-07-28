@@ -167,9 +167,9 @@ export const ParticleManagerModal: React.FC<ParticleManagerModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4 animate-in fade-in duration-200 font-sans">
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-600 w-full max-w-4xl max-h-[85vh] flex flex-col overflow-hidden">
+      <div className="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-4xl max-h-[85vh] flex flex-col overflow-hidden">
         {/* Modal Header */}
-        <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-600 flex items-center justify-between bg-slate-900 dark:bg-slate-900 text-white">
+        <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-900 text-white">
           <div className="flex items-center gap-3">
             <Database className="w-5 h-5 text-sky-400" />
             <div>
@@ -196,7 +196,7 @@ export const ParticleManagerModal: React.FC<ParticleManagerModalProps> = ({
         </div>
 
         {/* Action Toolbar */}
-        <div className="px-6 py-3 bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-600 flex items-center justify-between">
+        <div className="px-6 py-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <button
               onClick={startAdd}
@@ -208,24 +208,24 @@ export const ParticleManagerModal: React.FC<ParticleManagerModalProps> = ({
 
             <button
               onClick={handleResetPDG}
-              className="px-3 py-1.5 rounded border border-slate-300 dark:border-slate-500 bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-medium flex items-center gap-1.5 shadow-sm transition-all"
+              className="px-3 py-1.5 rounded border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium flex items-center gap-1.5 shadow-sm transition-all"
             >
-              <RefreshCw className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+              <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
               <span>恢复 PDG 核心数据集</span>
             </button>
           </div>
 
-          <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
-            全量物理标度对象总数: <strong className="text-slate-900 dark:text-slate-100 font-bold">{objects.length}</strong>
+          <span className="text-xs text-slate-500 font-mono">
+            全量物理标度对象总数: <strong className="text-slate-900 font-bold">{objects.length}</strong>
           </span>
         </div>
 
         {/* Modal Body: Split view (Table + Form) */}
         <div className="flex-1 overflow-y-auto p-6 flex flex-col md:flex-row gap-6">
           {/* Particles List Table */}
-          <div className="flex-1 overflow-x-auto border border-slate-200 dark:border-slate-600 rounded-lg max-h-[50vh]">
+          <div className="flex-1 overflow-x-auto border border-slate-200 rounded-lg max-h-[50vh]">
             <table className="w-full text-left border-collapse text-xs">
-              <thead className="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-serif border-b border-slate-200 dark:border-slate-600 sticky top-0">
+              <thead className="bg-slate-100 text-slate-700 font-serif border-b border-slate-200 sticky top-0">
                 <tr>
                   <th className="p-2.5">符号</th>
                   <th className="p-2.5">名称 (Label)</th>
@@ -235,18 +235,18 @@ export const ParticleManagerModal: React.FC<ParticleManagerModalProps> = ({
                   <th className="p-2.5 text-right">操作</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-700 font-mono">
+              <tbody className="divide-y divide-slate-100 font-mono">
                 {objects.map(item => (
-                  <tr key={item.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-700/50 transition-colors">
-                    <td className="p-2.5 font-bold font-serif text-slate-900 dark:text-slate-100">{item.symbol}</td>
-                    <td className="p-2.5 text-slate-800 dark:text-slate-200">{item.label || item.name}</td>
-                    <td className="p-2.5 text-slate-500 dark:text-slate-400 text-[11px]">{item.pdgCode}</td>
-                    <td className="p-2.5 text-slate-600 dark:text-slate-400">
+                  <tr key={item.id} className="hover:bg-slate-50/80 transition-colors">
+                    <td className="p-2.5 font-bold font-serif text-slate-900">{item.symbol}</td>
+                    <td className="p-2.5 text-slate-800">{item.label || item.name}</td>
+                    <td className="p-2.5 text-slate-500 text-[11px]">{item.pdgCode}</td>
+                    <td className="p-2.5 text-slate-600">
                       ({item.coords?.x?.toFixed(2)}, {item.coords?.y?.toFixed(2)})
                     </td>
                     <td className="p-2.5">
                       <span className={`px-1.5 py-0.5 rounded text-[10px] ${
-                        item.type === 'fundamental' ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+                        item.type === 'fundamental' ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-600'
                       }`}>
                         {item.type}
                       </span>
@@ -277,103 +277,103 @@ export const ParticleManagerModal: React.FC<ParticleManagerModalProps> = ({
 
           {/* Form Side Panel (Add/Edit) */}
           {(isAdding || editingItem) && (
-            <div className="w-full md:w-80 bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-lg p-4 flex flex-col gap-3 text-xs">
-              <h3 className="font-bold font-serif text-slate-900 dark:text-slate-100 border-b border-slate-200 dark:border-slate-600 pb-2">
+            <div className="w-full md:w-80 bg-slate-50 border border-slate-200 rounded-lg p-4 flex flex-col gap-3 text-xs">
+              <h3 className="font-bold font-serif text-slate-900 border-b border-slate-200 pb-2">
                 {editingItem ? `编辑对象: ${editingItem.label || editingItem.name}` : '新增物理对象'}
               </h3>
 
               <form onSubmit={handleSaveForm} className="flex flex-col gap-2.5">
                 <div>
-                  <label className="block text-slate-600 dark:text-slate-400 font-medium mb-1">ID (唯一标识符)</label>
+                  <label className="block text-slate-600 font-medium mb-1">ID (唯一标识符)</label>
                   <input
                     type="text"
                     value={formData.id}
                     onChange={e => setFormData({ ...formData, id: e.target.value })}
                     disabled={!!editingItem}
                     required
-                    className="w-full px-2.5 py-1.5 rounded border border-slate-300 dark:border-slate-600 font-mono text-xs focus:ring-1 focus:ring-sky-500 outline-none disabled:bg-slate-200 dark:disabled:bg-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
+                    className="w-full px-2.5 py-1.5 rounded border border-slate-300 font-mono text-xs focus:ring-1 focus:ring-sky-500 outline-none disabled:bg-slate-200"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-600 dark:text-slate-400 font-medium mb-1">对象名称 (Label)</label>
+                  <label className="block text-slate-600 font-medium mb-1">对象名称 (Label)</label>
                   <input
                     type="text"
                     value={formData.label}
                     onChange={e => setFormData({ ...formData, label: e.target.value })}
                     required
-                    className="w-full px-2.5 py-1.5 rounded border border-slate-300 dark:border-slate-600 text-xs focus:ring-1 focus:ring-sky-500 outline-none bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
+                    className="w-full px-2.5 py-1.5 rounded border border-slate-300 text-xs focus:ring-1 focus:ring-sky-500 outline-none"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-slate-600 dark:text-slate-400 font-medium mb-1">KaTeX 符号</label>
+                    <label className="block text-slate-600 font-medium mb-1">KaTeX 符号</label>
                     <input
                       type="text"
                       value={formData.symbol}
                       onChange={e => setFormData({ ...formData, symbol: e.target.value })}
                       required
-                      className="w-full px-2.5 py-1.5 rounded border border-slate-300 dark:border-slate-600 font-mono text-xs focus:ring-1 focus:ring-sky-500 outline-none bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
+                      className="w-full px-2.5 py-1.5 rounded border border-slate-300 font-mono text-xs focus:ring-1 focus:ring-sky-500 outline-none"
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-600 dark:text-slate-400 font-medium mb-1">PDG 编码</label>
+                    <label className="block text-slate-600 font-medium mb-1">PDG 编码</label>
                     <input
                       type="text"
                       value={formData.pdgCode}
                       onChange={e => setFormData({ ...formData, pdgCode: e.target.value })}
-                      className="w-full px-2.5 py-1.5 rounded border border-slate-300 dark:border-slate-600 font-mono text-xs focus:ring-1 focus:ring-sky-500 outline-none bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
+                      className="w-full px-2.5 py-1.5 rounded border border-slate-300 font-mono text-xs focus:ring-1 focus:ring-sky-500 outline-none"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-slate-600 dark:text-slate-400 font-medium mb-1">X: log₁₀(L/m)</label>
+                    <label className="block text-slate-600 font-medium mb-1">X: log₁₀(L/m)</label>
                     <input
                       type="number"
                       step="any"
                       value={formData.coordsX}
                       onChange={e => setFormData({ ...formData, coordsX: e.target.value })}
                       required
-                      className="w-full px-2.5 py-1.5 rounded border border-slate-300 dark:border-slate-600 font-mono text-xs focus:ring-1 focus:ring-sky-500 outline-none bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
+                      className="w-full px-2.5 py-1.5 rounded border border-slate-300 font-mono text-xs focus:ring-1 focus:ring-sky-500 outline-none"
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-600 dark:text-slate-400 font-medium mb-1">Y: log₁₀(E/eV)</label>
+                    <label className="block text-slate-600 font-medium mb-1">Y: log₁₀(E/eV)</label>
                     <input
                       type="number"
                       step="any"
                       value={formData.coordsY}
                       onChange={e => setFormData({ ...formData, coordsY: e.target.value })}
                       required
-                      className="w-full px-2.5 py-1.5 rounded border border-slate-300 dark:border-slate-600 font-mono text-xs focus:ring-1 focus:ring-sky-500 outline-none bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
+                      className="w-full px-2.5 py-1.5 rounded border border-slate-300 font-mono text-xs focus:ring-1 focus:ring-sky-500 outline-none"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-slate-600 dark:text-slate-400 font-medium mb-1">注解 / 物理说明</label>
+                  <label className="block text-slate-600 font-medium mb-1">注解 / 物理说明</label>
                   <textarea
                     rows={2}
                     value={formData.annotation}
                     onChange={e => setFormData({ ...formData, annotation: e.target.value })}
-                    className="w-full px-2.5 py-1.5 rounded border border-slate-300 dark:border-slate-600 text-xs focus:ring-1 focus:ring-sky-500 outline-none bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
+                    className="w-full px-2.5 py-1.5 rounded border border-slate-300 text-xs focus:ring-1 focus:ring-sky-500 outline-none"
                   />
                 </div>
 
                 <div className="flex items-center gap-2 pt-2">
                   <button
                     type="submit"
-                    className="flex-1 py-1.5 rounded bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-medium hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors shadow-sm"
+                    className="flex-1 py-1.5 rounded bg-slate-900 text-white font-medium hover:bg-slate-800 transition-colors shadow-sm"
                   >
                     保存提交 (Save)
                   </button>
                   <button
                     type="button"
                     onClick={() => { setEditingItem(null); setIsAdding(false); }}
-                    className="px-3 py-1.5 rounded border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+                    className="px-3 py-1.5 rounded border border-slate-300 text-slate-600 hover:bg-slate-200 transition-colors"
                   >
                     取消
                   </button>

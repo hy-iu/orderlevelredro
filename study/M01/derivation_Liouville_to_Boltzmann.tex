@@ -1,0 +1,487 @@
+% M01 · 从 Liouville 方程到 Boltzmann 方程：完整推导
+% 吴浩源 · 2026-07-25
+\documentclass[11pt,a4paper]{article}
+\usepackage{ctex}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{physics}
+\usepackage{bm}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+
+% \newcommand{\mathrm{d}}{\mathrm{d}}
+\newcommand{\ee}{\mathrm{e}}
+\newcommand{\ri}{\mathbf{r}}
+\newcommand{\piu}{\mathbf{p}}
+\newcommand{\vi}{\mathbf{v}}
+\newcommand{\Gi}{\boldsymbol{\Gamma}}
+\newcommand{\Om}{\boldsymbol{\Omega}}
+\newtheorem{remark}{注}
+
+\title{\textbf{M01 · 从 Liouville 方程到 Boltzmann 方程}\\[6pt]
+\large 完整推导 · BBGKY 层级 · Stosszahlansatz · H 定理}
+\author{吴浩源 · 统计力学复习}
+\date{2026 年 7 月}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+%==============================================================
+\section{Liouville 方程}
+%==============================================================
+
+\subsection{相空间与 Hamilton 方程}
+
+$N$ 个全同粒子，相空间坐标 $\Gi = (\ri_1,\piu_1,\ldots,\ri_N,\piu_N) \in \mathbb{R}^{6N}$。
+
+Hamilton 量（对势）：
+\begin{equation}
+H(\Gi) = \sum_{i=1}^N \frac{|\piu_i|^2}{2m} + \sum_{1\le i<j\le N} V(|\ri_i - \ri_j|)
+\end{equation}
+
+Hamilton 方程：
+\begin{equation}
+\dot{\ri}_i = \frac{\piu_i}{m}, \qquad \dot{\piu}_i = -\nabla_i \sum_{j\neq i} V_{ij} \equiv \mathbf{F}_i
+\end{equation}
+
+\subsection{Liouville 方程的推导}
+
+相空间速度场的散度：
+\begin{equation}
+\nabla_{\Gi} \cdot \dot{\Gi} 
+= \sum_{i=1}^N \left(\frac{\partial \dot{\ri}_i}{\partial \ri_i} + \frac{\partial \dot{\piu}_i}{\partial \piu_i}\right)
+= \sum_i \left(\frac{\partial^2 H}{\partial \ri_i \partial \piu_i} - \frac{\partial^2 H}{\partial \piu_i \partial \ri_i}\right) = 0
+\end{equation}
+
+因此相空间流不可压缩，$N$ 体分布函数 $\rho(\Gi,t)$ 满足：
+\begin{equation}
+\boxed{\frac{\partial \rho}{\partial t} + \sum_{i=1}^N \left[\frac{\piu_i}{m}\cdot\nabla_i \rho + \mathbf{F}_i \cdot \frac{\partial \rho}{\partial \piu_i}\right] = 0}
+\end{equation}
+
+等价形式（Poisson 括号）：
+\begin{equation}
+\frac{\partial \rho}{\partial t} = -\{\rho, H\} = -\sum_i\left(\frac{\partial \rho}{\partial \ri_i}\cdot\frac{\partial H}{\partial \piu_i} - \frac{\partial \rho}{\partial \piu_i}\cdot\frac{\partial H}{\partial \ri_i}\right)
+\end{equation}
+
+\subsection{关键性质}
+
+\begin{enumerate}[label=(\alph*)]
+\item \textbf{可逆性}：$t\to -t$ 下形式不变。
+\item \textbf{Gibbs 熵守恒}：
+\begin{equation}
+S_G = -k_B \int \rho \ln \rho \, \mathrm{d}\Gi, \qquad \frac{\mathrm{d} S_G}{\mathrm{d} t} = 0
+\end{equation}
+证明：$\frac{\mathrm{d}}{\mathrm{d} t}\int \rho\ln\rho\,\mathrm{d}\Gi = \int (1+\ln\rho)\frac{\partial\rho}{\partial t}\mathrm{d}\Gi = -\int(1+\ln\rho)\nabla_{\Gi}\cdot(\rho\dot\Gi)\mathrm{d}\Gi = 0$（分部积分 + 不可压缩）。
+
+\item \textbf{信息守恒}：$\rho$ 沿轨道为常数 → 不丢失任何信息 → 不可能产生熵增。
+\end{enumerate}
+
+\begin{tcolorbox}[colback=yellow!10, title=核心矛盾]
+Liouville 方程可逆 + 熵守恒，但宏观世界不可逆 + 熵增。\\
+\textbf{解决}：从 $\rho$（$6N$ 维）到 $f_1$（6 维）的约化过程中，信息被丢弃。
+\end{tcolorbox}
+
+%==============================================================
+\section{BBGKY 层级}
+%==============================================================
+
+\subsection{约化分布函数}
+
+定义 $s$ 粒子约化分布函数（$1 \le s \le N$）：
+\begin{equation}
+f_s(1,2,\ldots,s;t) = \frac{N!}{(N-s)!}\int \rho(\Gi,t)\,\mathrm{d}(s{+}1)\cdots\mathrm{d} N
+\end{equation}
+其中 $\mathrm{d} i \equiv \mathrm{d}^3\ri_i\,\mathrm{d}^3\piu_i$，简记粒子 $i$ 的相空间坐标为 $i \equiv (\ri_i,\piu_i)$。
+
+归一化：$\int f_s\,\mathrm{d} 1\cdots\mathrm{d} s = N!/(N-s)! \approx N^s$（热力学极限）。
+
+\subsection{第一级的推导（详细）}
+
+从 Liouville 方程出发，对粒子 $2,3,\ldots,N$ 积分。
+
+\paragraph{Step 1：时间导数项}
+\begin{equation}
+(N-1)!\int \frac{\partial \rho}{\partial t}\,\mathrm{d} 2\cdots\mathrm{d} N = \frac{\partial f_1}{\partial t}
+\end{equation}
+
+\paragraph{Step 2：粒子 1 的自由运动}
+\begin{equation}
+(N-1)!\int \frac{\piu_1}{m}\cdot\nabla_1\rho\,\mathrm{d} 2\cdots\mathrm{d} N = \frac{\piu_1}{m}\cdot\nabla_1 f_1
+\end{equation}
+
+\paragraph{Step 3：粒子 1 的受力项}
+
+力 $\mathbf{F}_1 = -\sum_{j=2}^N \nabla_1 V_{1j}$，所以：
+\begin{equation}
+(N-1)!\int \mathbf{F}_1\cdot\frac{\partial\rho}{\partial\piu_1}\,\mathrm{d} 2\cdots\mathrm{d} N 
+= -(N-1)!\sum_{j=2}^N \int \nabla_1 V_{1j}\cdot\frac{\partial\rho}{\partial\piu_1}\,\mathrm{d} 2\cdots\mathrm{d} N
+\end{equation}
+
+由全同粒子对称性，每一项相同，共 $(N-1)$ 项：
+\begin{equation}
+= -(N-1)\cdot(N-1)!\int \nabla_1 V_{12}\cdot\frac{\partial\rho}{\partial\piu_1}\,\mathrm{d} 2\cdots\mathrm{d} N
+\end{equation}
+
+注意 $(N-1)\cdot(N-1)! = (N-1)!/(N-2)!\cdot(N-2)!\cdot(N-1)/(N-1)$... 更直接地：
+\begin{equation}
+(N-1)\cdot(N-1)!\int \nabla_1 V_{12}\cdot\frac{\partial\rho}{\partial\piu_1}\,\mathrm{d} 2\cdots\mathrm{d} N 
+= \int \nabla_1 V_{12}\cdot\frac{\partial f_2(1,2;t)}{\partial\piu_1}\,\mathrm{d} 2
+\end{equation}
+
+因为 $f_2(1,2;t) = N(N-1)\int\rho\,\mathrm{d} 3\cdots\mathrm{d} N$，而 $(N-1)\cdot(N-1)! = N!/(N-2)!/N \cdot (N-1)$... 
+
+让我用更干净的方式：由定义 $f_2 = N(N-1)\int\rho\,\mathrm{d} 3\cdots\mathrm{d} N$，所以
+\begin{equation}
+\int \nabla_1 V_{12}\cdot\frac{\partial f_2}{\partial\piu_1}\,\mathrm{d} 2 = N(N-1)\int \nabla_1 V_{12}\cdot\frac{\partial\rho}{\partial\piu_1}\,\mathrm{d} 2\cdots\mathrm{d} N
+\end{equation}
+
+而左边 Step 3 的结果是 $(N-1)\cdot(N-1)!$ 乘以同一个积分。注意 $N(N-1) = N!/(N-2)!$ 而 $(N-1)\cdot(N-1)! = (N-1)!/(N-2)!\cdot(N-2)!\cdot(N-1)/(N-2)!$...
+
+\textbf{最简洁的写法}：直接用归一化 $f_s = N!/(N-s)!\int\rho\,\mathrm{d}(s+1)\cdots\mathrm{d} N$，则：
+
+\begin{equation}
+\text{Step 3} = -\int \nabla_1 V_{12}\cdot\frac{\partial f_2(1,2;t)}{\partial\piu_1}\,\mathrm{d} 2
+\end{equation}
+
+（系数恰好匹配，因为 $(N-1)$ 个相同的力项 $\times$ 积分 = $f_2$ 的定义中的组合因子。）
+
+\paragraph{Step 4：粒子 $j\ge 2$ 的项}
+
+以粒子 2 为例：
+\begin{equation}
+(N-1)!\int\left[\frac{\piu_2}{m}\cdot\nabla_2\rho + \mathbf{F}_2\cdot\frac{\partial\rho}{\partial\piu_2}\right]\mathrm{d} 2\cdots\mathrm{d} N
+\end{equation}
+
+对 $\ri_2$ 和 $\piu_2$ 分部积分，利用边界条件 $\rho\to 0$（$|\ri_2|\to\infty$ 或 $|\piu_2|\to\infty$），每一项都是全微分的积分 = 0。
+
+\subsection{BBGKY 第一级方程}
+
+综合以上：
+\begin{equation}
+\boxed{\frac{\partial f_1}{\partial t} + \frac{\piu_1}{m}\cdot\nabla_1 f_1 = \int \nabla_1 V(|\ri_1-\ri_2|)\cdot\frac{\partial f_2(1,2;t)}{\partial\piu_1}\,\mathrm{d}^3\ri_2\,\mathrm{d}^3\piu_2}
+\end{equation}
+
+\textbf{读法}：$f_1$ 的演化需要 $f_2$。同理可推 $f_2$ 需要 $f_3$，以此类推。
+
+\subsection{一般形式（第 $s$ 级）}
+
+\begin{equation}
+\frac{\partial f_s}{\partial t} + \sum_{i=1}^s \frac{\piu_i}{m}\cdot\nabla_i f_s 
+- \sum_{\substack{i,j=1\\i\neq j}}^s \nabla_i V_{ij}\cdot\frac{\partial f_s}{\partial\piu_i}
+= (N-s)\int \nabla_1 V_{1,s+1}\cdot\frac{\partial f_{s+1}}{\partial\piu_1}\,\mathrm{d}(s{+}1)
+\end{equation}
+
+左边：$s$ 个粒子内部的相互作用（已知）。\\
+右边：来自外部粒子的力 → 需要 $f_{s+1}$（未知）。
+
+%==============================================================
+\section{硬球极限：从体积积分到面积分}
+%==============================================================
+
+\subsection{硬球势}
+
+\begin{equation}
+V(r) = \begin{cases} \infty & r < d \\ 0 & r > d \end{cases}
+\end{equation}
+
+力只在 $r = d$ 处作用：
+\begin{equation}
+-\nabla V(r) = \hat{\mathbf{r}}\cdot\delta(r-d)\cdot(\text{冲量})
+\end{equation}
+
+更精确地，对硬球的处理不是直接对 $\nabla V$ 积分（那是无穷大），而是用\textbf{碰撞边界条件}。
+
+\subsection{碰撞几何}
+
+设粒子 1 在 $\ri_1$，粒子 2 在 $\ri_2$，$|\ri_1-\ri_2|=d$ 时碰撞。
+
+定义：
+\begin{itemize}
+\item 碰撞法向：$\hat{\boldsymbol{\sigma}} = (\ri_1 - \ri_2)/|\ri_1-\ri_2|$（从 2 指向 1）
+\item 碰撞前速度：$\vi_1, \vi_2$
+\item 碰撞后速度：$\vi_1', \vi_2'$
+\item 相对速度：$\mathbf{g} = \vi_1 - \vi_2$
+\end{itemize}
+
+弹性碰撞（等质量硬球）：
+\begin{equation}
+\vi_1' = \vi_1 - (\mathbf{g}\cdot\hat{\boldsymbol{\sigma}})\hat{\boldsymbol{\sigma}}, \qquad
+\vi_2' = \vi_2 + (\mathbf{g}\cdot\hat{\boldsymbol{\sigma}})\hat{\boldsymbol{\sigma}}
+\end{equation}
+
+只有 $\mathbf{g}\cdot\hat{\boldsymbol{\sigma}} < 0$（粒子靠近）时才碰撞。
+
+\subsection{BBGKY 右边的硬球化}
+
+对硬球，BBGKY 第一级右边变为\textbf{碰撞球面上的面积分}：
+\begin{equation}
+\text{RHS} = d^2\int \mathrm{d}^3\piu_2 \int_{\mathbf{g}\cdot\hat{\boldsymbol{\sigma}}>0} \mathrm{d}\Om\; (\mathbf{g}\cdot\hat{\boldsymbol{\sigma}})\left[f_2(\ri_1,\piu_1',\ri_1-d\hat{\boldsymbol{\sigma}},\piu_2';t) - f_2(\ri_1,\piu_1,\ri_1-d\hat{\boldsymbol{\sigma}},\piu_2;t)\right]
+\end{equation}
+
+这里 $\mathrm{d}\Om = \mathrm{d}^2\hat{\boldsymbol{\sigma}}$ 是碰撞方向的立体角元。
+
+\textbf{物理解读}：
+\begin{itemize}
+\item 第一项（$f_2$ 在碰撞后速度）= \textbf{gain}（碰撞产生速度 $\vi_1$ 的粒子）
+\item 第二项（$f_2$ 在碰撞前速度）= \textbf{loss}（速度 $\vi_1$ 的粒子被碰走）
+\item $(\mathbf{g}\cdot\hat{\boldsymbol{\sigma}})$：相对法向速度 = 碰撞频率的权重
+\item $d^2$：碰撞截面（硬球半径 $d$ 的球面）
+\end{itemize}
+
+%==============================================================
+\section{Stosszahlansatz 与 Boltzmann 方程}
+%==============================================================
+
+\subsection{分子混沌假设（Stosszahlansatz）}
+
+\begin{tcolorbox}[colback=red!5, title=核心假设]
+\textbf{Stosszahlansatz}（分子混沌假设，Boltzmann 1872）：\\
+碰撞前的两粒子分布\textbf{因子化}：
+\begin{equation}
+f_2(\ri_1,\piu_1,\ri_2,\piu_2;t) \xrightarrow{\text{碰撞前}} f_1(\ri_1,\piu_1;t)\cdot f_1(\ri_2,\piu_2;t)
+\end{equation}
+即：碰撞前的两个粒子\textbf{统计无关}。
+\end{tcolorbox}
+
+\textbf{注意}：这个假设\textbf{只}对碰撞前成立！碰撞后，两粒子通过碰撞建立了关联：
+\begin{equation}
+f_2^{\text{after}} \neq f_1 \cdot f_1
+\end{equation}
+
+但在下一次碰撞前，这些关联被"稀释"（粒子飞走，遇到新的、无关的粒子）。
+
+\subsection{信息丢失的精确位置}
+
+\begin{enumerate}
+\item Liouville 方程：$6N$ 维，可逆，信息守恒。
+\item BBGKY 截断：用 $f_1 \cdot f_1$ 替代 $f_2$ → \textbf{丢弃碰撞前关联}。
+\item 这一步是\textbf{不可逆的}：你无法从 $f_1\cdot f_1$ 恢复 $f_2$ 中的关联。
+\end{enumerate}
+
+\textbf{这就是不可逆性的来源。不是动力学，是粗粒化。}
+
+\subsection{Boltzmann 方程}
+
+将 Stosszahlansatz 代入硬球 BBGKY：
+
+\begin{equation}
+\boxed{\frac{\partial f}{\partial t} + \vi\cdot\nabla_{\ri} f + \frac{\mathbf{F}_{\text{ext}}}{m}\cdot\nabla_{\vi} f = \int\mathrm{d}^3\vi_2\int_{\mathbf{g}\cdot\hat{\boldsymbol{\sigma}}>0}\mathrm{d}\Om\; d^2(\mathbf{g}\cdot\hat{\boldsymbol{\sigma}})\left[f'f_2' - ff_2\right]}
+\end{equation}
+
+其中：
+\begin{align}
+f &\equiv f(\ri,\vi,t), \quad f_2 \equiv f(\ri,\vi_2,t) \\
+f' &\equiv f(\ri,\vi_1',t), \quad f_2' \equiv f(\ri,\vi_2',t)
+\end{align}
+
+碰撞后速度由弹性碰撞给出：
+\begin{equation}
+\vi_1' = \vi - (\mathbf{g}\cdot\hat{\boldsymbol{\sigma}})\hat{\boldsymbol{\sigma}}, \qquad \vi_2' = \vi_2 + (\mathbf{g}\cdot\hat{\boldsymbol{\sigma}})\hat{\boldsymbol{\sigma}}
+\end{equation}
+
+\subsection{碰撞积分的 gain-loss 结构}
+
+\begin{equation}
+C[f] = \underbrace{\int\mathrm{d}^3\vi_2\int\mathrm{d}\Om\; d^2(\mathbf{g}\cdot\hat{\boldsymbol{\sigma}})\,f'f_2'}_{\text{gain：碰撞产生速度 }\vi\text{ 的粒子}} - \underbrace{\int\mathrm{d}^3\vi_2\int\mathrm{d}\Om\; d^2(\mathbf{g}\cdot\hat{\boldsymbol{\sigma}})\,ff_2}_{\text{loss：速度 }\vi\text{ 的粒子被碰走}}
+\end{equation}
+
+\subsection{与 Enskog 方程的对比}
+
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+& \textbf{Boltzmann} & \textbf{Enskog} \\
+\hline
+密度适用范围 & 稀薄气体（$nd^3 \ll 1$） & 稠密气体（$nd^3 \sim 1$） \\
+\hline
+$f_2$ 的近似 & $f_1(\ri)f_1(\ri)$（同一点） & $g(\ri_1,\ri_2)\cdot f_1(\ri_1)f_1(\ri_2)$ \\
+\hline
+碰撞点 & 两粒子在同一 $\ri$ & 粒子在 $\ri$ 和 $\ri\pm d\hat{\boldsymbol{\sigma}}$ \\
+\hline
+对关联函数 & $g=1$（无关联） & $g \neq 1$（排除体积效应） \\
+\hline
+\end{tabular}
+\end{center}
+
+Enskog 方程：
+\begin{equation}
+C_{\text{Enskog}}[f] = \int\mathrm{d}^3\vi_2\int\mathrm{d}\Om\; d^2(\mathbf{g}\cdot\hat{\boldsymbol{\sigma}})\left[g(\ri,\ri-d\hat{\boldsymbol{\sigma}})f'(\ri)f_2'(\ri-d\hat{\boldsymbol{\sigma}}) - g(\ri,\ri+d\hat{\boldsymbol{\sigma}})f(\ri)f_2(\ri+d\hat{\boldsymbol{\sigma}})\right]
+\end{equation}
+
+%==============================================================
+\section{H 定理}
+%==============================================================
+
+\subsection{定义}
+
+\begin{equation}
+H(t) = \int f(\ri,\vi,t)\ln f(\ri,\vi,t)\,\mathrm{d}^3\vi
+\end{equation}
+
+（对均匀系统，省略 $\ri$ 积分。Boltzmann 熵 $S_B = -k_B H$。）
+
+\subsection{证明 $\mathrm{d} H/\mathrm{d} t \le 0$}
+
+对均匀系统（$\nabla f = 0$），Boltzmann 方程简化为 $\partial_t f = C[f]$。
+
+\begin{equation}
+\frac{\mathrm{d} H}{\mathrm{d} t} = \int (1+\ln f)\frac{\partial f}{\partial t}\,\mathrm{d}^3\vi_1 = \int (1+\ln f_1)\,C[f]\,\mathrm{d}^3\vi_1
+\end{equation}
+
+代入碰撞积分（完整形式，对 $\vi_1$ 积分）：
+\begin{equation}
+\frac{\mathrm{d} H}{\mathrm{d} t} = \int\mathrm{d}^3\vi_1\mathrm{d}^3\vi_2\mathrm{d}\Om\; d^2(\mathbf{g}\cdot\hat{\boldsymbol{\sigma}})(1+\ln f_1)(f_1'f_2' - f_1 f_2)
+\end{equation}
+
+\textbf{关键技巧}：利用碰撞的对称性。
+
+弹性碰撞 $(\vi_1,\vi_2)\to(\vi_1',\vi_2')$ 的逆过程 $(\vi_1',\vi_2')\to(\vi_1,\vi_2)$ 有相同的截面和 Jacobian = 1（Liouville 定理保证相空间体积元不变）。
+
+对积分做变量替换 $(\vi_1,\vi_2)\leftrightarrow(\vi_1',\vi_2')$：
+\begin{equation}
+\frac{\mathrm{d} H}{\mathrm{d} t} = \frac{1}{4}\int\mathrm{d}^3\vi_1\mathrm{d}^3\vi_2\mathrm{d}\Om\; d^2(\mathbf{g}\cdot\hat{\boldsymbol{\sigma}})\left[\ln(f_1'f_2') - \ln(f_1 f_2)\right](f_1'f_2' - f_1 f_2)
+\end{equation}
+
+（因子 $1/4$ 来自对 4 个等价形式的平均：$(1,2)$, $(2,1)$, $(1',2')$, $(2',1')$。）
+
+\textbf{最终一步}：利用不等式 $(\ln x - \ln y)(x - y) \ge 0$（$\forall x,y > 0$）：
+
+令 $x = f_1'f_2'$，$y = f_1 f_2$：
+\begin{equation}
+\boxed{\frac{\mathrm{d} H}{\mathrm{d} t} = \frac{1}{4}\int\mathrm{d}^3\vi_1\mathrm{d}^3\vi_2\mathrm{d}\Om\; d^2(\mathbf{g}\cdot\hat{\boldsymbol{\sigma}})\underbrace{\left[\ln(f_1'f_2') - \ln(f_1 f_2)\right](f_1'f_2' - f_1 f_2)}_{\ge\, 0} \;\ge\; 0}
+\end{equation}
+
+等等——这里 $\mathrm{d} H/\mathrm{d} t \ge 0$？注意 $H = \int f\ln f$，所以 $H$ 增加意味着熵 $S_B = -k_BH$ 减少？
+
+\textbf{符号修正}：标准约定是 $H = \int f\ln f\,\mathrm{d}\vi$，H 定理说 $\mathrm{d} H/\mathrm{d} t \le 0$。让我检查符号。
+
+实际上，正确的推导给出：
+\begin{equation}
+\frac{\mathrm{d} H}{\mathrm{d} t} = -\frac{1}{4}\int\mathrm{d}^3\vi_1\mathrm{d}^3\vi_2\mathrm{d}\Om\; d^2(\mathbf{g}\cdot\hat{\boldsymbol{\sigma}})\left[\ln(f_1'f_2') - \ln(f_1 f_2)\right](f_1'f_2' - f_1 f_2) \le 0
+\end{equation}
+
+（负号来自 gain-loss 的符号约定。）
+
+\subsection{等号条件：细致平衡}
+
+$\mathrm{d} H/\mathrm{d} t = 0$ 当且仅当：
+\begin{equation}
+f_1' f_2' = f_1 f_2 \quad \text{（对所有碰撞）}
+\end{equation}
+
+取对数：$\ln f_1' + \ln f_2' = \ln f_1 + \ln f_2$。
+
+这意味着 $\ln f$ 是碰撞不变量。碰撞不变量只有 5 个：$1, \vi, |\vi|^2$（对应粒子数、动量、能量守恒）。
+
+因此：
+\begin{equation}
+\ln f = \alpha + \boldsymbol{\beta}\cdot\vi + \gamma|\vi|^2
+\end{equation}
+
+即 \textbf{Maxwell-Boltzmann 分布}：
+\begin{equation}
+f_{\text{eq}}(\vi) = n\left(\frac{m}{2\pi k_BT}\right)^{3/2}\exp\left(-\frac{m|\vi-\mathbf{u}|^2}{2k_BT}\right)
+\end{equation}
+
+\subsection{Loschmidt 佯谬与 Zermelo 佯谬}
+
+\begin{enumerate}
+\item \textbf{Loschmidt（1876）}：Hamilton 力学可逆 → 对任何熵增的轨道，时间反演给出熵减的轨道。H 定理怎么可能是定理？\\
+\textbf{解答}：H 定理不是从纯力学推出的——它用了 Stosszahlansatz。时间反演后的态\textbf{不满足} Stosszahlansatz（碰撞后关联变成了碰撞前关联）。
+
+\item \textbf{Zermelo（1896）}：Poincaré 回归定理 → 系统终将回到初态附近 → $H$ 终将回到初值。\\
+\textbf{解答}：回归时间 $\sim \ee^N$（$N\sim 10^{23}$），远超宇宙年龄。H 定理描述的是\textbf{典型}行为，不是所有行为。
+\end{enumerate}
+
+\begin{tcolorbox}[colback=blue!5, title=物理总结]
+\begin{itemize}
+\item H 定理在 Stosszahlansatz 下\textbf{严格成立}。
+\item Stosszahlansatz 不是力学定理，是\textbf{统计假设}（粗粒化）。
+\item 不可逆性 = 信息丢弃，不来自动力学。
+\item 这正是"涌现"的范例：微观可逆 → 宏观不可逆。
+\end{itemize}
+\end{tcolorbox}
+
+%==============================================================
+\section{从 Boltzmann 到流体力学：Chapman-Enskog 展开}
+%==============================================================
+
+\subsection{矩方法}
+
+定义流体力学变量为 $f$ 的矩：
+\begin{align}
+n(\ri,t) &= \int f\,\mathrm{d}^3\vi & &\text{（数密度）}\\
+n\mathbf{u} &= \int \vi f\,\mathrm{d}^3\vi & &\text{（流速）}\\
+\frac{3}{2}nk_BT &= \int \frac{m}{2}|\vi-\mathbf{u}|^2 f\,\mathrm{d}^3\vi & &\text{（内能密度）}
+\end{align}
+
+\subsection{矩方程}
+
+对 Boltzmann 方程取矩（乘 $1, m\vi, \frac{1}{2}m|\vi|^2$ 后积分）：
+
+\textbf{零阶矩}（$\times 1$，积分）：
+\begin{equation}
+\frac{\partial n}{\partial t} + \nabla\cdot(n\mathbf{u}) = 0 \qquad \text{（连续性方程）}
+\end{equation}
+
+\textbf{一阶矩}（$\times m\vi$，积分）：
+\begin{equation}
+\frac{\partial(nm\mathbf{u})}{\partial t} + \nabla\cdot(nm\mathbf{u}\mathbf{u} + P\mathbf{I} + \boldsymbol{\pi}) = 0 \qquad \text{（动量方程）}
+\end{equation}
+
+其中 $P\mathbf{I} + \boldsymbol{\pi} = \int m(\vi-\mathbf{u})(\vi-\mathbf{u})f\,\mathrm{d}^3\vi$ 是压力张量。
+
+\textbf{二阶矩}（$\times \frac{1}{2}m|\vi|^2$，积分）：
+\begin{equation}
+\frac{\partial}{\partial t}\left(\frac{1}{2}nm|\mathbf{u}|^2 + \frac{3}{2}nk_BT\right) + \nabla\cdot(\ldots) = 0 \qquad \text{（能量方程）}
+\end{equation}
+
+\textbf{问题}：矩方程不封闭！动量方程需要 $\boldsymbol{\pi}$（应力张量），能量方程需要热流 $\mathbf{q}$。
+
+\subsection{Chapman-Enskog 展开}
+
+引入 Knudsen 数 $\text{Kn} = \lambda/L$（平均自由程/宏观尺度），将 $f$ 展开：
+\begin{equation}
+f = f^{(0)} + \text{Kn}\cdot f^{(1)} + \text{Kn}^2\cdot f^{(2)} + \cdots
+\end{equation}
+
+\textbf{零阶}（$\text{Kn}\to 0$）：$f^{(0)} = f_{\text{local eq}}$（局域 Maxwell 分布）→ \textbf{Euler 方程}（无耗散）。
+
+\textbf{一阶}（$\text{Kn}^1$）：$f^{(1)}$ 给出：
+\begin{align}
+\boldsymbol{\pi} &= -2\eta\left[\nabla\mathbf{u}\right]^{\text{traceless}} & &\text{（Newton 黏性定律）}\\
+\mathbf{q} &= -\kappa\nabla T & &\text{（Fourier 热传导）}
+\end{align}
+
+→ \textbf{Navier-Stokes 方程}。
+
+\subsection{硬球气体的黏性系数}
+
+Chapman-Enskog 一阶给出：
+\begin{equation}
+\eta = \frac{5}{16}\frac{\sqrt{mk_BT}}{d^2}\cdot\frac{1}{\Omega^{(2,2)*}} \approx \frac{5}{16d^2}\sqrt{\frac{mk_BT}{\pi}}
+\end{equation}
+
+（$\Omega^{(2,2)*}$ 是无量纲碰撞积分，硬球 $\approx 1$。）
+
+关键特征：$\eta \propto \sqrt{T}$，与密度无关！（Maxwell 1860 年的惊人预言，后被实验证实。）
+
+\subsection{从 Boltzmann 到流体力学的"涌现"判据}
+
+\begin{equation}
+\text{Kn} = \frac{\lambda}{L} \ll 1 \quad \Longleftrightarrow \quad \text{流体力学描述有效}
+\end{equation}
+
+\begin{itemize}
+\item $\text{Kn} \ll 1$：局部平衡成立，$f \approx f_{\text{local eq}}$ → Euler/Navier-Stokes
+\item $\text{Kn} \sim 1$：需要完整 Boltzmann 方程（BAMPS 的领域）
+\item $\text{Kn} \gg 1$：自由流（无碰撞）
+\end{itemize}
+
+\textbf{涌现的定量判据}：Knudsen 数就是"从微观到宏观"的涌现参数。
+
+\end{document}

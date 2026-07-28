@@ -1,0 +1,127 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{ctex}
+\usepackage{amsmath,amssymb}
+\usepackage{tikz}
+\usepackage{tikz-feynman}
+\tikzfeynmanset{compat=1.1.0}
+
+\begin{document}
+\begin{tikzpicture}
+
+% ===== Title =====
+\node[font=\Large\bfseries] at (8, 0) {Dyson 级数 $\longrightarrow$ Wick 收缩 $\longrightarrow$ Feynman 图};
+
+% ===== n=0 =====
+\node[font=\bfseries, blue] at (0, -2) {$n=0$};
+\node at (2.5, -2) {$U^{(0)} = 1$};
+\node[red] at (5, -2) {真空（无相互作用）};
+
+% ===== n=1 =====
+\node[font=\bfseries, blue] at (0, -4) {$n=1$};
+\node at (3, -4) {$\displaystyle\frac{-i}{\hbar}\int dt_1\, T[H_I(t_1)]$};
+
+% Feynman diagram: single vertex with 4 legs (phi^4)
+\begin{feynman}
+  \vertex (v1) at (8, -4);
+  \vertex (a1) at (7, -3.2);
+  \vertex (a2) at (7, -4.8);
+  \vertex (a3) at (9, -3.2);
+  \vertex (a4) at (9, -4.8);
+  \diagram* {
+    (a1) -- (v1),
+    (a2) -- (v1),
+    (a3) -- (v1),
+    (a4) -- (v1),
+  };
+  \filldraw[black] (v1) circle (2pt);
+\end{feynman}
+\node[font=\small] at (8, -5.3) {单顶点（tadpole）};
+
+% ===== n=2 =====
+\node[font=\bfseries, blue] at (0, -7) {$n=2$};
+\node at (3.2, -7) {$\displaystyle\frac{(-i)^2}{2!\,\hbar^2}\int dt_1 dt_2\, T[H_I(t_1)H_I(t_2)]$};
+
+% Feynman diagram: two vertices connected by propagators
+\begin{feynman}
+  \vertex (v1) at (7, -7);
+  \vertex (v2) at (9.5, -7);
+  \vertex (a1) at (6, -6.2);
+  \vertex (a2) at (6, -7.8);
+  \vertex (a3) at (10.5, -6.2);
+  \vertex (a4) at (10.5, -7.8);
+  \diagram* {
+    (a1) -- (v1),
+    (a2) -- (v1),
+    (v1) -- [edge label'=$G_F$] (v2),
+    (v2) -- (a3),
+    (v2) -- (a4),
+  };
+  \filldraw[black] (v1) circle (2pt);
+  \filldraw[black] (v2) circle (2pt);
+\end{feynman}
+\node[font=\small] at (8.25, -8) {树图（2 顶点 + 1 内线）};
+
+% Second topology for n=2: vacuum bubble
+\begin{feynman}
+  \vertex (v1b) at (12, -7);
+  \vertex (v2b) at (14.5, -7);
+  \diagram* {
+    (v1b) -- [bend left=60, edge label=$G_F$] (v2b),
+    (v1b) -- [bend right=60, edge label'=$G_F$] (v2b),
+  };
+  \filldraw[black] (v1b) circle (2pt);
+  \filldraw[black] (v2b) circle (2pt);
+\end{feynman}
+\node[font=\small] at (13.25, -8) {真空泡（2 内线）};
+
+% ===== n=3 =====
+\node[font=\bfseries, blue] at (0, -10.5) {$n=3$};
+\node at (3.5, -10.5) {$\displaystyle\frac{(-i)^3}{3!\,\hbar^3}\int dt_1 dt_2 dt_3\, T[H_I H_I H_I]$};
+
+% Triangle vacuum diagram
+\begin{feynman}
+  \vertex (v1c) at (8, -9.8);
+  \vertex (v2c) at (7, -11.2);
+  \vertex (v3c) at (9, -11.2);
+  \diagram* {
+    (v1c) -- [edge label=$G_F$] (v2c),
+    (v2c) -- [edge label'=$G_F$] (v3c),
+    (v3c) -- [edge label=$G_F$] (v1c),
+  };
+  \filldraw[black] (v1c) circle (2pt);
+  \filldraw[black] (v2c) circle (2pt);
+  \filldraw[black] (v3c) circle (2pt);
+\end{feynman}
+\node[font=\small] at (8, -12) {三角形真空图};
+
+% Sunset diagram
+\begin{feynman}
+  \vertex (v1d) at (11, -10.5);
+  \vertex (v2d) at (13.5, -10.5);
+  \diagram* {
+    (v1d) -- [bend left=45, edge label=$G_F$] (v2d),
+    (v1d) -- [edge label=$G_F$] (v2d),
+    (v1d) -- [bend right=45, edge label'=$G_F$] (v2d),
+  };
+  \filldraw[black] (v1d) circle (2pt);
+  \filldraw[black] (v2d) circle (2pt);
+\end{feynman}
+\node[font=\small] at (12.25, -12) {日落图（3 内线）};
+
+% ===== Arrows =====
+\draw[->, thick, green!70!black] (5.5, -4) -- (6.5, -4);
+\draw[->, thick, green!70!black] (5.5, -7) -- (6.5, -7);
+\draw[->, thick, green!70!black] (5.5, -10.5) -- (6.5, -10.5);
+\node[font=\small\bfseries, green!70!black] at (6, -3.5) {Wick};
+
+% ===== Legend =====
+\node[font=\small, text width=6cm, align=left] at (13, -2) {%
+  \textbf{读法}：\\
+  $\bullet$ 黑点 = 相互作用顶点\\
+  --- 实线 = 传播子 $G_F(x-y)$\\
+  外线 = 未收缩场（外粒子）\\
+  圈 = 圈积分 $\int\frac{d^4k}{(2\pi)^4}$
+};
+
+\end{tikzpicture}
+\end{document}
