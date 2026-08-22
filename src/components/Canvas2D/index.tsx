@@ -143,14 +143,14 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
     prevCenter: { x: 0, y: 0 }
   });
 
-  // Map Physical Log Coordinates [-36..27], [-5..29] to Raw World Canvas Coordinates (unscaled)
+  // Map Physical Log Coordinates [-36..27], [-25..29] to Raw World Canvas Coordinates (unscaled)
   const getWorldCoords = useCallback((logL: number, logE: number, width: number, height: number) => {
     const margin = 70;
     const plotW = width - margin * 2;
     const plotH = height - margin * 2;
 
     const xNorm = (logL - (-36)) / (27 - (-36)); // [-36, 27]
-    const yNorm = (logE - (-5)) / (29 - (-5));   // [-5, 29]
+    const yNorm = (logE - (-25)) / (29 - (-25)); // [-25, 29]
 
     const x = margin + xNorm * plotW;
     const y = height - margin - yNorm * plotH; // Inverted Y
@@ -249,6 +249,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
         axisLabel: isDark ? '#e2e8f0' : '#0f172a',
         quantumBound: isDark ? '#475569' : '#cbd5e1',
         quantumBoundLabel: isDark ? '#64748b' : '#94a3b8',
+        roomTemp: isDark ? '#d97706' : '#b45309',
         textHalo: isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.95)',
         objStroke: isDark ? '#1e293b' : '#ffffff',
         gaugeBosonFill: isDark ? '#1e293b' : '#ffffff',
@@ -266,9 +267,9 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
       ctx.fillRect(0, 0, w, h);
 
       // --- Adaptive Grid: subdivisions densify as each axis is zoomed in ---
-      // Pixels per decade on each axis (world span is 63 dex in L, 34 dex in E).
+      // Pixels per decade on each axis (world span is 63 dex in L, 54 dex in E).
       const ppdX = ((w - 140) * transform.scaleX) / 63;
-      const ppdY = ((h - 140) * transform.scaleY) / 34;
+      const ppdY = ((h - 140) * transform.scaleY) / 54;
 
       // Pick the coarsest "nice" major step (integer decades) that still keeps
       // labelled lines >= ~70px apart; minor lines subdivide it 5-fold.
@@ -315,7 +316,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
       if (minorY * ppdY >= 16) {
         ctx.strokeStyle = C.gridMinor;
         const ratioY = Math.round(majorY / minorY);
-        for (let i = Math.ceil(-5 / minorY); i * minorY <= 29; i++) {
+        for (let i = Math.ceil(-25 / minorY); i * minorY <= 29; i++) {
           if (i % ratioY === 0) continue;
           const sP = toScreenCoords(0, getWorldCoords(0, i * minorY, w, h).y);
           ctx.beginPath();
@@ -326,7 +327,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
       }
       // Major horizontal lines + labels
       ctx.strokeStyle = C.gridMajor;
-      for (let i = Math.ceil(-5 / majorY); i * majorY <= 29; i++) {
+      for (let i = Math.ceil(-25 / majorY); i * majorY <= 29; i++) {
         const logE = i * majorY;
         const sP = toScreenCoords(0, getWorldCoords(0, logE, w, h).y);
         ctx.beginPath();
@@ -360,8 +361,14 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
       ctx.translate(18, h / 2);
       ctx.rotate(-Math.PI / 2);
       ctx.fillText('Energy Scale log₁₀(E / eV) →', 0, 0);
+      // 对偶读数：能量轴同时是特征时间尺度 τ = ℏ/E（log₁₀(τ/s) ≈ -15.18 - log₁₀(E/eV)）
+      ctx.font = '10px "STIX Two Text", "Times New Roman", serif';
+      ctx.fillStyle = C.gridLabel;
+      ctx.fillText('( 对偶: τ = ℏ/E )', 0, -10);
       ctx.restore();
 
+      // --- Reference Lines (ℏc Compton diagonal & room-temperature k_BT) ---
+      if (layerVisibility.references !== false) {
       // --- Relativistic Quantum Bound: E · L ~ ℏc ---
       // In log space: log10(E/eV) + log10(L/m) = log10(ℏc/eV·m) ≈ -6.7,
       // i.e. a slope -1 line  y = -x - 6.7  passing through the Planck point,
@@ -387,6 +394,25 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
       ctx.fillStyle = C.quantumBoundLabel;
       ctx.fillText('Relativistic Quantum Bound: E · L ~ ℏc', sLbl.x + 12, sLbl.y + 16);
 
+      // --- Room-Temperature Thermal Energy: k_B T ≈ 25.7 meV (300 K) ---
+      const KBT_LOG = Math.log10(0.0257); // ≈ -1.59
+      ctx.strokeStyle = C.roomTemp;
+      ctx.setLineDash([6, 4]);
+      ctx.lineWidth = 1.1;
+      ctx.beginPath();
+      const wT1 = getWorldCoords(-36, KBT_LOG, w, h);
+      const wT2 = getWorldCoords(27, KBT_LOG, w, h);
+      const sT1 = toScreenCoords(wT1.x, wT1.y);
+      const sT2 = toScreenCoords(wT2.x, wT2.y);
+      ctx.moveTo(sT1.x, sT1.y);
+      ctx.lineTo(sT2.x, sT2.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = C.roomTemp;
+      ctx.textAlign = 'left';
+      ctx.fillText('k_B T (300 K) ≈ 25.7 meV', sT2.x - 170, sT2.y - 6);
+      }
+
       // --- 2D Fundamental Interaction Field Heatmaps (Exact QFT / QED / QCD / EW Physics Buffer) ---
       if (layerVisibility.heatmaps !== false) {
         ctx.save();
@@ -402,7 +428,7 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
           const buf = imgData.data;
 
           const xMin = -36, xMax = 27;
-          const yMin = -5, yMax = 29;
+          const yMin = -25, yMax = 29;
 
           for (let j = 0; j < gridH; j++) {
             const logE = yMax - (j / (gridH - 1)) * (yMax - yMin);
@@ -814,10 +840,13 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
             const plotH = h - margin * 2;
 
             const ebX = obj.errorBar.dx * (plotW / 63) * transform.scaleX;
-            const ebY = obj.errorBar.dy * (plotH / 34) * transform.scaleY;
+            const ebY = obj.errorBar.dy * (plotH / 54) * transform.scaleY;
 
             ctx.strokeStyle = isObjHovered || isObjSelected ? '#dc2626' : C.errorBar;
             ctx.lineWidth = isObjHovered || isObjSelected ? 1.6 : 1.2;
+            // estimate 类型（specs 仅有 ~ 单值，±0.3 dex 约定）用虚线区分文献范围
+            const isEstimate = obj.errorBarType === 'estimate';
+            if (isEstimate) ctx.setLineDash([4, 3]);
             const rGap = radius + 2;
 
             if (ebX > rGap) {
@@ -847,6 +876,8 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
               ctx.lineTo(sObj.x + 3, sObj.y + ebY);
               ctx.stroke();
             }
+
+            if (isEstimate) ctx.setLineDash([]);
           }
 
           // Hover / Selection Glow Halo
@@ -933,8 +964,14 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
           if (obj.id === 'obj-higgs') { labelOffsetX = 9; labelOffsetY = -14; }
           if (obj.id === 'obj-top-quark') { labelOffsetX = 9; labelOffsetY = 2; }
 
-          if (katexSprite && katexSprite.complete) {
-            ctx.drawImage(katexSprite, sObj.x + labelOffsetX, sObj.y + labelOffsetY);
+          // naturalWidth > 0 guards against broken/failed SVG decodes (img.complete
+          // is true even for zero-pixel images, and drawImage on those throws).
+          if (katexSprite && katexSprite.complete && katexSprite.naturalWidth > 0) {
+            try {
+              ctx.drawImage(katexSprite, sObj.x + labelOffsetX, sObj.y + labelOffsetY);
+            } catch {
+              // Skip label for this frame; sprite cache will retry on next render.
+            }
           }
         });
       }
@@ -1358,6 +1395,12 @@ export const Canvas2D: React.FC<Canvas2DProps> = ({
             </span>
             <span className="flex items-center gap-1 px-1.5 py-0.2 rounded bg-sky-50 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-700 font-mono font-bold">
               [课题] 研究课题
+            </span>
+            <span className="flex items-center gap-1" title="errorBarType: range / uncertainty">
+              <span className="inline-block w-4 border-t-2 border-slate-500"></span> 文献范围/不确定度
+            </span>
+            <span className="flex items-center gap-1" title="errorBarType: estimate（±0.3 dex 约定）">
+              <span className="inline-block w-4 border-t-2 border-dashed border-slate-500"></span> 估计值
             </span>
           </div>
         </div>

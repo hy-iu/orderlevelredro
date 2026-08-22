@@ -8,6 +8,7 @@ export interface LayerVisibility {
   nodes: boolean;
   heatmaps?: boolean;
   forces?: boolean;
+  references?: boolean;
   relations: boolean;
   [key: string]: boolean | undefined;
 }
@@ -56,7 +57,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   };
 
   const resetEnergyRange = () => {
-    setEnergyRange([-4, 28]);
+    setEnergyRange([-24, 28]);
   };
 
   // If collapsed, render a sleek trigger button
@@ -138,7 +139,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
           {layerVisibility.heatmaps !== false ? <Eye className="w-3.5 h-3.5 text-slate-700 dark:text-slate-300" /> : <EyeOff className="w-3.5 h-3.5 text-slate-300 dark:text-slate-600" />}
         </div>
 
-        <div 
+        <div
           onClick={() => toggleLayer('forces')}
           className="flex items-center justify-between p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition-all border border-transparent hover:border-slate-200 dark:hover:border-slate-600"
         >
@@ -147,6 +148,17 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
             相互作用特征程界线 (Forces)
           </span>
           {layerVisibility.forces !== false ? <Eye className="w-3.5 h-3.5 text-slate-700 dark:text-slate-300" /> : <EyeOff className="w-3.5 h-3.5 text-slate-300 dark:text-slate-600" />}
+        </div>
+
+        <div
+          onClick={() => toggleLayer('references')}
+          className="flex items-center justify-between p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition-all border border-transparent hover:border-slate-200 dark:hover:border-slate-600"
+        >
+          <span className="flex items-center gap-2">
+            <span className="w-3 h-0.5 bg-amber-600 dark:bg-amber-400"></span>
+            参考线 (ℏc 对角线 / 室温 k_BT)
+          </span>
+          {layerVisibility.references !== false ? <Eye className="w-3.5 h-3.5 text-slate-700 dark:text-slate-300" /> : <EyeOff className="w-3.5 h-3.5 text-slate-300 dark:text-slate-600" />}
         </div>
 
         <div 
@@ -197,13 +209,13 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
             <button
               onClick={resetEnergyRange}
               className="p-1 rounded text-slate-400 hover:text-pink-700 dark:hover:text-pink-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-              title="重置能量标度至全范围 [-4, 28]"
+              title="重置能量标度至全范围 [-24, 28]"
             >
               <RotateCcw className="w-3 h-3" />
             </button>
           </div>
           <DualRangeSlider
-            minLimit={-4}
+            minLimit={-24}
             maxLimit={28}
             minVal={energyRange[0]}
             maxVal={energyRange[1]}

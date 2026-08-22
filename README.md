@@ -21,20 +21,42 @@
 
 1. **双轴物理标度二维相空间 (2D Phase Space Canvas)**
    - **X 轴 (长度标度)**：$\log_{10}(L/\text{m}) \in [-36, 27]$（从普朗克长度到可观测宇宙半径）
-   - **Y 轴 (能量标度)**：$\log_{10}(E/\text{eV}) \in [-5, 29]$（从宇宙微波背景辐射到普朗克能量）
+   - **Y 轴 (能量标度)**：$\log_{10}(E/\text{eV}) \in [-25, 29]$（从 nHz 引力波频率量子/超冷原子阱深到普朗克能量）
    - 支持 Canvas 平移（Pan）、滚轮自由缩放（Zoom）与矩形框选缩放（Box Zoom）。
 
-2. **多层级矢量算符与真实 LaTeX 渲染 (KaTeX & `\ce{}` Chemistry Support)**
+2. **三维标度空间 (3D Scale Space)**
+   - 在 2D 相图基础上增加 **Z 轴**：特征时间尺度 $\log_{10}(\tau/{\rm s})$ 或特征温度 $\log_{10}(T/{\rm K})$（右下角切换）。
+   - 期刊图表风格：带刻度数值的坐标框、按学科着色的数据点、3D 误差棒、悬停读数；无 Z 数据的节点以半透明投影于底面。
+
+3. **多层级矢量算符与真实 LaTeX 渲染 (KaTeX & `\ce{}` Chemistry Support)**
    - 粒子、材料与重对偶节点内置精细的 KaTeX 公式与 `\ce{}` 化学式渲染。
    - 所有粒子/拓扑态节点采用期刊轻量学术风格（Light Academic Paper Theme），中文与英文分行呈现。
 
-3. **n-Leg 跨尺度理论/方法节点与对偶关系 (Multi-Leg Research Nodes)**
+4. **n-Leg 跨尺度理论/方法节点与对偶关系 (Multi-Leg Research Nodes)**
    - 标注高温超导（HTSC/YBCO）、魔角双层石墨烯（MA-TBG）、拓扑绝缘体、量子计算路线（Transmon、离子阱、中性原子、光子、拓扑量子）等前沿课题。
    - 曲线连接多脚关联对象（n-Leg Bound Physical States）。
 
-4. **附录：相互作用 2D 热场与算符同构矩阵 (Isomorphism Appendix)**
+5. **附录：相互作用 2D 热场与算符同构矩阵 (Isomorphism Appendix)**
    - 内置引力相加律、电磁 Debye 屏蔽、QCD 渐进自由、EW 弱作用截断的 2D 热场推导与 Python 验证源码。
    - 提供微观波动算符到弯曲时空声学黑洞的跨标度算符同构字典（EFT Matrix）。
+
+---
+
+## 📏 数据语义与溯源 (Data Semantics & Provenance)
+
+图谱中每个对象节点的坐标与误差棒**不是手写的**，而是由 `scripts/deriveRanges.mjs` 从该节点 `specs` 字段中的文献数值自动推导（`npm run derive-ranges`），并可通过 `npm run validate-data` 校验一致性（CI 已接入）。
+
+- **坐标**：`coords` = specs 数值范围在 log₁₀ 空间的中点；`errorBar` = 半宽（单位：dex）。
+- **Y 轴语义**：特征能量量子 —— 光子 $h\nu$、引力波频率量子 $h f_{\rm GW}$、或热能标 $k_B T$；黑洞质能等总量记录在 `specs.mass`，不占 Y 轴。
+- **`errorBarType`**：
+  - `range`（实线）：specs 给出文献范围；
+  - `estimate`（虚线）：specs 只有 $\sim$ 单值，误差棒为 $\pm 0.3$ dex 约定；
+  - `uncertainty`：specs 给出 $\pm$ 测量不确定度或衰变展宽 $\Gamma/m$；
+  - 精确单值（如普朗克尺度）无误差棒。
+- **`source`**：数值来源（如 `PDG 2024`、RMP 综述），在详情抽屉中展示。
+- **`coordsNote`**：坐标约定的补充说明（如"取静止系能量"）。
+- **`coordsMeta`**：附加标度 `t`（$\log_{10}(T/{\rm K})$ 特征温度）与 `tau`（$\log_{10}(\tau/{\rm s})$ 特征时间），用于 3D 视图的 Z 轴。
+- 个别无法由 specs 机械推导的节点（如理论上限值），在 `scripts/rangeOverrides.json` 中显式豁免并注明理由。
 
 ---
 

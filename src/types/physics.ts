@@ -27,6 +27,20 @@ export interface ErrorBar {
   dy: number;
 }
 
+/**
+ * errorBar 的语义类型（由 scripts/deriveRanges.mjs 从 specs 推导）：
+ * - range: specs 给出文献数值范围，errorBar 为 log 空间半宽（实线绘制）
+ * - estimate: specs 只有 ~ 单值，errorBar 为 ±0.3 dex 约定（虚线绘制）
+ * - uncertainty: specs 给出 ± 测量不确定度或衰变展宽 Γ/m
+ */
+export type ErrorBarType = 'range' | 'estimate' | 'uncertainty';
+
+/** 附加标度：t = log10(T/K) 特征温度，tau = log10(τ/s) 特征时间（3D 视图 Z 轴用） */
+export interface CoordsMeta {
+  t?: number;
+  tau?: number;
+}
+
 export interface DomainBounds {
   xMin: number;
   xMax: number;
@@ -87,6 +101,12 @@ export interface PhysicsNode {
   domainId?: string;
   coords: Coords2D | { x: number; y: number } | any;
   errorBar?: ErrorBar | null;
+  errorBarType?: ErrorBarType;
+  /** 数值来源（如 'PDG 2024'），详情抽屉展示 */
+  source?: string;
+  /** 坐标约定补充说明（如"取静止系能量"） */
+  coordsNote?: string;
+  coordsMeta?: CoordsMeta;
   symbol?: string;
   type?: ObjectType;
   specs?: NodeSpecs;

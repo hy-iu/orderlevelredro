@@ -1,5 +1,5 @@
 import React from 'react';
-import { Network, Database, Sun, Moon } from 'lucide-react';
+import { Network, Database, Sun, Moon, Box, Grid2X2 } from 'lucide-react';
 import { ACADEMIC_DOMAINS } from '../data/physicsData';
 
 interface HeaderProps {
@@ -9,6 +9,8 @@ interface HeaderProps {
   onOpenParticleManager: () => void;
   theme: 'light' | 'dark';
   onToggleTheme: () => void;
+  viewMode: '2d' | '3d';
+  onToggleViewMode: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -17,7 +19,9 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenEquivalenceModal,
   onOpenParticleManager,
   theme,
-  onToggleTheme
+  onToggleTheme,
+  viewMode,
+  onToggleViewMode
 }) => {
   return (
     <header className="absolute top-0 left-0 right-0 z-20 px-6 py-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 flex items-center justify-between shadow-sm">
@@ -65,6 +69,15 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Equivalence Modal & Backend Manager Action */}
       <div className="flex items-center gap-2">
+        <button
+          onClick={onToggleViewMode}
+          className="px-3 py-1.5 rounded border border-emerald-300 dark:border-emerald-600 bg-emerald-50 dark:bg-emerald-900/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-900 dark:text-emerald-200 text-xs font-serif font-medium flex items-center gap-1.5 shadow-sm transition-all"
+          title={viewMode === '2d' ? '切换到 3D 视图（Z 轴：时间尺度/特征温度）' : '切换到 2D 视图'}
+        >
+          {viewMode === '2d' ? <Box className="w-3.5 h-3.5" /> : <Grid2X2 className="w-3.5 h-3.5" />}
+          <span>{viewMode === '2d' ? '3D 视图' : '2D 视图'}</span>
+        </button>
+
         <button
           onClick={onToggleTheme}
           className="p-2 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 shadow-sm transition-all"

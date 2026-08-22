@@ -8,6 +8,8 @@
     "server": "node server/index.js",
     "build": "tsc && vite build",
     "typecheck": "tsc --noEmit",
+    "derive-ranges": "node scripts/deriveRanges.mjs apply",
+    "validate-data": "node scripts/deriveRanges.mjs validate",
     "preview": "vite preview",
     "deploy": "tsc && vite build && gh-pages -d dist"
   },

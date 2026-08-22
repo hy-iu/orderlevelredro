@@ -97,7 +97,7 @@ export const DetailDrawer: React.FC<DetailDrawerProps> = ({
               )}
               {item.specs.energy && (
                 <div className="flex items-center justify-between p-1.5 rounded bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600">
-                  <span className="text-slate-600 dark:text-slate-400 font-mono text-[11px]">Rest Mass / Cutoff (E):</span>
+                  <span className="text-slate-600 dark:text-slate-400 font-mono text-[11px]">Characteristic Energy (E):</span>
                   <AutoMathText text={item.specs.energy} className="font-mono text-slate-900 dark:text-slate-100 font-bold" />
                 </div>
               )}
@@ -113,7 +113,32 @@ export const DetailDrawer: React.FC<DetailDrawerProps> = ({
                   <AutoMathText text={item.specs.time} className="font-mono text-slate-900 dark:text-slate-100 font-bold" />
                 </div>
               )}
+              {/* 其余 specs 键（mass、radius、temperature 等）通用渲染 */}
+              {Object.entries(item.specs)
+                .filter(([k, v]) => v && !['length', 'energy', 'decayWidth', 'time', 'lagrangian'].includes(k))
+                .map(([k, v]) => (
+                  <div key={k} className="flex items-center justify-between p-1.5 rounded bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600">
+                    <span className="text-slate-600 dark:text-slate-400 font-mono text-[11px]">{k}:</span>
+                    <AutoMathText text={v as string} className="font-mono text-slate-900 dark:text-slate-100 font-bold" />
+                  </div>
+                ))}
             </div>
+          </div>
+        )}
+
+        {/* Data Provenance: 坐标/误差棒来源与约定 */}
+        {(item.source || item.coordsNote || item.errorBarType) && (
+          <div className="space-y-1 mb-4 p-2 rounded bg-sky-50/60 dark:bg-sky-900/20 border border-sky-200 dark:border-sky-800 text-[10px] font-mono text-sky-900 dark:text-sky-300">
+            <div className="font-bold uppercase tracking-wide text-sky-700 dark:text-sky-400">Data Provenance</div>
+            {item.source && <div>来源 (Source): {item.source}</div>}
+            {item.errorBarType && (
+              <div>
+                误差棒 (Error Bar): {item.errorBarType === 'range' ? '文献范围（实线）' : item.errorBarType === 'estimate' ? '估计值 ±0.3 dex（虚线）' : '测量不确定度 / Γ 展宽'}
+              </div>
+            )}
+            {item.coordsNote && <div>坐标约定: {item.coordsNote}</div>}
+            {item.coordsMeta?.t !== undefined && <div>log₁₀(T/K) = {item.coordsMeta.t.toFixed(2)}</div>}
+            {item.coordsMeta?.tau !== undefined && <div>log₁₀(τ/s) = {item.coordsMeta.tau.toFixed(2)}</div>}
           </div>
         )}
 

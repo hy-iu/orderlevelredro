@@ -1,0 +1,56 @@
+{
+  "_comment": "人工审核结论：deriveRanges.mjs 推导时最后应用。keepCoords=保留当前坐标；coords=强制部分坐标（缺省轴用推导值）；exempt=免除 validate 矛盾检查；coordsNote 会在 DetailDrawer 展示。",
+  "obj-photon": {
+    "coords": { "x": 12.09 },
+    "coordsNote": "无静止质量：y 为 PDG 静止质量上限 m<10⁻¹⁸ eV，x 为该上限对应的康普顿波长（即力程下限）",
+    "exempt": true,
+    "source": "PDG 2024"
+  },
+  "obj-gluon": {
+    "coords": { "x": -14.85, "y": 8.3 },
+    "coordsNote": "无静止质量；y 取 Λ_QCD ≈ 200 MeV 禁闭能标（胶子仅在禁闭尺度内自由存在）",
+    "exempt": true,
+    "source": "PDG 2024"
+  },
+  "obj-traversable-wormhole": {
+    "keepCoords": true,
+    "coordsNote": "理论构想（ER=EPR 对偶）：尺度与能量均为示意位置，无实验约束",
+    "exempt": true
+  },
+  "obj-conformal-bootstrap": {
+    "keepCoords": true,
+    "coordsNote": "标度不变的数值方法，坐标为示意（电弱-强子能标应用区）",
+    "exempt": true
+  },
+  "obj-mbl": {
+    "keepCoords": true,
+    "coordsNote": "sites 以晶格常数 ~0.5 nm 计（1-10 sites ≈ 0.5-5 nm）；能量为无序强度 W~J 量级",
+    "exempt": true
+  },
+  "obj-tensor-network": {
+    "keepCoords": true,
+    "coordsNote": "数值方法节点：坐标为所模拟凝聚态体系的代表标度",
+    "exempt": true
+  },
+  "obj-kpz-growth": {
+    "coords": { "x": -3 },
+    "coordsNote": "长度随时间增长 ξ~t^(1/z)；x 取桌面实验典型尺度（mm），y 取室温 k_B T",
+    "exempt": true
+  },
+  "obj-electron-edm": {
+    "keepCoords": true,
+    "coordsNote": "坐标为电子自身标度（康普顿波长 / 静止质量 0.511 MeV）；EDM 上限以 e·cm 表示，见 specs",
+    "exempt": true,
+    "source": "ACME 2023 / JILA"
+  },
+  "obj-neutron-edm": {
+    "keepCoords": true,
+    "coordsNote": "坐标为中子自身标度（~fm / 938 MeV）；EDM 上限以 e·cm 表示，见 specs",
+    "exempt": true
+  },
+  "obj-21cm": {
+    "coords": { "x": 24 },
+    "coordsNote": "x 为宇宙学巡天尺度（~Gpc）；y 为 21cm 光子静止系能量 5.9 μeV（红移后更低）",
+    "exempt": true
+  }
+}

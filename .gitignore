@@ -22,3 +22,20 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# LaTeX build artifacts
+*.aux
+*.toc
+*.xdv
+*.out
+*.fls
+*.fdb_latexmk
+
+# 学习资料（notebook、推导文档、图表）——内容在 study-note 分支维护
+study/
+STUDY_PLAN.md
+STUDY_PROMPTS.md
+.qoder/
+
+# 论文调研与翻译（源码、PDF、翻译稿，不纳入版本控制）
+*_papers/

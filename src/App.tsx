@@ -1,6 +1,7 @@
 import React, { useState, useRef, useCallback } from 'react';
 import Header from './components/Header';
 import Canvas2D from './components/Canvas2D';
+import Canvas3D from './components/Canvas3D';
 import ControlPanel, { LayerVisibility } from './components/ControlPanel';
 import DetailDrawer from './components/DetailDrawer';
 import EquivalenceModal from './components/EquivalenceModal';
@@ -12,18 +13,20 @@ import { useTheme } from './hooks/useTheme';
 export function App() {
   const { theme, toggleTheme } = useTheme();
   const [activeDomain, setActiveDomain] = useState('all');
+  const [viewMode, setViewMode] = useState<'2d' | '3d'>('2d');
 
   const [layerVisibility, setLayerVisibility] = useState<LayerVisibility>({
     clouds: true,
     heatmaps: true,
     forces: true,
+    references: true,
     objects: true,
     nodes: true,
     relations: true
   });
 
   const [spatialRange, setSpatialRange] = useState<[number, number]>([-35, 26]);
-  const [energyRange, setEnergyRange] = useState<[number, number]>([-4, 28]);
+  const [energyRange, setEnergyRange] = useState<[number, number]>([-24, 28]);
   const [fitTrigger, setFitTrigger] = useState(0);
 
   // Independent per-axis viewport transform (zoom X / zoom Y / pan), lifted here
@@ -79,7 +82,7 @@ export function App() {
 
   const resetAllScales = () => {
     setSpatialRange([-35, 26]);
-    setEnergyRange([-4, 28]);
+    setEnergyRange([-24, 28]);
   };
 
   return (
@@ -92,6 +95,8 @@ export function App() {
         onOpenParticleManager={() => setIsParticleManagerOpen(true)}
         theme={theme}
         onToggleTheme={toggleTheme}
+        viewMode={viewMode}
+        onToggleViewMode={() => setViewMode(v => (v === '2d' ? '3d' : '2d'))}
       />
 
       {/* Control Panel with Unified Button Styles */}
@@ -109,21 +114,31 @@ export function App() {
         onZoomAxis={handleZoomAxis}
       />
 
-      {/* Dynamic Interactive 2D Canvas */}
+      {/* Dynamic Interactive 2D / 3D Canvas */}
       <main className="w-full h-full pt-12">
-        <Canvas2D
-          activeDomain={activeDomain}
-          layerVisibility={layerVisibility}
-          selectedItem={selectedItem}
-          onSelectItem={handleSelectItem}
-          spatialRange={spatialRange}
-          energyRange={energyRange}
-          fitTrigger={fitTrigger}
-          transform={transform}
-          setTransform={setTransform}
-          onViewportChange={handleViewportChange}
-          theme={theme}
-        />
+        {viewMode === '2d' ? (
+          <Canvas2D
+            activeDomain={activeDomain}
+            layerVisibility={layerVisibility}
+            selectedItem={selectedItem}
+            onSelectItem={handleSelectItem}
+            spatialRange={spatialRange}
+            energyRange={energyRange}
+            fitTrigger={fitTrigger}
+            transform={transform}
+            setTransform={setTransform}
+            onViewportChange={handleViewportChange}
+            theme={theme}
+          />
+        ) : (
+          <Canvas3D
+            activeDomain={activeDomain}
+            layerVisibility={layerVisibility}
+            selectedItem={selectedItem}
+            onSelectItem={handleSelectItem}
+            theme={theme}
+          />
+        )}
       </main>
 
       {/* Detail Inspection Drawer */}
